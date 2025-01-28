@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/navbar/Navbar";
+import Navbar from "@/components/navbar/Navbar";
+import Cart from "@/components/cart/Cart";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -13,6 +14,16 @@ export const metadata: Metadata = {
   title: "Warehub",
   description:
     "Your one-stop warehouse shop, explore and purchase a wide range of products directly from our web app. Shop with ease and convenience!",
+  icons: {
+    icon: [
+      {
+        rel: "icon",
+        type: "image/svg",
+        sizes: "42x42",
+        url: "/favicon.svg",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -24,6 +35,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
         <Navbar />
+        <Cart />
         {children}
       </body>
     </html>
