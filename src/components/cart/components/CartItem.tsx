@@ -14,7 +14,7 @@ const CartItem: FC = () => {
   };
 
   return (
-    <div className="mt-[40px]">
+    <div className="">
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-4 w-full">
           <div className="h-[96px] w-[86px] bg-slate-50 flex-shrink-0">
@@ -27,11 +27,13 @@ const CartItem: FC = () => {
             />
           </div>
 
-          <div className="flex flex-col items-start">
-            <h3 className="text-lg font-semibold line-clamp-1">Tray Table</h3>
-            <p className="text-sm text-[#6C7275] line-clamp-1">
-              Description Description Description Description Description
-            </p>
+          <div className="flex flex-col items-start justify-between">
+            <div>
+              <h3 className="text-lg font-semibold line-clamp-1">Tray Table</h3>
+              <p className="text-sm text-[#6C7275] line-clamp-1">
+                Description Description Description Description Description
+              </p>
+            </div>
 
             {/* Quantity Controls */}
             <div className="flex items-center mt-[8px] border border-black rounded-sm">
@@ -59,7 +61,7 @@ const CartItem: FC = () => {
 
         {/* Prices */}
         <div className="flex flex-col justify-start items-end h-full">
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-[16px] font-semibold">
             {formatPrice(String(quantity * 40000))}
           </h3>
           <div className="p-2 rounded-full hover:bg-slate-100 transition-all cursor-pointer pt-[8px]">
