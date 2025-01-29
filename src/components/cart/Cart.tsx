@@ -3,6 +3,8 @@ import React, { FC } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import CartItem from "./components/CartItem";
+import Link from "next/link";
+import { formatPrice } from "@/utils/formatter";
 
 const Cart: FC = () => {
   return (
@@ -36,17 +38,21 @@ const Cart: FC = () => {
           <div className="mb-[24px]">
             <div className="flex items-center justify-between">
               <span>Subtotal</span>
-              <span className="font-semibold">IDR40.000</span>
+              <span className="font-semibold">
+                {formatPrice(String(40000))}
+              </span>
             </div>
             <Separator className="my-[8px]" />
             <div className="flex items-center justify-between mb-6">
               <span className="font-bold">Total</span>
-              <span className="font-bold">IDR40.000</span>
+              <span className="font-bold">{formatPrice(String(40000))}</span>
             </div>
 
             <div className="flex flex-col w-full gap-4">
               <Button variant={"default"}>Checkout</Button>
-              <Button variant={"link"}>View Cart</Button>
+              <Button variant={"link"} asChild>
+                <Link href="/cart">View Cart</Link>
+              </Button>
             </div>
           </div>
         </div>
