@@ -12,8 +12,6 @@ const menuItems = [
 ];
 
 const MenuItems: FC = () => {
-  const showCart = useCartToggleStore.getState().showCart;
-  console.log(showCart);
   const toggleShowCart = useCartToggleStore().toggleShowCart;
 
   return (
