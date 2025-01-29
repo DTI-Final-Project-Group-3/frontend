@@ -9,16 +9,18 @@ import Link from "next/link";
 import { formatPrice } from "@/utils/formatter";
 import { cn } from "@/lib/utils";
 import { useCartToggleStore } from "@/store/cartToggle";
+import { useCartStore } from "@/store/cartStore";
 
 const Cart: FC = () => {
   const { showCart, toggleShowCart } = useCartToggleStore();
+  const cartItems = useCartStore((state) => state.cartItems);
 
   return (
     <>
       {/* Overlay and Cart Section */}
       <section
         className={cn(
-          "fixed inset-0 z-40 transition-opacity duration-300",
+          "fixed inset-0 z-40 transition-opacity duration-300 text-black",
           showCart
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -59,9 +61,20 @@ const Cart: FC = () => {
           <div className="flex flex-col justify-between h-full">
             {/* Cart Items */}
             <div className="overflow-y-auto max-x-[30vh] space-y-4 mt-[40px] mb-[24px]">
-              <CartItem />
-              <CartItem />
-              <CartItem />
+              {cartItems.length > 0 ? (
+                cartItems.map((item) => (
+                  <CartItem
+                    key={item.id}
+                    id={item.id}
+                    name={item.name}
+                    price={item.price}
+                    quantity={item.quantity}
+                    stock={item.stock}
+                  />
+                ))
+              ) : (
+                <p className="text-center mt-10">Your cart is empty.</p>
+              )}
             </div>
 
             {/* Footer */}

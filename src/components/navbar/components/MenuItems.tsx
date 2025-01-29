@@ -1,5 +1,6 @@
 "use client";
 
+import { useCartStore } from "@/store/cartStore";
 import { useCartToggleStore } from "@/store/cartToggle";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,9 +13,8 @@ const menuItems = [
 ];
 
 const MenuItems: FC = () => {
-  const showCart = useCartToggleStore.getState().showCart;
-  console.log(showCart);
   const toggleShowCart = useCartToggleStore().toggleShowCart;
+  const cartItems = useCartStore().cartItems;
 
   return (
     <nav className="w-full p-4">
@@ -29,11 +29,15 @@ const MenuItems: FC = () => {
             </Link>
           </li>
         ))}
-        {/* Cart item with toggle functionality */}
+
+        {/* Cart icon */}
         <li
-          className="hover:bg-slate-100 p-[10px] rounded-xl cursor-pointer"
+          className="hover:bg-slate-100 p-[10px] rounded-xl cursor-pointer relative"
           onClick={toggleShowCart}
         >
+          <span className="absolute top-0 right-0 text-[14px] font-bold bg-red-500 px-2 text-white rounded-full border-white border-[1px]">
+            {cartItems.length < 1 ? "" : cartItems.length}
+          </span>
           <Image src="/icons/cart.svg" alt="Cart" width={24} height={24} />
         </li>
       </ul>

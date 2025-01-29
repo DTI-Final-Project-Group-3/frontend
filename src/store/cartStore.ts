@@ -15,6 +15,8 @@ type CartState = {
   totalItems: number;
   addToCart: (product: CartItem) => void;
   updateCart: (productId: number, quantity: number) => void;
+  increaseQuantity: (productId: number) => void;
+  decreaseQuantity: (productId: number) => void;
   removeFromCart: (productId: number) => void;
 };
 
@@ -80,6 +82,28 @@ export const useCartStore = create<CartState>((set) => ({
       );
       return { ...state, cartItems: updatedCartItems, totalItems };
     }),
+
+  // Increase Product Quantity
+  increaseQuantity: (productId) =>
+    set((state) => ({
+      cartItems: state.cartItems.map((item) =>
+        item.id === productId && item.quantity < item.stock
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      ),
+    })),
+
+  // Decrease Product Quantity
+  decreaseQuantity: (productId) =>
+    set((state) => ({
+      cartItems: state.cartItems
+        .map((item) =>
+          item.id === productId && item.quantity > 1
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0),
+    })),
 
   // Remove from Cart
   removeFromCart: (productId) =>

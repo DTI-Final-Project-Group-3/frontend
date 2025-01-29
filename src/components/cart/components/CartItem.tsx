@@ -1,17 +1,23 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
+import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/utils/formatter";
 import Image from "next/image";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 
-const CartItem: FC = () => {
-  const [quantity, setQuantity] = useState(1);
+type CartItemProps = {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  stock: number;
+};
 
-  const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () => {
-    if (quantity > 1) setQuantity((prev) => prev - 1);
-  };
+const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
+  const increaseQuantity = useCartStore((state) => state.increaseQuantity);
+  const decreaseQuantity = useCartStore((state) => state.decreaseQuantity);
+  const removeItem = useCartStore((state) => state.removeFromCart);
 
   return (
     <div className="">
@@ -20,7 +26,7 @@ const CartItem: FC = () => {
           <div className="h-[96px] w-[86px] bg-slate-50 flex-shrink-0">
             <Image
               src="/images/WareHub.png"
-              alt="close icon"
+              alt="Product image"
               height={100}
               width={100}
               className="cursor-pointer w-auto h-auto object-cover"
@@ -29,9 +35,9 @@ const CartItem: FC = () => {
 
           <div className="flex flex-col items-start justify-between">
             <div>
-              <h3 className="text-lg font-semibold line-clamp-1">Tray Table</h3>
+              <h3 className="text-lg font-semibold line-clamp-1">{name}</h3>
               <p className="text-sm text-[#6C7275] line-clamp-1">
-                Description Description Description Description Description
+                Product description here
               </p>
             </div>
 
@@ -39,7 +45,8 @@ const CartItem: FC = () => {
             <div className="flex items-center mt-[8px] border border-black rounded-sm">
               <button
                 className="px-3 py-[2px] text-xl text-black bg-white hover:bg-slate-100 transition-all rounded-sm"
-                onClick={decreaseQuantity}
+                onClick={() => decreaseQuantity(id)}
+                disabled={quantity <= 1}
               >
                 -
               </button>
@@ -51,7 +58,8 @@ const CartItem: FC = () => {
               />
               <button
                 className="px-3 py-[2px] text-xl text-black bg-white hover:bg-slate-100 transition-all rounded-sm"
-                onClick={increaseQuantity}
+                onClick={() => increaseQuantity(id)}
+                disabled={quantity >= stock}
               >
                 +
               </button>
@@ -62,9 +70,12 @@ const CartItem: FC = () => {
         {/* Prices */}
         <div className="flex flex-col justify-start items-end h-full">
           <h3 className="text-[16px] font-semibold">
-            {formatPrice(String(quantity * 40000))}
+            {formatPrice(String(quantity * price))}
           </h3>
-          <div className="p-2 rounded-full hover:bg-slate-100 transition-all cursor-pointer pt-[8px]">
+          <div
+            onClick={() => removeItem(id)}
+            className="p-2 rounded-full hover:bg-slate-100 transition-all cursor-pointer pt-[8px]"
+          >
             <Image
               src="/icons/close.svg"
               alt="close icon"
