@@ -113,7 +113,7 @@ export const useCartStore = create<CartState>()(
           return { ...state, cartItems: updatedCartItems, totalItems };
         }),
 
-      // Set cart items directly (to load data from localStorage)
+      // Set cart items directly (to load data from local Storage)
       setCartItems: (newCartItems: CartItem[]) =>
         set((state) => {
           const totalItems =
