@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import CartItem from "./components/CartItem";
@@ -14,6 +14,19 @@ import { useCartStore } from "@/store/cartStore";
 const Cart: FC = () => {
   const { showCart, toggleShowCart } = useCartToggleStore();
   const cartItems = useCartStore((state) => state.cartItems);
+
+  // Handle scroll disable
+  useEffect(() => {
+    if (showCart) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showCart]);
 
   return (
     <>
@@ -60,7 +73,7 @@ const Cart: FC = () => {
 
           <div className="flex flex-col justify-between h-full">
             {/* Cart Items */}
-            <div className="overflow-y-auto max-x-[30vh] space-y-4 mt-[40px] mb-[24px]">
+            <div className="overflow-y-auto max-x-[30vh] space-y-4 mt-[40px] mb-[24px] pr-2">
               {cartItems.length > 0 ? (
                 cartItems.map((item) => (
                   <CartItem
