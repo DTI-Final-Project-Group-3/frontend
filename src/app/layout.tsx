@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Cart from "@/components/cart/Cart";
+import { Toaster } from "@/components/ui/toaster";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -36,7 +37,10 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <Navbar />
         <Cart />
-        {children}
+        <main className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
+          {children}
+        </main>
+        <Toaster />
       </body>
     </html>
   );

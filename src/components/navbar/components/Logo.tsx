@@ -10,7 +10,7 @@ const Logo: FC = () => {
         height="50"
         width="200"
         src="/images/WareHub.svg"
-        className="hidden md:block cursor-pointer w-full h-[25px]"
+        className="cursor-pointer w-full h-[25px]"
       />
     </Link>
   );

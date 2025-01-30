@@ -1,6 +1,7 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/utils/formatter";
 import Image from "next/image";
@@ -34,17 +35,22 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
           </div>
 
           <div className="flex flex-col items-start justify-between">
-            <div>
-              <h3 className="text-lg font-semibold line-clamp-1">{name}</h3>
-              <p className="text-sm text-[#6C7275] line-clamp-1">
-                Product description here
-              </p>
-            </div>
+            
+            {/* Product name */}
+            <h3 className="text-lg font-semibold line-clamp-1">{name}</h3>
+
+            {/* product stock */}
+            <p className="text-sm text-[#6C7275] line-clamp-1">
+              Stock : {stock}
+            </p>
 
             {/* Quantity Controls */}
             <div className="flex items-center mt-[8px] border border-black rounded-sm">
               <button
-                className="px-3 py-[2px] text-xl text-black bg-white hover:bg-slate-100 transition-all rounded-sm"
+                className={cn(
+                  "px-3 py-[2px] text-xl text-black bg-whitetransition-all rounded-sm",
+                  quantity <= 1 ? "text-gray-400" : "hover:bg-slate-100"
+                )}
                 onClick={() => decreaseQuantity(id)}
                 disabled={quantity <= 1}
               >
@@ -57,7 +63,10 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
                 className="w-10 text-center py-1 border-none outline-none"
               />
               <button
-                className="px-3 py-[2px] text-xl text-black bg-white hover:bg-slate-100 transition-all rounded-sm"
+                className={cn(
+                  "px-3 py-[2px] text-xl text-black bg-white transition-all rounded-sm",
+                  quantity >= stock ? "text-gray-300" : "hover:bg-slate-100"
+                )}
                 onClick={() => increaseQuantity(id)}
                 disabled={quantity >= stock}
               >
@@ -78,14 +87,14 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
           >
             <Image
               src="/icons/close.svg"
-              alt="close icon"
+              alt="Remove icon"
               height={24}
               width={24}
             />
           </div>
         </div>
       </div>
-      <Separator className="my-[24px]" />
+      <Separator className="mt-[24px] mb-[48px]" />
     </div>
   );
 };
