@@ -41,6 +41,19 @@ const Cart: FC = () => {
       localStorage.setItem("cart-storage", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // Handle scroll disable
+  useEffect(() => {
+    if (showCart) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showCart]);
+
   return (
     <>
       {/* Overlay and Cart Section */}
