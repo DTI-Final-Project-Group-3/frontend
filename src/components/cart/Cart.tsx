@@ -14,6 +14,32 @@ import { useCartStore } from "@/store/cartStore";
 const Cart: FC = () => {
   const { showCart, toggleShowCart } = useCartToggleStore();
   const cartItems = useCartStore((state) => state.cartItems);
+  const setCartItems = useCartStore((state) => state.setCartItems);
+
+  // Handle scroll disable
+  useEffect(() => {
+    if (showCart) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showCart]);
+
+  // Load cart data from local storage if there is any data on mount
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart-storage");
+    if (storedCart) setCartItems(JSON.parse(storedCart));
+  }, [setCartItems]);
+
+  // Sync cart data to local storage whenever cartItems change
+  useEffect(() => {
+    if (cartItems.length > 0)
+      localStorage.setItem("cart-storage", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   // Handle scroll disable
   useEffect(() => {
