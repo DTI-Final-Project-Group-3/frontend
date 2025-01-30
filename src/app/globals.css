@@ -6,22 +6,48 @@
   --font-poppins: "Poppins", sans-serif;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   font-family: var(--font-poppins);
 }
 
 /* Custom Scrollbar Styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 14px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(219, 219, 219, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(85, 85, 85, 0.5);
   border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Custom overflow y scrollbars */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 8px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(219, 219, 219, 0.5);
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: rgba(85, 85, 85, 0.5);
+  border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 @layer base {

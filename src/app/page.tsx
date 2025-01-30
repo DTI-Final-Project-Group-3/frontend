@@ -18,13 +18,14 @@ type Product = {
 
 export default function Home() {
   const addToCart = useCartStore((state) => state.addToCart);
-  const isUserVerified = (useCartStore.getState().isUserVerified = true);
-  const isUserRegistred = (useCartStore.getState().isUserRegistered = true);
+  useCartStore.getState().isUserVerified = true;
+  useCartStore.getState().isUserRegistered = true;
 
   const handleAddToCart = (product: Product) => {
     addToCart(product);
     toast({
       title: "Added to cart",
+      duration: 2000,
       description: `${product.name} has been added to your cart.`,
     });
   };

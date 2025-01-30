@@ -1,3 +1,4 @@
+import { toast } from "@/hooks/use-toast";
 import { create } from "zustand";
 
 type CartItem = {
@@ -30,7 +31,11 @@ export const useCartStore = create<CartState>((set) => ({
   addToCart: (product) =>
     set((state) => {
       if (!state.isUserRegistered || !state.isUserVerified) {
-        console.error("User must be registered and verified to add to cart.");
+        toast({
+          title: "Failed to add to cart",
+          description: "You must be registered and verified to add to cart.",
+          variant: "destructive",
+        });
         return state;
       }
 
