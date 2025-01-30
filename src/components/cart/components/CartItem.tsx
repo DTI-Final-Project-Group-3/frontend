@@ -35,6 +35,7 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
           </div>
 
           <div className="flex flex-col items-start justify-between">
+            
             {/* Product name */}
             <h3 className="text-lg font-semibold line-clamp-1">{name}</h3>
 
