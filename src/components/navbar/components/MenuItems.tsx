@@ -17,7 +17,7 @@ const MenuItems: FC = () => {
   const cartItems = useCartStore().cartItems;
 
   return (
-    <nav className="w-full p-4">
+    <nav className="w-full">
       <ul className="flex items-center justify-around md:justify-end gap-2">
         {menuItems.map((item) => (
           <li

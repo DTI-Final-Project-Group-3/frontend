@@ -2,26 +2,45 @@
 
 import { Button } from "@/components/ui/button";
 import { mockProducts } from "@/constant/DummyProductsData";
+import { toast } from "@/hooks/use-toast";
 import { useCartStore } from "@/store/cartStore";
 import Image from "next/image";
+
+type Product = {
+  id: number;
+  name: string;
+  productImage: string;
+  description: string;
+  stock: number;
+  quantity: number;
+  price: number;
+};
 
 export default function Home() {
   const addToCart = useCartStore((state) => state.addToCart);
   const isUserVerified = (useCartStore.getState().isUserVerified = true);
   const isUserRegistred = (useCartStore.getState().isUserRegistered = true);
 
+  const handleAddToCart = (product: Product) => {
+    addToCart(product);
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
+
   return (
     <div className="min-h-[calc(100vh-70px)] mt-[24px] w-full">
-      <div className="h-[540px] md:max-w-4xl lg:max-w-7xl mx-auto w-full px-6 relative bg-slate-50 rounded-md">
+      <div className="h-[540px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full relative bg-slate-50 rounded-md">
         <Image
-          src="/images/WareHub.png"
+          src="/images/dummy-hero-img.png"
           alt="hero images"
-          height={200}
-          width={200}
-          className="h-full w-full object-contain rounded-md"
+          height={1000}
+          width={1340}
+          className="h-full w-full object-cover rounded-md"
         />
       </div>
-      <main className="mt-[24px] md:max-w-4xl lg:max-w-7xl mx-auto w-full px-6 md:px-0">
+      <main className="mt-[24px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full px-6 md:px-0">
         <h1 className="text-2xl font-semibold mb-4">Product List</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {mockProducts.map((product) => (
@@ -31,7 +50,7 @@ export default function Home() {
             >
               <div className="h-48 w-full relative bg-gray-100 rounded-md">
                 <Image
-                  src="/images/WareHub.png"
+                  src="/images/dummy-hero-img.png"
                   alt={product.name}
                   height={200}
                   width={200}
@@ -50,9 +69,11 @@ export default function Home() {
               </p>
 
               <Button
+                variant={"default"}
+                size={"sm"}
                 onClick={() => {
                   if (product.stock > 0) {
-                    addToCart(product);
+                    handleAddToCart(product);
                   } else alert("Product out of stock!");
                 }}
                 disabled={product.stock <= 0}
