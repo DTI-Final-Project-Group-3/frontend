@@ -18,11 +18,8 @@ const Cart: FC = () => {
 
   // Handle scroll disable
   useEffect(() => {
-    if (showCart) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    if (showCart) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
 
     return () => {
       document.body.style.overflow = "";
@@ -39,20 +36,8 @@ const Cart: FC = () => {
   useEffect(() => {
     if (cartItems.length > 0)
       localStorage.setItem("cart-storage", JSON.stringify(cartItems));
+    else localStorage.removeItem("cart-storage");
   }, [cartItems]);
-
-  // Handle scroll disable
-  useEffect(() => {
-    if (showCart) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [showCart]);
 
   return (
     <>
