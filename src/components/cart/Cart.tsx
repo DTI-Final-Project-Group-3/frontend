@@ -120,7 +120,11 @@ const Cart: FC = () => {
 
               {/* Action button */}
               <div className="flex flex-col w-full gap-4">
-                <Button variant={"default"}>Checkout</Button>
+                <Button variant={"default"}>
+                  <Link onClick={toggleShowCart} href="/cart/checkout">
+                    Checkout
+                  </Link>
+                </Button>
                 <Button variant={"link"} asChild>
                   <Link onClick={toggleShowCart} href="/cart">
                     View Cart

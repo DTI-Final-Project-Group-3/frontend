@@ -37,7 +37,7 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <Navbar />
         <Cart />
-        <main className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
+        <main>
           {children}
         </main>
         <Toaster />
