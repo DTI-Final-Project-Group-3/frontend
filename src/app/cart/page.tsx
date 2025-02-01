@@ -64,20 +64,32 @@ const CartPage: FC = () => {
             )}
           </div>
 
-          {/* Checkout */}
+          {/* Checkout summary */}
           <div className="flex flex-col w-full md:w-[480px] lg:w-[600px]">
             <div className="bg-white w- p-6 rounded-xl sticky top-[94px] flex flex-col gap-6">
               <h3 className="text-[22px] font-semibold">Order summary</h3>
+
+              {/* Total items */}
+              <div className="flex items-center justify-between w-full">
+                <span>Products</span>
+                <span className="text-lg font-bold">
+                  {totalQuantity < 1 ? "-" : `${totalQuantity} items`}
+                </span>
+              </div>
+
+              {/* Total price */}
               <div className="flex items-center justify-between w-full">
                 <span>Total price</span>
                 <span className="text-lg font-bold">
-                  {formatPrice(String(totalPrice))}
+                  {totalQuantity < 1 ? "-" : formatPrice(String(totalPrice))}
                 </span>
               </div>
+
               <Separator className="my-2" />
+
               <Button variant={"default"} disabled={cartItems.length < 1}>
                 <Link href="/cart/checkout" className="font-semibold">
-                  Buy
+                  Checkout
                   {totalQuantity > 0 && ` (${totalQuantity})`}
                 </Link>
               </Button>
