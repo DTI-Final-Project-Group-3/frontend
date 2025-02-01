@@ -86,7 +86,7 @@ const CartPage: FC = () => {
               </div>
 
               <Separator className="my-2" />
-
+              
               <Button variant={"default"} disabled={cartItems.length < 1}>
                 <Link href="/cart/checkout" className="font-semibold">
                   Checkout
