@@ -1,6 +1,6 @@
 "use client";
 
-import CartItem from "@/components/cart/components/CartItem";
+import CartItemLarge from "@/components/cart/components/CartItemLarge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/store/cartStore";
@@ -31,17 +31,23 @@ const CartPage: FC = () => {
     [cartItems]
   );
 
+  // Calculate total quantity
+  const totalQuantity = useMemo(
+    () => cartItems.reduce((acc, item) => acc + item.quantity, 0),
+    [cartItems]
+  );
+
   return (
     <section className="py-[40px] px-6 bg-slate-100 min-h-[calc(100vh-70px)]">
       <div className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
         <h1 className="text-4xl font-semibold">Cart</h1>
-        <div className="mt-[40px] flex gap-8 w-full">
+        <div className="mt-[40px] flex flex-col-reverse lg:flex-row gap-8 w-full">
           {/* Cart items */}
           <div className="flex flex-col gap-6 w-full">
             {cartItems.length > 0 ? (
               cartItems.map((item) => (
                 <div className="bg-white p-8 rounded-xl" key={item.id}>
-                  <CartItem
+                  <CartItemLarge
                     key={item.id}
                     id={item.id}
                     name={item.name}
@@ -52,23 +58,28 @@ const CartPage: FC = () => {
                 </div>
               ))
             ) : (
-              <p className="text-center mt-10">Your cart is empty.</p>
+              <p className="bg-white px-8 py-10 rounded-xl text-center">
+                Your cart is empty.
+              </p>
             )}
           </div>
 
           {/* Checkout */}
-          <div className="flex flex-col md:w-[480px] lg:w-[600px]">
+          <div className="flex flex-col w-full md:w-[480px] lg:w-[600px]">
             <div className="bg-white w- p-6 rounded-xl sticky top-[94px] flex flex-col gap-6">
-              <h3 className="text-xl font-semibold">Shopping summary</h3>
+              <h3 className="text-[22px] font-semibold">Order summary</h3>
               <div className="flex items-center justify-between w-full">
-                <span>Total</span>
+                <span>Total price</span>
                 <span className="text-lg font-bold">
                   {formatPrice(String(totalPrice))}
                 </span>
               </div>
               <Separator className="my-2" />
-              <Button variant={"default"}>
-                <Link href="/cart/checkout">Buy now</Link>
+              <Button variant={"default"} disabled={cartItems.length < 1}>
+                <Link href="/cart/checkout" className="font-semibold">
+                  Buy
+                  {totalQuantity > 0 && ` (${totalQuantity})`}
+                </Link>
               </Button>
             </div>
           </div>

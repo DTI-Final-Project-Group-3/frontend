@@ -85,7 +85,7 @@ export default function Home() {
           ))}
         </div>
       </main>
-      <footer className=""></footer>
+      <footer className="bg-black mt-10 min-h-80"></footer>
     </div>
   );
 }

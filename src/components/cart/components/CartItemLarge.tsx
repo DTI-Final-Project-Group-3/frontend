@@ -1,9 +1,7 @@
-"use client";
-
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/utils/formatter";
+import { Trash2 } from "lucide-react";
 import Image from "next/image";
 import React, { FC } from "react";
 
@@ -15,16 +13,22 @@ type CartItemProps = {
   stock: number;
 };
 
-const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
+const CartItemLarge: FC<CartItemProps> = ({
+  id,
+  name,
+  price,
+  quantity,
+  stock,
+}) => {
   const increaseQuantity = useCartStore((state) => state.increaseQuantity);
   const decreaseQuantity = useCartStore((state) => state.decreaseQuantity);
   const removeItem = useCartStore((state) => state.removeFromCart);
 
   return (
-    <div className="">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex gap-4 w-full">
-          <div className="h-[96px] w-[86px] bg-slate-50 flex-shrink-0">
+    <>
+      <div className="flex items-start justify-between gap-4 h-full w-full">
+        <div className="flex gap-6 w-full">
+          <div className="h-[100px] w-[100px] bg-slate-50 flex-shrink-0 rounded-xl">
             <Image
               src="/images/WareHub.png"
               alt="Product image"
@@ -35,17 +39,35 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
           </div>
 
           <div className="flex flex-col items-start justify-between">
-            
             {/* Product name */}
-            <h3 className="text-lg font-semibold line-clamp-1">{name}</h3>
+            <h3 className="text-xl font-semibold line-clamp-2">{name}</h3>
 
             {/* product stock */}
-            <p className="text-sm text-[#6C7275] line-clamp-1">
+            <p className="text-[16px] text-[#6C7275] line-clamp-1">
               Stock : {stock}
             </p>
+          </div>
+        </div>
+
+        {/* Prices and Item Controls */}
+        <div className="flex flex-col justify-between items-end h-full">
+          {/* Price */}
+          <h3 className="text-lg font-semibold">
+            {formatPrice(String(quantity * price))}
+          </h3>
+
+          {/* Quantity and remove button */}
+          <div className="flex items-end justify-center w-full gap-4">
+            {/* Remove button */}
+            <div
+              onClick={() => removeItem(id)}
+              className="p-2 rounded-lg hover:bg-slate-100 transition-all cursor-pointer pt-[8px] text-gray-400 hover:text-black"
+            >
+              <Trash2 width={24} height={24} />
+            </div>
 
             {/* Quantity Controls */}
-            <div className="flex items-center mt-[8px] border border-gray-400 rounded-sm">
+            <div className="flex items-center mt-[8px] border border-gray-400 rounded-sm h-[36px]">
               <button
                 className={cn(
                   "px-3 py-[2px] text-xl text-black bg-whitetransition-all rounded-sm",
@@ -75,28 +97,9 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
             </div>
           </div>
         </div>
-
-        {/* Prices */}
-        <div className="flex flex-col justify-start items-end h-full">
-          <h3 className="text-[16px] font-semibold">
-            {formatPrice(String(quantity * price))}
-          </h3>
-          <div
-            onClick={() => removeItem(id)}
-            className="p-2 rounded-full hover:bg-slate-100 transition-all cursor-pointer pt-[8px]"
-          >
-            <Image
-              src="/icons/close.svg"
-              alt="Remove icon"
-              height={24}
-              width={24}
-            />
-          </div>
-        </div>
       </div>
-      <Separator className="mt-[24px] mb-[48px]" />
-    </div>
+    </>
   );
 };
 
-export default CartItem;
+export default CartItemLarge;
