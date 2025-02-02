@@ -35,12 +35,11 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
           </div>
 
           <div className="flex flex-col items-start justify-between">
-            
             {/* Product name */}
             <h3 className="text-lg font-semibold line-clamp-1">{name}</h3>
 
             {/* product stock */}
-            <p className="text-sm text-[#6C7275] line-clamp-1">
+            <p className="text-[16px] text-[#6C7275] line-clamp-1">
               Stock : {stock}
             </p>
 
@@ -77,8 +76,8 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
         </div>
 
         {/* Prices */}
-        <div className="flex flex-col justify-start items-end h-full">
-          <h3 className="text-[16px] font-semibold">
+        <div className="flex flex-col justify-start items-end h-full gap-1">
+          <h3 className="text-[16px] font-bold">
             {formatPrice(String(quantity * price))}
           </h3>
           <div

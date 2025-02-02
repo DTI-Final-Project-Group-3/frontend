@@ -71,7 +71,7 @@ const Cart: FC = () => {
             <h1 className="text-3xl font-semibold">Cart</h1>
             <div
               onClick={toggleShowCart}
-              className="bg-slate-100 p-[10px] rounded-full hover:bg-slate-200 transition-all cursor-pointer"
+              className="p-[10px] rounded-full hover:bg-slate-100 transition-all cursor-pointer"
             >
               <Image
                 src="/icons/close.svg"
@@ -102,32 +102,26 @@ const Cart: FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="mb-[24px]">
+            <div className="mb-[40px]">
               {/* Pricing */}
-              <div className="flex items-center justify-between">
-                <span className="text-[16px]">Subtotal</span>
-                <span className="text-[16px] font-semibold">
-                  {formatPrice(String(40000))}
-                </span>
-              </div>
               <Separator className="my-[14px]" />
               <div className="flex items-center justify-between mb-6">
-                <span className="text-[20px] font-semibold">Total</span>
-                <span className="text-[20px] font-semibold">
+                <span className="text-[18px] font-semibold">Sub total</span>
+                <span className="text-[18px] font-bold">
                   {formatPrice(String(40000))}
                 </span>
               </div>
 
               {/* Action button */}
-              <div className="flex flex-col w-full gap-4">
+              <div className="flex w-full gap-4">
+                <Button variant={"secondary"} asChild>
+                  <Link onClick={toggleShowCart} href="/cart">
+                    View Cart
+                  </Link>
+                </Button>
                 <Button variant={"default"}>
                   <Link onClick={toggleShowCart} href="/cart/checkout">
                     Checkout
-                  </Link>
-                </Button>
-                <Button variant={"link"} asChild>
-                  <Link onClick={toggleShowCart} href="/cart">
-                    View Cart
                   </Link>
                 </Button>
               </div>
