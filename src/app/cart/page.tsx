@@ -69,6 +69,8 @@ const CartPage: FC = () => {
             <div className="bg-white w- p-6 rounded-xl sticky top-[94px] flex flex-col gap-6">
               <h3 className="text-[22px] font-semibold">Order summary</h3>
 
+              <Separator className="my-2" />
+
               {/* Total items */}
               <div className="flex items-center justify-between w-full">
                 <span>Products</span>

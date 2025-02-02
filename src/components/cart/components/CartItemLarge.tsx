@@ -1,3 +1,4 @@
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/utils/formatter";
@@ -11,6 +12,7 @@ type CartItemProps = {
   price: number;
   quantity: number;
   stock: number;
+  showButton?: boolean;
 };
 
 const CartItemLarge: FC<CartItemProps> = ({
@@ -19,6 +21,7 @@ const CartItemLarge: FC<CartItemProps> = ({
   price,
   quantity,
   stock,
+  showButton = false,
 }) => {
   const increaseQuantity = useCartStore((state) => state.increaseQuantity);
   const decreaseQuantity = useCartStore((state) => state.decreaseQuantity);
@@ -26,7 +29,7 @@ const CartItemLarge: FC<CartItemProps> = ({
 
   return (
     <>
-      <div className="flex items-start justify-between gap-4 h-full w-full">
+      <div className="flex flex-col md:flex-row items-start justify-between gap-4 h-full w-full">
         <div className="flex gap-6 w-full">
           <div className="h-[100px] w-[100px] bg-slate-50 flex-shrink-0 rounded-xl">
             <Image
@@ -53,14 +56,19 @@ const CartItemLarge: FC<CartItemProps> = ({
         </div>
 
         {/* Prices and Item Controls */}
-        <div className="flex flex-col justify-between items-end h-full">
+        <div className="flex flex-col justify-between items-end h-full gap-2 w-full">
           {/* Price */}
           <h3 className="text-lg font-bold">
-            {formatPrice(String(quantity * price))}
+            {quantity} x {formatPrice(String(price))}
           </h3>
 
           {/* Quantity and remove button */}
-          <div className="flex items-end justify-center w-full gap-4">
+          <div
+            className={cn(
+              "flex items-end justify-center gap-4",
+              showButton && "hidden"
+            )}
+          >
             {/* Remove button */}
             <div
               onClick={() => removeItem(id)}
@@ -101,6 +109,7 @@ const CartItemLarge: FC<CartItemProps> = ({
           </div>
         </div>
       </div>
+      <Separator className={cn("hidden mt-6", showButton && "block")} />
     </>
   );
 };

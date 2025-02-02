@@ -48,7 +48,15 @@ const CheckoutPage: FC = () => {
   return (
     <section className="py-[40px] px-6 bg-slate-100 min-h-[calc(100vh-70px)] w-full">
       <div className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
-        <h1 className="text-4xl font-semibold">Checkout</h1>
+        {/* Breadcrumbs */}
+        <div className="flex">
+          <h1 className="text-4xl text-gray-500 font-medium">
+            <Link href="/cart">Cart</Link>
+          </h1>
+          <span className="text-4xl text-gray-500 mx-2">/</span>
+          <h1 className="text-4xl font-semibold">Checkout</h1>
+        </div>
+
         <div className="mt-[40px] flex flex-col-reverse lg:flex-row gap-8 w-full">
           {/* Checkout details & shipping address */}
           <div className="flex flex-col gap-6 w-full">
@@ -71,6 +79,7 @@ const CheckoutPage: FC = () => {
                       price={item.price}
                       quantity={item.quantity}
                       stock={item.stock}
+                      showButton={true}
                     />
                   </div>
                 ))
