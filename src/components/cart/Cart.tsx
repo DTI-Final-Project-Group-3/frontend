@@ -44,7 +44,7 @@ const Cart: FC = () => {
       {/* Overlay and Cart Section */}
       <section
         className={cn(
-          "fixed inset-0 z-40 transition-opacity duration-300 text-black",
+          "fixed inset-0 z-40 transition-opacity duration-300 text-black h-[calc(100vh-70px)]",
           showCart
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
