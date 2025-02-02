@@ -38,7 +38,7 @@ const CartPage: FC = () => {
   );
 
   return (
-    <section className="py-[40px] px-6 bg-slate-100 min-h-[calc(100vh-70px)]">
+    <section className="py-[40px] px-6 bg-slate-100 min-h-[calc(100vh-70px)] w-full">
       <div className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
         <h1 className="text-4xl font-semibold">Cart</h1>
         <div className="mt-[40px] flex flex-col-reverse lg:flex-row gap-8 w-full">
