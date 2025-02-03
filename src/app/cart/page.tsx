@@ -88,7 +88,7 @@ const CartPage: FC = () => {
               </div>
 
               <Separator className="my-2" />
-
+              
               <Button
                 variant={"default"}
                 disabled={cartItems.length < 1}
