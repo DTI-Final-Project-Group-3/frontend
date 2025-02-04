@@ -1,20 +1,11 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/navbar/Navbar";
-import Cart from "@/components/cart/Cart";
+import "../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["200", "400", "500", "600", "700", "800", "900"],
-});
-
 export const metadata: Metadata = {
-  title: "Warehub",
+  title: "Warehub - Admin",
   description:
-    "Your one-stop warehouse shop, explore and purchase a wide range of products directly from our web app. Shop with ease and convenience!",
+    "Your one-stop warehouse shop, manage products, inventories, users orders, etc",
   icons: {
     icon: [
       {
@@ -33,15 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
-        <Navbar />
-        <Cart />
-        <main>
-          {children}
-        </main>
-        <Toaster />
-      </body>
-    </html>
+    <div className="w-full h-[calc(100vh-70px)]">
+      <main>{children}</main>
+      <Toaster />
+    </div>
   );
 }
