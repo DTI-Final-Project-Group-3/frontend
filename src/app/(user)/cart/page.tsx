@@ -95,7 +95,7 @@ const CartPage: FC = () => {
                 asChild
               >
                 <Link href="/cart/checkout" className="font-semibold">
-                  Checkout
+                  Buy
                   {totalQuantity > 0 && ` (${totalQuantity})`}
                 </Link>
               </Button>
