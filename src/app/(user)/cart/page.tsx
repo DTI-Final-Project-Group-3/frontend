@@ -89,9 +89,13 @@ const CartPage: FC = () => {
 
               <Separator className="my-2" />
 
-              <Button variant={"default"} disabled={cartItems.length < 1}>
+              <Button
+                variant={"default"}
+                disabled={cartItems.length < 1}
+                asChild
+              >
                 <Link href="/cart/checkout" className="font-semibold">
-                  Checkout
+                  Buy
                   {totalQuantity > 0 && ` (${totalQuantity})`}
                 </Link>
               </Button>
