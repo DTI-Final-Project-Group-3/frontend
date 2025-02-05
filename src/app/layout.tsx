@@ -1,9 +1,11 @@
+import Cart from "@/components/cart/Cart";
+import Navbar from "@/components/navbar/Navbar";
+import SessionProviderWrapper from "@/components/session-provider/SessionProviderWrapper";
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar/Navbar";
-import Cart from "@/components/cart/Cart";
-import { Toaster } from "@/components/ui/toaster";
+
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -35,12 +37,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
+      <SessionProviderWrapper>
         <Navbar />
         <Cart />
         <main>
           {children}
         </main>
         <Toaster />
+        </SessionProviderWrapper>
       </body>
     </html>
   );
