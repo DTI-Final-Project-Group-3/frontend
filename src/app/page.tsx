@@ -2,7 +2,6 @@
 
 import { getPaginatedWarehouseInventories } from "@/api/getWarehouseInventory";
 import ProductCard from "@/components/product/productCard";
-import { PaginatedWarehouseInventoryResponse } from "@/types/models/warehouseInventories";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
@@ -11,6 +10,8 @@ import LoadingCard from "@/components/ui/loadingCard";
 import { toast } from "@/hooks/use-toast";
 import { Product } from "@/types/models/products";
 import { useCartStore } from "@/store/cartStore";
+import InventoryCard from "@/components/inventory/InventoryCard";
+import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
 
 type ProductCart = {
   id: number;
@@ -23,8 +24,8 @@ type ProductCart = {
 };
 
 export default function Home() {
-  const [products, setProducts] = useState<
-    PaginationResponse<PaginatedWarehouseInventoryResponse> | undefined
+  const [warehouseInventories, setWarehouseInventories] = useState<
+    PaginationResponse<WarehouseInventorySummary> | undefined
   >();
   const [productCategoryId, setProductCategoryId] = useState<
     number | undefined
@@ -43,12 +44,13 @@ export default function Home() {
     }
   };
 
-  const handleAddToCart = (product: ProductCart) => {
-    addToCart(product);
+  const handleAddToCart = (inventory: WarehouseInventorySummary) => {
+    addToCart(inventory);
     toast({
       title: "Added to cart",
+
       duration: 2000,
-      description: `${product.name} has been added to your cart.`,
+      description: `${inventory.product.name} has been added to your cart.`,
     });
   };
 
@@ -62,7 +64,7 @@ export default function Home() {
           category: productCategoryId,
           search: searchQuery,
         });
-        setProducts(response);
+        setWarehouseInventories(response);
         console.log(response);
       } catch (error) {
         console.error("Error fetching warehouse inventories:", error);
@@ -96,18 +98,16 @@ export default function Home() {
             ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
                 <LoadingCard key={index} />
               ))
-            : products?.content?.map((product) => (
-                <div key={product.productId}>
-                  <ProductCard
-                    warehouseInventoryId={product.warehouseInventoryId}
-                    productName={product.productName}
-                    price={product.price}
-                    statusId={product.statusId}
-                    statusName={product.statusName}
-                    productCategoryName={product.productCategoryName}
-                    warehouseName={product.warehouseName}
+            : warehouseInventories?.content?.map((inventory) => (
+                <div key={inventory.id}>
+                  <InventoryCard
+                    id={inventory.id}
+                    product={inventory.product}
+                    status={inventory.status}
+                    warehouse={inventory.warehouse}
+                    quantity={inventory.quantity}
                     onAddToCart={() => {
-                      console.log("add to cart");
+                      handleAddToCart(inventory);
                     }}
                   />
                 </div>
@@ -118,21 +118,21 @@ export default function Home() {
           <div className="w-16 justify-end flex">
             <button
               onClick={() => handlePageChange(-1)}
-              className={`${products?.hasPrev ? "visible" : "invisible"}`}
+              className={`${warehouseInventories?.hasPrev ? "visible" : "invisible"}`}
             >
               Prev
             </button>
           </div>
 
           <p className="w-8 text-center">
-            {products?.currentPage !== undefined
-              ? products?.currentPage + 1
+            {warehouseInventories?.currentPage !== undefined
+              ? warehouseInventories?.currentPage + 1
               : 1}
           </p>
           <div className="flex justify-start w-16">
             <button
               onClick={() => handlePageChange(+1)}
-              className={`${products?.hasNext ? "visible" : "invisible"}`}
+              className={`${warehouseInventories?.hasNext ? "visible" : "invisible"}`}
             >
               Next
             </button>

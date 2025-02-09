@@ -23,6 +23,7 @@ export interface WarehouseInventoryParams {
   search?: string;
 }
 
+// use to display in pagination
 export interface WarehouseInventorySummary {
   id: number;
   product: ProductSummary;
@@ -31,6 +32,7 @@ export interface WarehouseInventorySummary {
   warehouse: Warehouse;
 }
 
+// use to display in inventory detail page
 export interface WarehouseInventoryDetail {
   id: number;
   product: ProductDetail;

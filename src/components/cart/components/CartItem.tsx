@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/utils/formatter";
 import Image from "next/image";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 
 type CartItemProps = {
   id: number;
@@ -13,12 +13,27 @@ type CartItemProps = {
   price: number;
   quantity: number;
   stock: number;
+  imageUrl: string;
 };
 
-const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
+const CartItem: FC<CartItemProps> = ({
+  id,
+  name,
+  price,
+  quantity,
+  stock,
+  imageUrl,
+}) => {
   const increaseQuantity = useCartStore((state) => state.increaseQuantity);
   const decreaseQuantity = useCartStore((state) => state.decreaseQuantity);
   const removeItem = useCartStore((state) => state.removeFromCart);
+  const [imgSrc, setImgSrc] = useState<string>(
+    imageUrl && imageUrl.trim() !== "" ? imageUrl : "/images/no-image-icon.jpg"
+  );
+
+  const handleImageError = () => {
+    setImgSrc("/images/no-image-icon.jpg");
+  };
 
   return (
     <div className="">
@@ -26,11 +41,12 @@ const CartItem: FC<CartItemProps> = ({ id, name, price, quantity, stock }) => {
         <div className="flex gap-4 w-full">
           <div className="h-[96px] w-[86px] bg-slate-50 flex-shrink-0">
             <Image
-              src="/images/WareHub.png"
+              src={imgSrc}
               alt="Product image"
               height={100}
               width={100}
               className="cursor-pointer w-auto h-auto object-cover"
+              onError={handleImageError}
             />
           </div>
 

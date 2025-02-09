@@ -4,25 +4,26 @@ export interface Product {
   price: number;
 }
 
+//use to display in pagination
 export interface ProductSummary extends Product {
-  thumbnail: ProductImage;
+  thumbnail?: ProductImage;
   category: ProductCategory;
 }
 
+// use to display in product detail page
 export interface ProductDetail extends Product {
-  description: string;
-  weight: number;
-  height: number;
-  width: number;
-  length: number;
-  images: ProductImage[];
+  description?: string;
+  weight?: number;
+  height?: number;
+  width?: number;
+  length?: number;
+  images?: ProductImage[];
   category: ProductCategory;
 }
 
 export interface ProductImage {
   url: string;
   position: number;
-  alt: string;
 }
 
 export interface ProductCategory {
