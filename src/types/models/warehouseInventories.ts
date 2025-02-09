@@ -1,14 +1,20 @@
+import { ProductDetail, ProductSummary } from "./products";
+import { Warehouse } from "./warehouses";
+
 export interface WarehouseInventory {
   id: number;
   productId: number;
-  productName: string;
   warehouseId: number;
-  warehouseName: string;
+  stock: number;
   warehouseInventoryStatusId: number;
-  warehouseInventoryStatusName: string;
 }
 
-export interface PaginatedWarehouseInventoryRequest {
+export interface WarehouseInventoryStatus {
+  id: number;
+  name: string;
+}
+
+export interface WarehouseInventoryParams {
   limit: number;
   page: number;
   longitude?: number;
@@ -17,17 +23,18 @@ export interface PaginatedWarehouseInventoryRequest {
   search?: string;
 }
 
-export interface PaginatedWarehouseInventoryResponse {
-  warehouseInventoryId: number;
-  productId: number;
-  productName: string;
-  price: number;
-  imageUrl?: string;
-  stock: number;
-  statusId: number;
-  statusName: string;
-  productCategoryId: number;
-  productCategoryName: string;
-  warehouseId: number;
-  warehouseName: string;
+export interface WarehouseInventorySummary {
+  id: number;
+  product: ProductSummary;
+  quantity: number;
+  status: WarehouseInventoryStatus;
+  warehouse: Warehouse;
+}
+
+export interface WarehouseInventoryDetail {
+  id: number;
+  product: ProductDetail;
+  quantity: number;
+  status: WarehouseInventoryStatus;
+  warehouse: Warehouse;
 }

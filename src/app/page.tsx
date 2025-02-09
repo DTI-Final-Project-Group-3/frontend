@@ -8,6 +8,19 @@ import { useEffect, useState } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import { PaginationResponse } from "@/types/api/pagination";
 import LoadingCard from "@/components/ui/loadingCard";
+import { toast } from "@/hooks/use-toast";
+import { Product } from "@/types/models/products";
+import { useCartStore } from "@/store/cartStore";
+
+type ProductCart = {
+  id: number;
+  name: string;
+  productImage: string;
+  description: string;
+  stock: number;
+  quantity: number;
+  price: number;
+};
 
 export default function Home() {
   const [products, setProducts] = useState<
@@ -19,12 +32,24 @@ export default function Home() {
   const [searchQuery, setSearchQUery] = useState<string | undefined>(undefined);
   const [page, setPage] = useState<number>(0);
   const [pageLoading, setPageLoading] = useState<boolean>(true);
+  const addToCart = useCartStore((state) => state.addToCart);
+  useCartStore.getState().isUserVerified = true;
+  useCartStore.getState().isUserRegistered = true;
 
   const handlePageChange = (pageChange: number) => {
     const pageRequest = page + pageChange;
     if (pageRequest >= 0) {
       setPage(pageRequest);
     }
+  };
+
+  const handleAddToCart = (product: ProductCart) => {
+    addToCart(product);
+    toast({
+      title: "Added to cart",
+      duration: 2000,
+      description: `${product.name} has been added to your cart.`,
+    });
   };
 
   useEffect(() => {
@@ -81,6 +106,9 @@ export default function Home() {
                     statusName={product.statusName}
                     productCategoryName={product.productCategoryName}
                     warehouseName={product.warehouseName}
+                    onAddToCart={() => {
+                      console.log("add to cart");
+                    }}
                   />
                 </div>
               ))}

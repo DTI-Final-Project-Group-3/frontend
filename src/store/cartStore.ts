@@ -1,26 +1,19 @@
 import CartItem from "@/components/cart/components/CartItem";
 import { toast } from "@/hooks/use-toast";
+import { PaginatedWarehouseInventoryResponse } from "@/types/models/warehouseInventories";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type CartItem = {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  stock: number;
-};
-
 type CartState = {
-  cartItems: CartItem[];
+  cartItems: PaginatedWarehouseInventoryResponse[];
   isUserRegistered: boolean;
   isUserVerified: boolean;
   totalItems: number;
-  addToCart: (product: CartItem) => void;
-  increaseQuantity: (productId: number) => void;
-  decreaseQuantity: (productId: number) => void;
-  removeFromCart: (productId: number) => void;
-  setCartItems: (newCartItems: CartItem[]) => void;
+  addToCart: (inventory: PaginatedWarehouseInventoryResponse) => void;
+  increaseQuantity: (inventoryId: number) => void;
+  decreaseQuantity: (inventoryId: number) => void;
+  removeFromCart: (inventoryId: number) => void;
+  setCartItems: (newCartItems: PaginatedWarehouseInventoryResponse[]) => void;
 };
 
 export const useCartStore = create<CartState>()(
