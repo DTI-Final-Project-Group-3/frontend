@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type LocationState = {
   location: { latitude: number; longitude: number } | null;
@@ -7,7 +8,12 @@ type LocationState = {
   ) => void;
 };
 
-export const useLocationStore = create<LocationState>((set) => ({
-  location: null,
-  setLocation: (location) => set({ location }),
-}));
+export const useLocationStore = create<LocationState>()(
+  persist(
+    (set) => ({
+      location: null,
+      setLocation: (location) => set({ location }),
+    }),
+    { name: "location" }
+  )
+);

@@ -15,17 +15,20 @@ import Pagination from "@/components/ui/Pagination";
 import Filtering from "@/components/inventory/Filtering";
 import LocationSelector from "@/components/location/LocationSelector";
 import { useLocationStore } from "@/store/location";
+import { useSearchStore } from "@/store/searchStore";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function Home() {
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
     null
   );
-  const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
   const [page, setPage] = useState<number>(0);
   const addToCart = useCartStore((state) => state.addToCart);
   useCartStore.getState().isUserVerified = true;
   useCartStore.getState().isUserRegistered = true;
-  const location = useLocationStore((state) => state.location);
+  const { location } = useLocationStore();
+  const { searchQuery } = useSearchStore();
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const handlePageChange = (
     pageChange: number,
@@ -56,7 +59,12 @@ export default function Home() {
     isFetching,
     refetch,
   } = useQuery({
-    queryKey: ["warehouseInventories", page, productCategoryId, searchQuery],
+    queryKey: [
+      "warehouseInventories",
+      page,
+      productCategoryId,
+      debouncedSearchQuery,
+    ],
     queryFn: () =>
       getPaginatedWarehouseInventories({
         page,
@@ -64,7 +72,7 @@ export default function Home() {
         longitude: location?.longitude,
         latitude: location?.latitude,
         category: productCategoryId || undefined,
-        search: searchQuery,
+        search: debouncedSearchQuery,
       }),
     staleTime: 5 * 60 * 1000,
   });
