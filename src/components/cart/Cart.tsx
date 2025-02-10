@@ -90,10 +90,10 @@ const Cart: FC = () => {
                   <CartItem
                     key={item.id}
                     id={item.id}
-                    name={item.name}
-                    price={item.price}
+                    name={item.product.name}
+                    price={item.product.price}
                     quantity={item.quantity}
-                    stock={item.stock}
+                    stock={item.quantity}
                   />
                 ))
               ) : (

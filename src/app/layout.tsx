@@ -1,9 +1,11 @@
+import Cart from "@/components/cart/Cart";
+import Navbar from "@/components/navbar/Navbar";
+import SessionProviderWrapper from "@/components/session-provider/SessionProviderWrapper";
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar/Navbar";
-import Cart from "@/components/cart/Cart";
-import { Toaster } from "@/components/ui/toaster";
+import TanstackQueryProvider from "@/providers/QueryClientProvider";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -34,13 +36,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        ></link>
+      </head>
       <body className={`${poppins.variable} antialiased`}>
-        <Navbar />
-        <Cart />
-        <main>
-          {children}
-        </main>
-        <Toaster />
+        <TanstackQueryProvider>
+          <SessionProviderWrapper>
+            <Navbar />
+            <Cart />
+            <main>{children}</main>
+            <Toaster />
+          </SessionProviderWrapper>
+        </TanstackQueryProvider>
       </body>
     </html>
   );

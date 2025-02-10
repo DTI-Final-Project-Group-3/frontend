@@ -1,26 +1,20 @@
 import CartItem from "@/components/cart/components/CartItem";
 import { toast } from "@/hooks/use-toast";
+import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type CartItem = {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  stock: number;
-};
-
 type CartState = {
-  cartItems: CartItem[];
+  cartItems: WarehouseInventorySummary[];
   isUserRegistered: boolean;
   isUserVerified: boolean;
   totalItems: number;
-  addToCart: (product: CartItem) => void;
-  increaseQuantity: (productId: number) => void;
-  decreaseQuantity: (productId: number) => void;
-  removeFromCart: (productId: number) => void;
-  setCartItems: (newCartItems: CartItem[]) => void;
+  addToCart: (inventory: WarehouseInventorySummary) => void;
+  increaseQuantity: (inventoryId: number) => void;
+
+  decreaseQuantity: (inventoryId: number) => void;
+  removeFromCart: (inventoryId: number) => void;
+  setCartItems: (newCartItems: WarehouseInventorySummary[]) => void;
 };
 
 export const useCartStore = create<CartState>()(
@@ -52,7 +46,7 @@ export const useCartStore = create<CartState>()(
             // Item already exists in cart
             const existingItem = state.cartItems[existingItemIndex];
 
-            if (existingItem.quantity + 1 > product.stock) {
+            if (existingItem.quantity + 1 > product.quantity) {
               console.error("Stock not available.");
               return state;
             }
@@ -82,7 +76,7 @@ export const useCartStore = create<CartState>()(
       increaseQuantity: (productId) =>
         set((state) => ({
           cartItems: state.cartItems.map((item) =>
-            item.id === productId && item.quantity < item.stock
+            item.id === productId && item.quantity < item.quantity
               ? { ...item, quantity: item.quantity + 1 }
               : item
           ),
@@ -114,7 +108,7 @@ export const useCartStore = create<CartState>()(
         }),
 
       // Set cart items directly (to load data from local Storage)
-      setCartItems: (newCartItems: CartItem[]) =>
+      setCartItems: (newCartItems: WarehouseInventorySummary[]) =>
         set((state) => {
           const totalItems =
             newCartItems.length > 0
