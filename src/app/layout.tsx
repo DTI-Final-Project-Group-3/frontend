@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-
+import TanstackQueryProvider from "@/providers/QueryClientProvider";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -36,15 +36,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        ></link>
+      </head>
       <body className={`${poppins.variable} antialiased`}>
-      <SessionProviderWrapper>
-        <Navbar />
-        <Cart />
-        <main>
-          {children}
-        </main>
-        <Toaster />
-        </SessionProviderWrapper>
+        <TanstackQueryProvider>
+          <SessionProviderWrapper>
+            <Navbar />
+            <Cart />
+            <main>{children}</main>
+            <Toaster />
+          </SessionProviderWrapper>
+        </TanstackQueryProvider>
       </body>
     </html>
   );
