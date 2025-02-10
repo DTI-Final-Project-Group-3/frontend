@@ -26,10 +26,16 @@ const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="filtering-container p-4 font-inter ">
+    <div className="filtering-container font-inter">
       <div className="h-[300px] overflow-y-auto ">
+        <h1 className="text-xl font-bold mb-4">Categories</h1>
+
         {isLoading ? (
-          <div className="p-3">Loading categories...</div>
+          <div className="p-3 animate-pulse flex flex-col gap-5">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <div key={index} className="bg-gray-200 p-4 rounded-md"></div>
+            ))}
+          </div>
         ) : error ? (
           <div className="p-3 text-red-500">
             {error instanceof Error
@@ -40,7 +46,9 @@ const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
           <div className="space-y-1">
             <button
               className={`block w-full text-left p-2 hover:bg-gray-100 ${
-                selectedCategory === null ? "underline font-medium" : ""
+                selectedCategory === null
+                  ? "underline text-black"
+                  : "text-gray-500"
               }`}
               onClick={() => handleCategoryChange(null)}
             >
@@ -51,8 +59,8 @@ const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
                 key={category.id}
                 className={`block w-full text-left p-2 hover:bg-gray-100 ${
                   selectedCategory === category.id
-                    ? "underline font-medium"
-                    : ""
+                    ? "underline text-black"
+                    : "text-gray-500"
                 }`}
                 onClick={() => handleCategoryChange(category.id)}
               >

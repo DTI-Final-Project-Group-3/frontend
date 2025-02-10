@@ -11,6 +11,8 @@ const warehouseInventoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.e
 export const getPaginatedWarehouseInventories = async ({
   page,
   limit,
+  longitude,
+  latitude,
   category,
   search,
 }: WarehouseInventoryParams): Promise<
@@ -19,7 +21,7 @@ export const getPaginatedWarehouseInventories = async ({
   const response = await axios.get<
     ApiResponse<PaginationResponse<WarehouseInventorySummary>>
   >(warehouseInventoryUrl, {
-    params: { page, limit, category, search },
+    params: { page, limit, longitude, latitude, category, search },
   });
 
   if (!response.data || !response.data.data) {

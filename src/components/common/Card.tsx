@@ -11,6 +11,8 @@ interface BaseCardProps {
   linkPath: string;
   onAddToCart?: () => void;
   showAddToCart?: boolean;
+  statusId?: number;
+  statusName?: string;
   category?: string;
   warehouse?: string;
 }
@@ -23,6 +25,8 @@ const Card: FC<BaseCardProps> = ({
   linkPath,
   onAddToCart,
   showAddToCart = false,
+  statusId,
+  statusName,
   category,
   warehouse,
 }) => {
@@ -62,12 +66,14 @@ const Card: FC<BaseCardProps> = ({
       <Link href={linkPath}>
         <div className="flex flex-col gap-2 text-black font-inter">
           <p className="font-bold line-clamp-2">{name}</p>
-          {price !== undefined && (
+          {statusId === 1 ? (
             <p className="font-bold text-xl">{formatPrice(String(price))}</p>
+          ) : (
+            <p className="font-bold text-xl text-red-500">{statusName}</p>
           )}
           <div className="flex flex-col gap-1 mt-2 text-gray-600">
-            {/* <p>{warehouse}</p>
-            <p>{category}</p> */}
+            <p>{warehouse}</p>
+            {/* <p>{category}</p> */}
           </div>
         </div>
       </Link>
