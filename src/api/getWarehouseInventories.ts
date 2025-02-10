@@ -1,8 +1,8 @@
 import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
 import {
-  PaginatedWarehouseInventoryRequest,
-  PaginatedWarehouseInventoryResponse,
+  WarehouseInventoryParams,
+  WarehouseInventorySummary,
 } from "@/types/models/warehouseInventories";
 import axios from "axios";
 
@@ -13,11 +13,11 @@ export const getPaginatedWarehouseInventories = async ({
   limit,
   category,
   search,
-}: PaginatedWarehouseInventoryRequest): Promise<
-  PaginationResponse<PaginatedWarehouseInventoryResponse>
+}: WarehouseInventoryParams): Promise<
+  PaginationResponse<WarehouseInventorySummary>
 > => {
   const response = await axios.get<
-    ApiResponse<PaginationResponse<PaginatedWarehouseInventoryResponse>>
+    ApiResponse<PaginationResponse<WarehouseInventorySummary>>
   >(warehouseInventoryUrl, {
     params: { page, limit, category, search },
   });

@@ -11,6 +11,8 @@ interface BaseCardProps {
   linkPath: string;
   onAddToCart?: () => void;
   showAddToCart?: boolean;
+  category?: string;
+  warehouse?: string;
 }
 
 const Card: FC<BaseCardProps> = ({
@@ -21,6 +23,8 @@ const Card: FC<BaseCardProps> = ({
   linkPath,
   onAddToCart,
   showAddToCart = false,
+  category,
+  warehouse,
 }) => {
   const [imgSrc, setImgSrc] = useState<string>(
     imageUrl && imageUrl.trim() !== "" ? imageUrl : "/images/no-image-icon.jpg"
@@ -59,12 +63,11 @@ const Card: FC<BaseCardProps> = ({
         <div className="flex flex-col gap-2 text-black font-inter">
           <p className="font-bold line-clamp-2">{name}</p>
           {price !== undefined && (
-            <p className="font-bold text-xl">
-              Rp. {formatPrice(String(price))}
-            </p>
+            <p className="font-bold text-xl">{formatPrice(String(price))}</p>
           )}
           <div className="flex flex-col gap-1 mt-2 text-gray-600">
-            {/* Slot for additional content */}
+            {/* <p>{warehouse}</p>
+            <p>{category}</p> */}
           </div>
         </div>
       </Link>

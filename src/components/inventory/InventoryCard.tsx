@@ -1,9 +1,11 @@
 import { FC } from "react";
 import Card from "../common/Card";
 import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
+import { Warehouse } from "@/types/models/warehouses";
 
 interface InventoryCardProps extends WarehouseInventorySummary {
   onAddToCart?: () => void;
+  warehouse: Warehouse;
 }
 
 const InventoryCard: FC<InventoryCardProps> = ({
@@ -11,6 +13,7 @@ const InventoryCard: FC<InventoryCardProps> = ({
   product,
   status,
   onAddToCart,
+  warehouse,
 }) => {
   return (
     <Card
@@ -21,6 +24,8 @@ const InventoryCard: FC<InventoryCardProps> = ({
       linkPath={`/inventories/${id}`}
       onAddToCart={onAddToCart}
       showAddToCart={status.id === 1}
+      warehouse={warehouse.name}
+      category={product.category.name}
     />
   );
 };
