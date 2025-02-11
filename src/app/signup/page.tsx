@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
@@ -16,7 +16,7 @@ function ImagePlaceholder() {
   );
 }
 
-function SignupForm({ onSubmit }) {
+function SignupForm({ onSubmit, onGoogleLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
@@ -97,6 +97,28 @@ function SignupForm({ onSubmit }) {
           <Button type="submit" className="w-full mt-6 bg-black text-yellow-400 py-3 rounded-md">
             Sign up
           </Button>
+
+          {/* Divider */}
+          <div className="flex items-center my-4">
+            <hr className="flex-grow border-gray-300" />
+            <span className="mx-2 text-gray-500">or</span>
+            <hr className="flex-grow border-gray-300" />
+          </div>
+
+          {/* Google Login Button */}
+          <button 
+            type="button"
+            onClick={onGoogleLogin}
+            className="w-full flex items-center justify-center border border-gray-300 py-3 rounded-md hover:bg-gray-100"
+          >
+            <img 
+              src="/images/google-logo.svg" 
+              alt="Google Logo" 
+              className="w-5 h-5 mr-2"
+            />
+            Sign in with Google
+          </button>
+
         </form>
       </div>
     </div>
@@ -135,11 +157,15 @@ export default function SignupPage() {
         console.error("Signup failed", error);
       }
     };
-  
+
+    const handleGoogleLogin = async () => {
+        await signIn('google');
+      };
+   
     return (
       <div className="flex flex-col md:flex-row h-screen w-full">
         <ImagePlaceholder />
-        <SignupForm onSubmit={handleSubmit} />
+        <SignupForm onSubmit={handleSubmit} onGoogleLogin={handleGoogleLogin}/>
       </div>
     );
   }

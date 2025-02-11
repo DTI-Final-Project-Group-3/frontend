@@ -15,14 +15,14 @@ function ImagePlaceholder() {
   );
 }
 
-function LoginForm({ onSubmit }) {
+function LoginForm({ onSubmit, onGoogleLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleFormSubmit = (e) => {
-    e.preventDefault(); // Prevent the default form submission
-    onSubmit(email, password); // Call the onSubmit callback with email and password
+    e.preventDefault();
+    onSubmit(email, password);
   };
 
   return (
@@ -69,9 +69,31 @@ function LoginForm({ onSubmit }) {
             <span className="font-bold cursor-pointer">Forgot Password?</span>
           </div>
           
+          {/* Regular Login Button */}
           <Button type="submit" className="w-full mt-6 bg-blue-600 text-white py-3 rounded-md">
             Sign In
           </Button>
+
+          {/* Divider */}
+          <div className="flex items-center my-4">
+            <hr className="flex-grow border-gray-300" />
+            <span className="mx-2 text-gray-500">or</span>
+            <hr className="flex-grow border-gray-300" />
+          </div>
+
+          {/* Google Login Button */}
+          <button 
+            type="button"
+            onClick={onGoogleLogin}
+            className="w-full flex items-center justify-center border border-gray-300 py-3 rounded-md hover:bg-gray-100"
+          >
+            <img 
+              src="/images/google-logo.svg" 
+              alt="Google Logo" 
+              className="w-5 h-5 mr-2"
+            />
+            Sign in with Google
+          </button>
         </form>
       </div>
     </div>
@@ -79,35 +101,39 @@ function LoginForm({ onSubmit }) {
 }
 
 export default function LoginPage() {
-    const { data: session, status } = useSession();
-    const router = useRouter();
-  
-    // Redirect to profile if already logged in
-    useEffect(() => {
-      if (status === "authenticated") {
-        router.push('/profile');
-      }
-    }, [status, router]);
-  
-    const handleSubmit = async (email, password) => {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-  
-      if (result?.error) {
-        alert("Login failed");
-      } else {
-        alert("Login successful");
-        router.push('/profile');
-      }
-    };
-  
-    return (
-      <div className="flex flex-col md:flex-row h-screen w-full">
-        <ImagePlaceholder />
-        <LoginForm onSubmit={handleSubmit} />
-      </div>
-    );
-  }
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Redirect to profile if already logged in
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push('/profile');
+    }
+  }, [status, router]);
+
+  const handleSubmit = async (email, password) => {
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      alert("Login failed");
+    } else {
+      alert("Login successful");
+      router.push('/profile');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    await signIn('google');
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row h-screen w-full">
+      <ImagePlaceholder />
+      <LoginForm onSubmit={handleSubmit} onGoogleLogin={handleGoogleLogin} />
+    </div>
+  );
+}
