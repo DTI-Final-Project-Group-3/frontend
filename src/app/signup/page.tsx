@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 
+const signup_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_SIGNUP}`;
+
 function ImagePlaceholder() {
   return (
     <div className="md:w-1/2 bg-gray-200 flex flex-col justify-center items-center p-4">
@@ -138,7 +140,7 @@ export default function SignupPage() {
   
     const handleSubmit = async (fullname, username, email, password) => {
       try {
-        const response = await axios.post("http://localhost:8080/api/v1/signup", {
+        const response = await axios.post(signup_url, {
           fullname,
           username,
           email,
