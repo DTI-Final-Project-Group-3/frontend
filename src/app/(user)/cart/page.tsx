@@ -12,6 +12,8 @@ const CartPage: FC = () => {
   const cartItems = useCartStore((state) => state.cartItems);
   const setCartItems = useCartStore((state) => state.setCartItems);
 
+  console.log(cartItems)
+
   // Load cart data from local storage if there is any data on mount
   useEffect(() => {
     const storedCart = localStorage.getItem("cart-storage");

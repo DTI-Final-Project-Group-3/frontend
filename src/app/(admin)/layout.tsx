@@ -1,32 +1,14 @@
-import type { Metadata } from "next";
-import "../globals.css";
-import { Toaster } from "@/components/ui/toaster";
+import Footer from "@/components/footer/Footer";
+import Navbar from "@/components/navbar/Navbar";
 
-export const metadata: Metadata = {
-  title: "Warehub - Admin",
-  description:
-    "Your one-stop warehouse shop, manage products, inventories, users orders, etc",
-  icons: {
-    icon: [
-      {
-        rel: "icon",
-        type: "image/svg",
-        sizes: "42x42",
-        url: "/favicon.svg",
-      },
-    ],
-  },
-};
-
-export default function RootLayout({
+export default function AdminLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="w-full h-[calc(100vh-70px)]">
+    <>
+      <Navbar />
       <main>{children}</main>
-      <Toaster />
-    </div>
+      <Footer />
+    </>
   );
 }

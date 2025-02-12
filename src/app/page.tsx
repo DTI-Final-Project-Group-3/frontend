@@ -17,9 +17,9 @@ import { useSearchStore } from "@/store/searchStore";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useSession } from "next-auth/react";
 
-export default function Home() {
+export default function HomePage() {
   const { data: session, status } = useSession();
-  console.log(session, "status: ", status)
+  console.log(session, "status: ", status);
 
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
     null
@@ -92,7 +92,7 @@ export default function Home() {
         />
       </div>
 
-      <main className="mt-[24px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full px-6 md:px-0 pt-10">
+      <main className="mt-[24px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full px-6 py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="col-span-1 flex flex-col gap-10">
             <Filtering
@@ -135,7 +135,6 @@ export default function Home() {
           hasPrev={warehouseInventories?.hasPrev || false}
         />
       </main>
-      <footer className="bg-black mt-10 min-h-80"></footer>
     </div>
   );
 }
