@@ -49,7 +49,7 @@ const Cart: FC = () => {
     [cartItems]
   );
 
-  console.log("cart items" , cartItems)
+  // console.log("cart items" , cartItems)
 
   return (
     <>

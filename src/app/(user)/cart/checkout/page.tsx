@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { useCartStore } from "@/store/cartStore";
 import { VerifiedIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Script from "next/script";
 import React, { FC, useEffect, useMemo, useState } from "react";
@@ -20,10 +21,24 @@ declare global {
   }
 }
 
+type Address = {
+  id: number;
+  name: string;
+  detailAddress: string;
+  latitude: number;
+  longitude: number;
+  createdAt: string; // ISO timestamp
+  updatedAt: string; // ISO timestamp
+  primary: boolean;
+};
+
 const CheckoutPage: FC = () => {
+  const { data: session, status } = useSession();
+
   const cartItems = useCartStore((state) => state.cartItems);
   const setCartItems = useCartStore((state) => state.setCartItems);
   const [paymentMethod, setPaymentMethod] = useState<string>("gateway");
+  const [userAddress, setUserAddress] = useState<Address[]>([]);
 
   const paymentOptions = [
     { id: "gateway", label: "Payment Gateway" },
@@ -81,8 +96,6 @@ const CheckoutPage: FC = () => {
         orderItems: orderItems,
       };
 
-      console.log(payload);
-
       const response = await fetch(
         "http://localhost:8080/api/v1/transactions/create",
         {
@@ -109,6 +122,55 @@ const CheckoutPage: FC = () => {
     }
   };
 
+  // Get all current user address
+  const getAllAddress = async () => {
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/api/v1/user/address",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${session?.accessToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        toast({
+          title: "Failed to fetch address",
+          description: "Please login first and try again",
+          variant: "destructive",
+          duration: 2000,
+        });
+      }
+
+      const data = await response.json();
+      console.log(data);
+      return data.data as Address;
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description: `${error}`,
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserAddress = async () => {
+      try {
+        const userAddress = await getAllAddress();
+        setUserAddress(userAddress ?? []);
+      } catch (error) {
+        console.error(error);
+        setUserAddress([]);
+      }
+    };
+
+    if (session) fetchUserAddress();
+  }, [session]);
+
   return (
     <>
       <Script
@@ -132,9 +194,40 @@ const CheckoutPage: FC = () => {
             <div className="flex flex-col gap-6 w-full">
               {/* Shipping address */}
               <div className="bg-white p-8 rounded-xl">
-                <h3>Shipping address</h3>
+                <h3 className="text-[22px] font-bold">Shipping address</h3>
 
-                <div></div>
+                <div className="pt-6">
+                  {userAddress.length > 0 ? (
+                    <div className="space-y-4">
+                      {userAddress.map((address) => (
+                        <div
+                          key={address.id}
+                          className="flex w-full justify-between gap-2"
+                        >
+                          <div>
+                            <h3 className="text-lg font-semibold">
+                              {address.name}
+                            </h3>
+                            <p className="text-gray-700">
+                              {address.detailAddress}
+                            </p>
+                          </div>
+                          <span
+                            className={`flex items-center mt-2 px-4 py-1 text-sm font-medium rounded-full ${
+                              address.primary
+                                ? "bg-green-500 text-white"
+                                : "bg-gray-300 text-gray-800"
+                            }`}
+                          >
+                            {address.primary ? "Main" : "Secondary"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-600">No addresses found.</p>
+                  )}
+                </div>
               </div>
 
               {/* Products lists */}
