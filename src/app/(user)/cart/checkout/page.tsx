@@ -5,6 +5,7 @@ import OrderDetails from "@/components/checkout/OrderDetails";
 import PaymentOption from "@/components/checkout/PaymentOption";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/hooks/use-toast";
 import { useCartStore } from "@/store/cartStore";
 import { VerifiedIcon } from "lucide-react";
 import Link from "next/link";
@@ -44,7 +45,11 @@ const CheckoutPage: FC = () => {
 
   // Calculate total price
   const totalPrice = useMemo(
-    () => cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    () =>
+      cartItems.reduce(
+        (acc, item) => acc + item.product.price * item.quantity,
+        0
+      ),
     [cartItems]
   );
 
@@ -61,7 +66,7 @@ const CheckoutPage: FC = () => {
       const orderItems = cartItems.map((item) => ({
         productId: 3,
         quantity: item.quantity,
-        unitPrice: item.price,
+        unitPrice: item.product.price,
       }));
 
       // Set payload
@@ -96,7 +101,11 @@ const CheckoutPage: FC = () => {
       await window.snap.pay(data.data.token);
     } catch (error) {
       console.error("Error creating transaction:", error);
-      alert("Payment failed. Please try again later.");
+      toast({
+        title: "Payment failed",
+        duration: 2000,
+        description: "Please check your order and payment detail.",
+      });
     }
   };
 
@@ -136,11 +145,12 @@ const CheckoutPage: FC = () => {
                       <CartItemLarge
                         key={item.id}
                         id={item.id}
-                        name={item.name}
-                        price={item.price}
+                        name={item.product.name}
+                        price={item.product.price}
                         quantity={item.quantity}
                         stock={item.stock}
                         showButton={true}
+                        category={item.product.category.name}
                       />
                     </div>
                   ))

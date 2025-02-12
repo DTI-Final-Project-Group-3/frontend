@@ -17,18 +17,23 @@ import LocationSelector from "@/components/location/LocationSelector";
 import { useLocationStore } from "@/store/location";
 import { useSearchStore } from "@/store/searchStore";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  console.log(session, "status: ", status)
+
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
     null
   );
   const [page, setPage] = useState<number>(0);
-  const addToCart = useCartStore((state) => state.addToCart);
-  useCartStore.getState().isUserVerified = true;
-  useCartStore.getState().isUserRegistered = true;
   const { location } = useLocationStore();
   const { searchQuery } = useSearchStore();
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  const addToCart = useCartStore((state) => state.addToCart);
+  useCartStore.getState().isUserVerified = true;
+  useCartStore.getState().isUserRegistered = true;
 
   const handlePageChange = (
     pageChange: number,
@@ -45,12 +50,6 @@ export default function Home() {
 
   const handleAddToCart = (inventory: WarehouseInventorySummary) => {
     addToCart(inventory);
-    toast({
-      title: "Added to cart",
-
-      duration: 2000,
-      description: `${inventory.product.name} has been added to your cart.`,
-    });
   };
 
   const {
@@ -95,7 +94,7 @@ export default function Home() {
         />
       </div>
 
-      <main className="mt-[24px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full px-6 md:px- pt-10">
+      <main className="mt-[24px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full px-6 md:px-0 pt-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="col-span-1 flex flex-col gap-10">
             <Filtering
@@ -119,6 +118,7 @@ export default function Home() {
                         quantity={inventory.quantity}
                         statusId={inventory.status.id}
                         statusName={inventory.status.name}
+                        stock={inventory.stock}
                         onAddToCart={() => {
                           handleAddToCart(inventory);
                         }}
