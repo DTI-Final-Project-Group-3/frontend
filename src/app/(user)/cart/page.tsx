@@ -27,7 +27,11 @@ const CartPage: FC = () => {
 
   // Calculate total price
   const totalPrice = useMemo(
-    () => cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    () =>
+      cartItems.reduce(
+        (acc, item) => acc + item.product.price * item.quantity,
+        0
+      ),
     [cartItems]
   );
 
@@ -50,10 +54,11 @@ const CartPage: FC = () => {
                   <CartItemLarge
                     key={item.id}
                     id={item.id}
-                    name={item.name}
-                    price={item.price}
+                    name={item.product.name}
+                    price={item.product.price}
                     quantity={item.quantity}
                     stock={item.stock}
+                    category={item.product.category.name}
                   />
                 </div>
               ))

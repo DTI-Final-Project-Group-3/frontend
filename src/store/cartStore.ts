@@ -1,17 +1,21 @@
-import CartItem from "@/components/cart/components/CartItem";
 import { toast } from "@/hooks/use-toast";
 import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type CartState = {
-  cartItems: WarehouseInventorySummary[];
+  userId: string | null;
+  role: string | null;
   isUserRegistered: boolean;
   isUserVerified: boolean;
+
+  cartItems: WarehouseInventorySummary[];
   totalItems: number;
+
+  setUser: (userId: string, role: string, isVerified: boolean) => void;
+  resetCart: () => void;
   addToCart: (inventory: WarehouseInventorySummary) => void;
   increaseQuantity: (inventoryId: number) => void;
-
   decreaseQuantity: (inventoryId: number) => void;
   removeFromCart: (inventoryId: number) => void;
   setCartItems: (newCartItems: WarehouseInventorySummary[]) => void;
@@ -20,22 +24,49 @@ type CartState = {
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
+      userId: null,
+      role: null,
       cartItems: [],
       isUserRegistered: false,
       isUserVerified: false,
       totalItems: 0,
 
+      // Set user data
+      setUser: (userId, role, isVerified) => {
+        set({
+          userId,
+          role,
+          isUserVerified: isVerified,
+          cartItems: [],
+          totalItems: 0,
+        });
+      },
+
+      // Reset cart when user log out or changes
+      resetCart: () => set({ cartItems: [], totalItems: 0 }),
+
       // Add to Cart
       addToCart: (product) =>
         set((state) => {
-          if (!state.isUserRegistered || !state.isUserVerified) {
+          if (
+            !state.isUserRegistered &&
+            !state.isUserVerified &&
+            state.role !== "ROLE_CUSTOMER"
+          ) {
             toast({
               title: "Failed to add to cart",
               description:
                 "You must be registered and verified to add to cart.",
               variant: "destructive",
+              duration: 2000,
             });
             return state;
+          } else {
+            toast({
+              title: "Added to cart",
+              description: `${product.product.name} has been added to your cart.`,
+              duration: 2000,
+            });
           }
 
           const existingItemIndex = state.cartItems.findIndex(
@@ -47,7 +78,12 @@ export const useCartStore = create<CartState>()(
             const existingItem = state.cartItems[existingItemIndex];
 
             if (existingItem.quantity + 1 > product.quantity) {
-              console.error("Stock not available.");
+              toast({
+                title: "Out of stock",
+                description: `Only ${existingItem.stock} of stock available.`,
+                variant: "destructive",
+                duration: 2000,
+              });
               return state;
             }
 
@@ -67,7 +103,14 @@ export const useCartStore = create<CartState>()(
           // Add new product to cart
           return {
             ...state,
-            cartItems: [...state.cartItems, { ...product, quantity: 1 }],
+            cartItems: [
+              ...state.cartItems,
+              {
+                ...product,
+                stock: product.quantity,
+                quantity: 1,
+              },
+            ],
             totalItems: state.totalItems + 1,
           };
         }),
@@ -76,7 +119,7 @@ export const useCartStore = create<CartState>()(
       increaseQuantity: (productId) =>
         set((state) => ({
           cartItems: state.cartItems.map((item) =>
-            item.id === productId && item.quantity < item.quantity
+            item.id === productId && item.quantity < item.stock
               ? { ...item, quantity: item.quantity + 1 }
               : item
           ),
@@ -118,8 +161,12 @@ export const useCartStore = create<CartState>()(
         }),
     }),
     {
-      name: "cart-storage", // Key for the local storage
+      // Key for the local storage
+      name: "cart-storage",
       partialize: (state) => ({
+        userId: state.userId,
+        role: state.role,
+        isUserVerified: state.isUserVerified,
         cartItems: state.cartItems,
         totalItems: state.totalItems,
       }),
