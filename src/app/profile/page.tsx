@@ -161,7 +161,7 @@ export default function ProfilePage() {
             alert("Failed to fetch user details");
           }
         } catch (error) {
-          console.error("Error fetching user details:", error);
+          console.error("Error fetching user details:", status, error);
           alert("Error fetching user details");
         }
       };
