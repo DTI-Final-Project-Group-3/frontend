@@ -5,8 +5,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import LoadingCard from "@/components/ui/loadingCard";
-import { toast } from "@/hooks/use-toast";
-
 import { useCartStore } from "@/store/cartStore";
 import InventoryCard from "@/components/inventory/InventoryCard";
 import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
