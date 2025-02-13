@@ -6,7 +6,7 @@ export interface Product {
 
 //use to display in pagination
 export interface ProductSummary extends Product {
-  thumbnail?: ProductImage;
+  thumbnail?: string;
   category: ProductCategory;
 }
 

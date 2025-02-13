@@ -54,3 +54,19 @@ export const formatPrice = (price: string) => {
 
   return formattedPrice;
 };
+
+export const formatDimension = (dimension: number | undefined): string => {
+  if (dimension === undefined) {
+    return "0 cm";
+  }
+  const formattedDimension = Math.round(dimension * 100) / 100;
+  return `${formattedDimension} cm`;
+};
+
+export const formatWeight = (weight: number | undefined): string => {
+  if (weight === undefined) {
+    return "0 Kg";
+  }
+  const formattedWeight = Math.round(weight * 100) / 100;
+  return `${formattedWeight} kg`;
+};

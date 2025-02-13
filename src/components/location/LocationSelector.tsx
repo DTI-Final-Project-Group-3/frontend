@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { UserAddress } from "@/types/models/users";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useLocationStore } from "@/store/location";
+import { useLocationStore } from "@/store/locationStore";
 
 interface LocationSelectorProps {
   onAddressChange?: (addressId: string | null) => void;
@@ -87,42 +87,35 @@ export default function LocationSelector({
   };
 
   return (
-    <div className="mb-6 gap-4 font-inter">
-      <div className="flex-1">
-        <label className="block text-xl font-bold mb-4">Delivery Address</label>
-        <div className="p-2">
-          <Select
-            value={selectedAddress ?? ""}
-            onValueChange={handleAddressChange}
-          >
-            <SelectTrigger className="w-full" disabled={addressesLoading}>
-              <SelectValue
-                placeholder={
-                  currentLocation
-                    ? "Using current location"
-                    : "Select delivery address"
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="current-location">
-                Use current location
+    <div className="font-inter">
+      <label className="text-lg font-semibold mb-2 block">
+        Delivery Address
+      </label>
+      <Select value={selectedAddress ?? ""} onValueChange={handleAddressChange}>
+        <SelectTrigger className="w-full" disabled={addressesLoading}>
+          <SelectValue
+            placeholder={
+              currentLocation
+                ? "Using current location"
+                : "Select delivery address"
+            }
+          />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="current-location">Use current location</SelectItem>
+          {addressesLoading ? (
+            <SelectItem value="loading" disabled>
+              Loading addresses...
+            </SelectItem>
+          ) : (
+            userAddresses?.data?.map((address: UserAddress) => (
+              <SelectItem key={address.id} value={address.id.toString()}>
+                {address.address}
               </SelectItem>
-              {addressesLoading ? (
-                <SelectItem value="loading" disabled>
-                  Loading addresses...
-                </SelectItem>
-              ) : (
-                userAddresses?.data?.map((address: UserAddress) => (
-                  <SelectItem key={address.id} value={address.id.toString()}>
-                    {address.address}
-                  </SelectItem>
-                ))
-              )}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+            ))
+          )}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

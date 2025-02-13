@@ -15,11 +15,16 @@ const Pagination: FC<PaginationProps> = ({
   hasNext,
   hasPrev,
 }) => {
+  const handlePageChange = (page: number, isDirectPage?: boolean) => {
+    onPageChange(page, isDirectPage);
+    window.scrollTo({ top: 570, behavior: "smooth" });
+  };
+
   return (
     <div className="flex pt-10 justify-center gap-3">
       <div className="w-16 justify-end flex">
         <button
-          onClick={() => onPageChange(-1)}
+          onClick={() => handlePageChange(-1)}
           className={`${hasPrev ? "visible" : "invisible"}`}
         >
           Prev
@@ -33,7 +38,7 @@ const Pagination: FC<PaginationProps> = ({
             <>
               <button
                 className="w-8 text-center"
-                onClick={() => onPageChange(0, true)}
+                onClick={() => handlePageChange(0, true)}
               >
                 1
               </button>
@@ -60,7 +65,7 @@ const Pagination: FC<PaginationProps> = ({
                 className={`w-8 text-center ${
                   currentPage === pageNumber ? "font-bold" : ""
                 }`}
-                onClick={() => onPageChange(pageNumber, true)}
+                onClick={() => handlePageChange(pageNumber, true)}
               >
                 {pageNumber + 1}
               </button>
@@ -73,7 +78,7 @@ const Pagination: FC<PaginationProps> = ({
               <span className="w-8 text-center">...</span>
               <button
                 className="w-8 text-center"
-                onClick={() => onPageChange(totalPages - 1, true)}
+                onClick={() => handlePageChange(totalPages - 1, true)}
               >
                 {totalPages}
               </button>
@@ -84,7 +89,7 @@ const Pagination: FC<PaginationProps> = ({
 
       <div className="flex justify-start w-16">
         <button
-          onClick={() => onPageChange(+1)}
+          onClick={() => handlePageChange(+1)}
           className={`${hasNext ? "visible" : "invisible"}`}
         >
           Next

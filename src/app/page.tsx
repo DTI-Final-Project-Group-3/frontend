@@ -14,9 +14,10 @@ import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/ui/Pagination";
 import Filtering from "@/components/inventory/Filtering";
 import LocationSelector from "@/components/location/LocationSelector";
-import { useLocationStore } from "@/store/location";
+import { useLocationStore } from "@/store/locationStore";
 import { useSearchStore } from "@/store/searchStore";
 import { useDebounce } from "@/hooks/useDebounce";
+import Footer from "@/components/footer/Footer";
 
 export default function Home() {
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
@@ -84,60 +85,64 @@ export default function Home() {
   }, [location, refetch]);
 
   return (
-    <div className="min-h-[calc(100vh-70px)] mt-[24px] w-full">
-      <div className="h-[540px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full relative bg-slate-50 rounded-md">
-        <Image
-          src="/images/dummy-hero-img.png"
-          alt="hero images"
-          height={1000}
-          width={1340}
-          className="h-full w-full object-cover rounded-md"
-        />
-      </div>
-
-      <main className="mt-[24px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full px-6 md:px- pt-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="col-span-1 flex flex-col gap-10">
-            <Filtering
-              onFilterChange={(category) => setProductCategoryId(category)}
-            />
-            <LocationSelector />
-          </div>
-          <div className="col-span-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {pageLoading || isFetching
-                ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
-                    <LoadingCard key={index} />
-                  ))
-                : warehouseInventories?.content?.map((inventory) => (
-                    <div key={inventory.id}>
-                      <InventoryCard
-                        id={inventory.id}
-                        product={inventory.product}
-                        status={inventory.status}
-                        warehouse={inventory.warehouse}
-                        quantity={inventory.quantity}
-                        statusId={inventory.status.id}
-                        statusName={inventory.status.name}
-                        onAddToCart={() => {
-                          handleAddToCart(inventory);
-                        }}
-                      />
-                    </div>
-                  ))}
-            </div>
-          </div>
+    <>
+      <div className="min-h-[calc(100vh-70px)] mt-6 mb-10 w-full">
+        {/* Hero Section */}
+        <div className="relative mx-auto w-full max-w-[1340px] h-[540px] rounded-lg overflow-hidden">
+          <Image
+            src="/images/dummy-hero-img.png"
+            alt="hero images"
+            height={1000}
+            width={1340}
+            className="h-full w-full object-cover"
+          />
         </div>
 
-        <Pagination
-          currentPage={page}
-          totalPages={warehouseInventories?.totalPages || 0}
-          onPageChange={handlePageChange}
-          hasNext={warehouseInventories?.hasNext || false}
-          hasPrev={warehouseInventories?.hasPrev || false}
-        />
-      </main>
-      <footer className="bg-black mt-10 min-h-80"></footer>
-    </div>
+        {/* Main Content */}
+        <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+            {/* Sidebar */}
+            <div className="col-span-1 flex flex-col gap-8 md:sticky md:top-24 h-fit">
+              <Filtering
+                onFilterChange={(category) => setProductCategoryId(category)}
+              />
+              <LocationSelector />
+            </div>
+
+            {/* Product Grid */}
+            <div className="col-span-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {pageLoading || isFetching
+                  ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
+                      <LoadingCard key={index} />
+                    ))
+                  : warehouseInventories?.content?.map((inventory) => (
+                      <div key={inventory.id}>
+                        <InventoryCard
+                          id={inventory.id}
+                          product={inventory.product}
+                          status={inventory.status}
+                          warehouse={inventory.warehouse}
+                          quantity={inventory.quantity}
+                          statusId={inventory.status.id}
+                          statusName={inventory.status.name}
+                          onAddToCart={() => handleAddToCart(inventory)}
+                        />
+                      </div>
+                    ))}
+              </div>
+              <Pagination
+                currentPage={page}
+                totalPages={warehouseInventories?.totalPages || 0}
+                onPageChange={handlePageChange}
+                hasNext={warehouseInventories?.hasNext || false}
+                hasPrev={warehouseInventories?.hasPrev || false}
+              />
+            </div>
+          </div>
+        </main>
+      </div>
+      <Footer />
+    </>
   );
 }
