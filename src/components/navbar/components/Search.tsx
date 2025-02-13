@@ -17,7 +17,7 @@ const Search: FC = () => {
     <label
       htmlFor="search-input"
       className={cn(
-        "border-[1px] w-full md:max-w-lg py-2 px-2 rounded-full shadow-sm hover:shadow-md transition cursor-pointer md:mr-3 mr-3 flex-1",
+        "hidden md:block border-[1px] w-full md:max-w-lg py-2 px-2 rounded-full shadow-sm hover:shadow-md transition cursor-pointer md:mr-3 mr-3 flex-1",
         isFocused ? "shadow-md border-neutral-300" : ""
       )}
     >

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
 import React, { FC } from "react";
 
 type PaymentOption = {
@@ -9,7 +10,7 @@ type PaymentOption = {
 type PaymentOptionProps = {
   options: PaymentOption[];
   selectedOption: string;
-  onSelect: (value: string) => void;
+  onSelect: (value: PaymentMethods) => void;
 };
 
 const PaymentOption: FC<PaymentOptionProps> = ({
@@ -37,7 +38,7 @@ const PaymentOption: FC<PaymentOptionProps> = ({
             name="paymentMethod"
             value={option.id}
             checked={selectedOption === option.id}
-            onChange={(e) => onSelect(e.target.value)}
+            onChange={(e) => onSelect(e.target.value as PaymentMethods)}
             className="h-[20px] w-[20px] checked:accent-green-600 text-green-700 cursor-pointer"
           />
         </label>

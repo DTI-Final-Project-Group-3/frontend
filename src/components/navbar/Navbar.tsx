@@ -5,7 +5,6 @@ import Logo from "./components/Logo";
 import MenuItems from "./components/MenuItems";
 import { useSession } from "next-auth/react";
 import Search from "./components/Search";
-import { Button } from "../ui/button";
 import Link from "next/link";
 
 const Navbar: FC = () => {
@@ -17,13 +16,14 @@ const Navbar: FC = () => {
         <Logo />
         <Search />
         {!session ? (
-          <Button
-            variant="link"
-            className="flex-1 flex items-end justify-end"
-            asChild
-          >
-            <Link href={"/login"}>Login</Link>
-          </Button>
+          <div className="w-full flex-1 items-center flex justify-end">
+            <Link
+              href={"/login"}
+              className="font-semibold bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-all"
+            >
+              Sign in
+            </Link>
+          </div>
         ) : (
           <MenuItems />
         )}
