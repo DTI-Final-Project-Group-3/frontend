@@ -1,4 +1,5 @@
 "use client"
+import { useCartStore } from '@/store/cartStore';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -138,6 +139,7 @@ export default function ProfilePage() {
   const [editableData, setEditableData] = useState({ fullname: "", gender: "", birthdate: "" });
   const [isModified, setIsModified] = useState(false);
   const [activeTab, setActiveTab] = useState<'account' | 'address'>('account');
+  const resetCart = useCartStore((state) => state.resetCart);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -219,7 +221,10 @@ export default function ProfilePage() {
           <nav className="w-full text-center space-y-2">
             <button onClick={() => setActiveTab('account')} className={`block w-full py-2 px-4 rounded ${activeTab === 'account' ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-300'}`}>Account</button>
             <button onClick={() => setActiveTab('address')} className={`block w-full py-2 px-4 rounded ${activeTab === 'address' ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-300'}`}>Address</button>
-            <button onClick={() => signOut({ callbackUrl: '/login' })} className="block w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+            <button onClick={() => {
+              resetCart();
+              signOut({ callbackUrl: '/login' })
+              }} className="block w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
           </nav>
         </div>
         {activeTab === 'account' ? (
