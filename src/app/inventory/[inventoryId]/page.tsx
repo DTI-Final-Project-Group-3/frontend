@@ -2,7 +2,10 @@
 
 import { getWarehouseInventoryDetailById } from "@/api/getWarehouseInventories";
 import Carousel from "@/components/ui/Carousel";
+import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useCartStore } from "@/store/cartStore";
+import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
 import { formatDimension, formatPrice, formatWeight } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -10,7 +13,8 @@ import { FC, useEffect, useState } from "react";
 
 const InventoryPage: FC = () => {
   const { inventoryId } = useParams();
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1);
+  const addToCart = useCartStore((state) => state.addToCart);
 
   const {
     data: inventory,
@@ -21,6 +25,21 @@ const InventoryPage: FC = () => {
     queryKey: ["warehouseInventoryDetail", inventoryId],
     queryFn: () => getWarehouseInventoryDetailById(Number(inventoryId)),
   });
+
+  const handleAddToCart = (
+    inventory: WarehouseInventorySummary | undefined
+  ) => {
+    if (!inventory) return;
+    const updatedInventory = { ...inventory, quantity };
+    console.log(updatedInventory);
+    addToCart(updatedInventory);
+    toast({
+      title: "Added to cart",
+
+      duration: 2000,
+      description: `${inventory.product.name} has been added to your cart.`,
+    });
+  };
 
   return (
     <>
@@ -74,6 +93,10 @@ const InventoryPage: FC = () => {
                       : "text-gray-600 hover:bg-gray-50"
                   )}
                   disabled={quantity <= 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setQuantity(quantity - 1);
+                  }}
                 >
                   -
                 </button>
@@ -91,11 +114,21 @@ const InventoryPage: FC = () => {
                       : "text-gray-600 hover:bg-gray-50"
                   )}
                   disabled={quantity >= (inventory?.data.quantity ?? 0)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setQuantity(quantity + 1);
+                  }}
                 >
                   +
                 </button>
               </div>
-              <button className="flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors">
+              <button
+                className="flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleAddToCart(inventory?.data);
+                }}
+              >
                 Add to Cart
               </button>
             </div>
