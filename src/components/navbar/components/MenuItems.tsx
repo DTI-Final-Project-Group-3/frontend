@@ -55,20 +55,19 @@ const MenuItems: FC = () => {
             <TooltipContent>My Cart</TooltipContent>
           </Tooltip>
 
-      
           {menuItems.map((item) => (
             <Tooltip key={item.title}>
               <TooltipTrigger>
-                <li className="hover:bg-slate-100 p-[10px] rounded-xl cursor-pointer">
-                  <Link href={item.href}>
+                <Link href={item.href}>
+                  <li className="hover:bg-slate-100 p-[10px] rounded-xl cursor-pointer">
                     <Image
                       src={item.icon}
                       alt={item.title}
                       width={24}
                       height={24}
                     />
-                  </Link>
-                </li>
+                  </li>
+                </Link>
                 <TooltipContent>{item.tooltip}</TooltipContent>
               </TooltipTrigger>
             </Tooltip>
