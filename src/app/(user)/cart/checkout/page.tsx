@@ -1,13 +1,13 @@
 "use client";
 
-import CartItemLarge from "@/components/cart/components/CartItemLarge";
-import OrderDetails from "@/components/checkout/OrderDetails";
-import PaymentOption from "@/components/checkout/PaymentOption";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import CartItemsList from "@/components/checkout/CartItemsList";
+import CheckoutSummary from "@/components/checkout/CheckoutSummary";
+import ShippingAddress from "@/components/checkout/ShippingAddress";
 import { toast } from "@/hooks/use-toast";
 import { useCartStore } from "@/store/cartStore";
-import { VerifiedIcon } from "lucide-react";
+import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
+import { Address } from "@/types/models/checkout/userAddresses";
+
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Script from "next/script";
@@ -21,29 +21,13 @@ declare global {
   }
 }
 
-type Address = {
-  id: number;
-  name: string;
-  detailAddress: string;
-  latitude: number;
-  longitude: number;
-  createdAt: string; // ISO timestamp
-  updatedAt: string; // ISO timestamp
-  primary: boolean;
-};
-
 const CheckoutPage: FC = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const cartItems = useCartStore((state) => state.cartItems);
   const setCartItems = useCartStore((state) => state.setCartItems);
-  const [paymentMethod, setPaymentMethod] = useState<string>("gateway");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>("gateway");
   const [userAddress, setUserAddress] = useState<Address[]>([]);
-
-  const paymentOptions = [
-    { id: "gateway", label: "Payment Gateway" },
-    { id: "manual", label: "Manual Transfer" },
-  ];
 
   // Load cart data from local storage if there is any data on mount
   useEffect(() => {
@@ -97,7 +81,7 @@ const CheckoutPage: FC = () => {
       };
 
       const response = await fetch(
-        "http://localhost:8080/api/v1/transactions/create",
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/api/v1/transactions/create",
         {
           method: "POST",
           headers: {
@@ -173,6 +157,7 @@ const CheckoutPage: FC = () => {
 
   return (
     <>
+      {/* Midtrans snap pop up  */}
       <Script
         src={process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL}
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
@@ -192,108 +177,21 @@ const CheckoutPage: FC = () => {
           <div className="mt-[40px] flex flex-col-reverse lg:flex-row gap-8 w-full">
             {/* Checkout details & shipping address */}
             <div className="flex flex-col gap-6 w-full">
-              {/* Shipping address */}
-              <div className="bg-white p-8 rounded-xl">
-                <h3 className="text-[22px] font-bold">Shipping address</h3>
-
-                <div className="pt-6">
-                  {userAddress.length > 0 ? (
-                    <div className="space-y-4">
-                      {userAddress.map((address) => (
-                        <div
-                          key={address.id}
-                          className="flex w-full justify-between gap-2"
-                        >
-                          <div>
-                            <h3 className="text-lg font-semibold">
-                              {address.name}
-                            </h3>
-                            <p className="text-gray-700">
-                              {address.detailAddress}
-                            </p>
-                          </div>
-                          <span
-                            className={`flex items-center mt-2 px-4 py-1 text-sm font-medium rounded-full ${
-                              address.primary
-                                ? "bg-green-500 text-white"
-                                : "bg-gray-300 text-gray-800"
-                            }`}
-                          >
-                            {address.primary ? "Main" : "Secondary"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600">No addresses found.</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Products lists */}
-              <div className="bg-white rounded-xl">
-                {cartItems.length > 0 ? (
-                  cartItems.map((item) => (
-                    <div className="p-8" key={item.id}>
-                      <CartItemLarge
-                        key={item.id}
-                        id={item.id}
-                        name={item.product.name}
-                        price={item.product.price}
-                        quantity={item.quantity}
-                        stock={item.stock}
-                        showButton={true}
-                        category={item.product.category.name}
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <p className="bg-white px-8 py-10 rounded-xl text-center">
-                    Your cart is empty.
-                  </p>
-                )}
-              </div>
+              <ShippingAddress userAddress={userAddress} />
+              <CartItemsList cartItems={cartItems} />
             </div>
 
             {/* Checkout Summary */}
             <div className="flex flex-col w-full md:w-[480px] lg:w-[600px]">
-              <div className="bg-white w- p-6 rounded-xl sticky top-[94px] flex flex-col gap-4">
-                <h3 className="text-[22px] font-bold">Checkout summary</h3>
-
-                <Separator className="my-2" />
-
-                {/* Select Payment Method */}
-                <div className="flex flex-col gap-4">
-                  <h3 className="text-[18px] font-semibold mb-2">
-                    Select Payment Method :
-                  </h3>
-
-                  <PaymentOption
-                    options={paymentOptions}
-                    selectedOption={paymentMethod}
-                    onSelect={setPaymentMethod}
-                  />
-                </div>
-
-                <Separator className="my-2" />
-
-                {/* Order Details */}
-                <OrderDetails
-                  totalQuantity={totalQuantity}
-                  totalPrice={totalPrice}
-                  shippingCost={25000}
-                />
-
-                {/* Buy Now Button */}
-                <Button
-                  variant={"default"}
-                  disabled={cartItems.length < 1}
-                  onClick={handleCheckout}
-                >
-                  <VerifiedIcon height={34} width={34} className="text-white" />
-                  Buy now
-                </Button>
-              </div>
+              <CheckoutSummary
+                paymentMethod={paymentMethod}
+                setPaymentMethod={setPaymentMethod}
+                totalQuantity={totalQuantity}
+                totalPrice={totalPrice}
+                shippingCost={25000} // Or any other cost
+                handleCheckout={handleCheckout}
+                isDisabled={cartItems.length < 1}
+              />
             </div>
           </div>
         </div>
