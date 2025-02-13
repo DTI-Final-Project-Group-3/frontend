@@ -1,9 +1,10 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function ImagePlaceholder() {
@@ -30,47 +31,58 @@ function LoginForm({ onSubmit, onGoogleLogin }) {
       <div className="w-4/5 md:w-4/5 max-w-md">
         <h2 className="text-2xl font-bold text-center">Sign In</h2>
         <p className="text-center mt-2">
-          Don't have an account yet? 
-          <Link href="/signup"><span className="ml-2 px-3 py-1 bg-yellow-400 rounded-md cursor-pointer">Sign Up</span></Link>
+          Don't have an account yet?
+          <Link href="/signup">
+            <span className="ml-2 px-3 py-1 bg-yellow-400 rounded-md cursor-pointer">
+              Sign Up
+            </span>
+          </Link>
         </p>
-        
+
         <form onSubmit={handleFormSubmit}>
           <div className="mt-6">
-            <input 
-              type="text" 
-              placeholder="Your username or email address" 
-              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400" 
+            <input
+              type="text"
+              placeholder="Your username or email address"
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          
+
           <div className="mt-4 relative">
-            <input 
-              type={showPassword ? "text" : "password"} 
-              placeholder="Password" 
-              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400" 
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button 
-              type="button" 
-              className="absolute inset-y-0 right-3 flex items-center" 
+            <button
+              type="button"
+              className="absolute inset-y-0 right-3 flex items-center"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
             </button>
           </div>
-          
+
           <div className="mt-4 flex justify-between items-center">
             <label className="flex items-center">
               <input type="checkbox" className="mr-2" /> Remember me
             </label>
             <span className="font-bold cursor-pointer">Forgot Password?</span>
           </div>
-          
+
           {/* Regular Login Button */}
-          <Button type="submit" className="w-full mt-6 bg-blue-600 text-white py-3 rounded-md">
+          <Button
+            type="submit"
+            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-md"
+          >
             Sign In
           </Button>
 
@@ -82,14 +94,14 @@ function LoginForm({ onSubmit, onGoogleLogin }) {
           </div>
 
           {/* Google Login Button */}
-          <button 
+          <button
             type="button"
             onClick={onGoogleLogin}
             className="w-full flex items-center justify-center border border-gray-300 py-3 rounded-md hover:bg-gray-100"
           >
-            <img 
-              src="/images/google-logo.svg" 
-              alt="Google Logo" 
+            <img
+              src="/images/google-logo.svg"
+              alt="Google Logo"
               className="w-5 h-5 mr-2"
             />
             Sign in with Google
@@ -107,27 +119,36 @@ export default function LoginPage() {
   // Redirect to profile if already logged in
   useEffect(() => {
     if (status === "authenticated") {
-      router.push('/profile');
+      router.push("/");
     }
   }, [status, router]);
 
   const handleSubmit = async (email, password) => {
-    const result = await signIn('credentials', {
+    const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
 
     if (result?.error) {
-      alert("Login failed");
+      toast({
+        title: "Failed to login",
+        description: "Please input correct account",
+        variant: "destructive",
+        duration: 2000,
+      });
     } else {
-      alert("Login successful");
-      router.push('/profile');
+      toast({
+        title: "Login successful",
+        description: "Welcome to warehub",
+        duration: 3000,
+      });
+      router.push("/");
     }
   };
 
   const handleGoogleLogin = async () => {
-    await signIn('google');
+    await signIn("google");
   };
 
   return (

@@ -9,7 +9,7 @@ const PROTECTED_PATHS = [
   ];
 
 const ROLE_PATHS = {
-  CUSTOMER_VERIFIED: ["/cart", "/order-list"],
+  // CUSTOMER_VERIFIED: ["/cart", "/order-list"],
   ADMIN_WAREHOUSE: ["/admin"],
   ADMIN_SUPER: ["/admin"],
 };
