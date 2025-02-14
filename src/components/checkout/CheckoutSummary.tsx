@@ -14,6 +14,7 @@ type CheckoutSummaryProps = {
   totalPrice: number;
   shippingCost: number;
   handleCheckout: () => void;
+  handleManualCheckout: () => void;
   isDisabled: boolean;
 };
 
@@ -24,8 +25,11 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
   paymentMethod,
   setPaymentMethod,
   handleCheckout,
+  handleManualCheckout,
   isDisabled,
 }) => {
+  console.log(paymentMethod)
+  
   return (
     <div className="bg-white w- p-6 rounded-xl sticky top-[94px] flex flex-col gap-4">
       <h3 className="text-[22px] font-bold">Checkout summary</h3>
@@ -58,7 +62,9 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
       <Button
         variant={"default"}
         disabled={isDisabled}
-        onClick={handleCheckout}
+        onClick={
+          paymentMethod === "gateway" ? handleCheckout : handleManualCheckout
+        }
       >
         <VerifiedIcon height={34} width={34} className="text-white" />
         Buy now
