@@ -11,14 +11,9 @@ import { useCartToggleStore } from "@/store/cartToggle";
 import Image from "next/image";
 import Link from "next/link";
 import React, { FC } from "react";
+import NotificationDropdown from "./NotificationDropdown";
 
 const menuItems = [
-  {
-    title: "Notification",
-    href: "/notification",
-    icon: "/icons/mail.svg",
-    tooltip: "Notifications",
-  },
   {
     title: "Profile",
     href: "/profile",
@@ -33,15 +28,16 @@ const MenuItems: FC = () => {
 
   return (
     <nav className="w-full flex-1">
-      <ul className="flex items-center justify-around md:justify-end gap-2">
+      <ul className="flex items-center justify-around md:justify-end gap-4">
         <TooltipProvider>
+          {/* Cart Menu Icon */}
           <Tooltip>
             <TooltipTrigger asChild>
               <li
                 className="hover:bg-slate-100 p-[10px] rounded-xl cursor-pointer relative"
                 onClick={toggleShowCart}
               >
-                <span className="absolute top-0 right-0 text-[14px] font-bold bg-red-500 px-2 text-white rounded-full border-white border-[1px]">
+                <span className="absolute -top-1 -right-1 text-[14px] font-bold bg-red-500 px-2 text-white rounded-full border-white border-[1px]">
                   {cartItems.length < 1 ? "" : cartItems.length}
                 </span>
                 <Image
@@ -55,6 +51,10 @@ const MenuItems: FC = () => {
             <TooltipContent>My Cart</TooltipContent>
           </Tooltip>
 
+          {/* Notifications Menu Icon */}
+          <NotificationDropdown />
+
+          {/* Other Menu Icon */}
           {menuItems.map((item) => (
             <Tooltip key={item.title}>
               <TooltipTrigger>

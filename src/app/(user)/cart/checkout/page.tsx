@@ -76,7 +76,7 @@ const CheckoutPage: FC = () => {
         warehouseId: 3,
         paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
         shippingCost: 25000,
-        orderStatusId: 1,
+        orderStatusId: 2,
         orderItems: orderItems,
       };
 
@@ -102,6 +102,57 @@ const CheckoutPage: FC = () => {
         title: "Payment failed",
         duration: 2000,
         description: "Please check your order and payment detail.",
+      });
+    }
+  };
+
+  // Handle manual transfer payment
+  const handleManualCheckout = async () => {
+    try {
+      // Set order items
+      const orderItems = cartItems.map((item) => ({
+        productId: 3,
+        quantity: item.quantity,
+        unitPrice: item.product.price,
+      }));
+
+      const payload = {
+        grossAmount: Math.ceil(totalPrice + 25000),
+        userId: 3,
+        warehouseId: 3,
+        paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
+        shippingCost: 25000,
+        orderStatusId: 1, // Status defaul pending
+        orderItems: orderItems,
+      };
+
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL +
+          "/api/v1/transactions/create-manual",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to create manual transaction");
+
+      toast({
+        title: "Manual Payment Initiated",
+        description: "Please follow the instructions to complete your payment.",
+        duration: 3000,
+      });
+
+      // Optionally, redirect user to instructions page
+    } catch (error) {
+      toast({
+        title: "Payment Error",
+        description: `${error} Something went wrong. Please try again.`,
+        variant: "destructive",
+        duration: 2000,
       });
     }
   };
@@ -190,6 +241,7 @@ const CheckoutPage: FC = () => {
                 totalPrice={totalPrice}
                 shippingCost={25000} // Or any other cost
                 handleCheckout={handleCheckout}
+                handleManualCheckout={handleManualCheckout}
                 isDisabled={cartItems.length < 1}
               />
             </div>
