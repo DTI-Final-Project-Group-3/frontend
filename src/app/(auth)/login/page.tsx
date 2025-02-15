@@ -132,10 +132,10 @@ export default function LoginPage() {
 
     if (result?.error) {
       toast({
-        title: "Login failed",
-        description: "Please login with the correct account",
+        title: "Failed to login",
+        description: "Please input correct account",
         variant: "destructive",
-        duration: 3000,
+        duration: 2000,
       });
     } else {
       toast({

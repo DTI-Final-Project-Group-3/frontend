@@ -8,43 +8,78 @@ import { useEffect, useState } from 'react';
 
 const user_detail_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_DETAIL}`;
 
-function Account({ userData, editableData, handleInputChange, handleSave, handleDiscard, isModified }) {
+function Account({
+  userData,
+  editableData,
+  handleInputChange,
+  handleSave,
+  handleDiscard,
+  isModified,
+}) {
   return (
     <div className="space-y-4 flex flex-col w-full">
       <div className="flex justify-end space-x-2">
-        <button onClick={handleDiscard} disabled={!isModified} className="py-2 px-4 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">Discard</button>
-        <button onClick={handleSave} disabled={!isModified} className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50">Save</button>
+        <button
+          onClick={handleDiscard}
+          disabled={!isModified}
+          className="py-2 px-4 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+        >
+          Discard
+        </button>
+        <button
+          onClick={handleSave}
+          disabled={!isModified}
+          className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+        >
+          Save
+        </button>
       </div>
       {userData && (
-            <div className="flex flex-col gap-4 w-full">
-              {[
-                { label: "Full Name", name: "fullname", value: editableData.fullname, editable: true },
-                { label: "Gender", name: "gender", value: editableData.gender, editable: true, type: "dropdown" },
-                { label: "Birthdate", name: "birthdate", value: editableData.birthdate, editable: true, type: "date" },
-                { label: "Email", value: userData.email },
-                { label: "Phone Number", value: userData.phoneNumber },
-                { label: "Role", value: userData.role },
-                { label: "Email Verified", value: userData.isEmailVerified ? "Yes" : "No" }
-              ].map((field, index) => (
-                <div key={index} className="flex flex-col w-full">
-                  <label className="font-semibold">{field.label}</label>
-                  {field.editable ? (
-                    field.type === "dropdown" ? (
-                      <select name={field.name} value={field.value} onChange={handleInputChange} className="w-full p-2 border rounded bg-gray-100">
-                        <option value="">Not Set</option>
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                      </select>
-                    ) : (
-                      <input type={field.type || "text"} name={field.name} value={field.value} onChange={handleInputChange} className="w-full p-2 border rounded bg-white" />
-                    )
-                  ) : (
-                    <input type="text" value={field.value || "Not provided"} readOnly className="w-full p-2 border rounded bg-gray-100" />
-                  )}
-                </div>
-              ))}
+        <div className="flex flex-col gap-4 w-full">
+          {[
+            { label: "Full Name", name: "fullname", value: editableData.fullname, editable: true },
+            { label: "Gender", name: "gender", value: editableData.gender, editable: true, type: "dropdown" },
+            { label: "Birthdate", name: "birthdate", value: editableData.birthdate, editable: true, type: "date" },
+            { label: "Email", value: userData.email },
+            { label: "Phone Number", value: userData.phoneNumber },
+            { label: "Role", value: userData.role },
+            { label: "Email Verified", value: userData.isEmailVerified ? "Yes" : "No" }
+          ].map((field, index) => (
+            <div key={index} className="flex flex-col w-full">
+              <label className="font-semibold">{field.label}</label>
+              {field.editable ? (
+                field.type === "dropdown" ? (
+                  <select
+                    name={field.name}
+                    value={field.value}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded bg-gray-100"
+                  >
+                    <option value="">Not Set</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                  </select>
+                ) : (
+                  <input
+                    type={field.type || "text"}
+                    name={field.name}
+                    value={field.value}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded bg-white"
+                  />
+                )
+              ) : (
+                <input
+                  type="text"
+                  value={field.value || "Not provided"}
+                  readOnly
+                  className="w-full p-2 border rounded bg-gray-100"
+                />
+              )}
             </div>
-          )}
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -52,15 +87,23 @@ function Account({ userData, editableData, handleInputChange, handleSave, handle
 const user_address_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS}`;
 const user_address_id_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS_ID}`;
 
-
-function AddressComponent({ id, name, detailAddress, latitude, longitude, primary, onDelete, session }) {
+function AddressComponent({
+  id,
+  name,
+  detailAddress,
+  latitude,
+  longitude,
+  primary,
+  onDelete,
+  session,
+}) {
   const handleDelete = async () => {
     try {
       const res = await fetch(`${user_address_id_url}/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${session.accessToken}`
-        }
+          Authorization: `Bearer ${session.accessToken}`,
+        },
       });
       if (res.ok) {
         onDelete();
@@ -96,7 +139,7 @@ function Address() {
     if (session) {
       try {
         const res = await fetch(user_address_url, {
-          headers: { 'Authorization': `Bearer ${session.accessToken}` }
+          headers: { Authorization: `Bearer ${session.accessToken}` },
         });
         const data = await res.json();
         if (data.success) {
@@ -139,15 +182,20 @@ export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
-  const [editableData, setEditableData] = useState({ fullname: "", gender: "", birthdate: "" });
+  const [editableData, setEditableData] = useState({
+    fullname: "",
+    gender: "",
+    birthdate: "",
+  });
   const [isModified, setIsModified] = useState(false);
-  const [activeTab, setActiveTab] = useState<'account' | 'address'>('account');
+  const [activeTab, setActiveTab] = useState<"account" | "address">("account");
+
   const resetCart = useCartStore((state) => state.resetCart);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       alert("You are not logged in.");
-      router.push('/login');
+      router.push("/login");
     }
   }, [router, status]);
 
@@ -156,12 +204,16 @@ export default function ProfilePage() {
       const fetchUserDetails = async () => {
         try {
           const res = await fetch(user_detail_url, {
-            headers: { 'Authorization': `Bearer ${session.accessToken}` }
+            headers: { Authorization: `Bearer ${session.accessToken}` },
           });
           const data = await res.json();
           if (data.success) {
             setUserData(data.data);
-            setEditableData({ fullname: data.data.fullname || "", gender: data.data.gender || "", birthdate: data.data.birthdate || "" });
+            setEditableData({
+              fullname: data.data.fullname || "",
+              gender: data.data.gender || "",
+              birthdate: data.data.birthdate || "",
+            });
           } else {
             alert("Failed to fetch user details");
           }
@@ -182,12 +234,12 @@ export default function ProfilePage() {
   const handleSave = async () => {
     try {
       const res = await fetch(user_detail_url, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.accessToken}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.accessToken}`,
         },
-        body: JSON.stringify(editableData)
+        body: JSON.stringify(editableData),
       });
       const data = await res.json();
       if (data.success) {
@@ -203,7 +255,11 @@ export default function ProfilePage() {
   };
 
   const handleDiscard = () => {
-    setEditableData({ fullname: userData.fullname || "", gender: userData.gender || "", birthdate: userData.birthdate || "" });
+    setEditableData({
+      fullname: userData.fullname || "",
+      gender: userData.gender || "",
+      birthdate: userData.birthdate || "",
+    });
     setIsModified(false);
   };
 
