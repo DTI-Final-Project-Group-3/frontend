@@ -122,8 +122,8 @@ function Address() {
 
   return (
     <div className="space-y-4 flex flex-col gap-6">
-      <div className='w-full flex justify-between items-center'>
-        <h2 className="text-2xl font-semibold text-center">My Addresses</h2>
+      <div className='w-full flex gap-4 flex-col md:flex-row md:justify-between md:items-center'>
+        <h2 className="text-2xl font-semibold">My Address</h2>
         <Link href="/profile/create-address">
           <div className='bg-black text-white px-4 py-2 text-center cursor-pointer rounded-lg'>Create A New Address</div>
         </Link>
@@ -224,7 +224,7 @@ export default function ProfilePage() {
         <div className="mt-[40px] w-full flex flex-col md:flex-row md:gap-16 items-start">
 
           {/* Left Menu - Auto Height Based on Content */}
-          <div className="flex flex-col flex-shrink-0 items-center space-y-4 md:w-1/4 bg-white p-8 rounded-xl">
+          <div className="flex flex-col flex-shrink-0 items-center space-y-4 md:w-1/4 bg-white p-8 rounded-xl w-full">
             <Image
               src={userData?.profileImageUrl || "/images/no-image-icon.jpg"}
               height={150}
