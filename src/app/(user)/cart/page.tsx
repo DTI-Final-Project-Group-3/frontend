@@ -31,7 +31,7 @@ const CartPage: FC = () => {
   const totalPrice = useMemo(
     () =>
       cartItems.reduce(
-        (acc, item) => acc + item.product.price * item.quantity,
+        (acc, item) => acc + item.product.price * item.cartQuantity,
         0
       ),
     [cartItems]
@@ -39,7 +39,7 @@ const CartPage: FC = () => {
 
   // Calculate total quantity
   const totalQuantity = useMemo(
-    () => cartItems.reduce((acc, item) => acc + item.quantity, 0),
+    () => cartItems.reduce((acc, item) => acc + item.cartQuantity, 0),
     [cartItems]
   );
 
@@ -52,14 +52,14 @@ const CartPage: FC = () => {
           <div className="flex flex-col gap-6 w-full">
             {cartItems.length > 0 ? (
               cartItems.map((item) => (
-                <div className="bg-white p-8 rounded-xl" key={item.id}>
+                <div className="bg-white p-8 rounded-xl" key={item.inventoryId}>
                   <CartItemLarge
-                    key={item.id}
-                    id={item.id}
+                    key={item.inventoryId}
+                    id={item.inventoryId}
                     name={item.product.name}
                     price={item.product.price}
-                    quantity={item.quantity}
-                    stock={item.stock}
+                    quantity={item.cartQuantity}
+                    stock={item.stockQuantity}
                     category={item.product.category.name}
                   />
                 </div>

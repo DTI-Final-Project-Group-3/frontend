@@ -9,6 +9,7 @@ const PUBLIC_PATHS = [
   "/icons",
   "/images",
   "/inventory",
+  "/cart",
 ];
 
 const PROTECTED_PATHS = ["/user", "/admin"];
