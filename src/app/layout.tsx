@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import TanstackQueryProvider from "@/providers/QueryClientProvider";
-import LayoutWrapper from "@/components/wrapper/LayoutWrapper";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -37,7 +36,7 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <TanstackQueryProvider>
           <SessionProviderWrapper>
-            <LayoutWrapper>{children}</LayoutWrapper>
+            <main>{children}</main>
           </SessionProviderWrapper>
         </TanstackQueryProvider>
       </body>
