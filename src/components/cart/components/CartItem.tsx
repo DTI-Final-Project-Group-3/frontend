@@ -13,7 +13,7 @@ type CartItemProps = {
   price: number;
   quantity: number;
   stock: number;
-  imageUrl: string;
+  imageUrl?: string;
 };
 
 const CartItem: FC<CartItemProps> = ({
@@ -35,8 +35,11 @@ const CartItem: FC<CartItemProps> = ({
     setImgSrc("/images/no-image-icon.jpg");
   };
 
+  // console.log("stock:", stock);
+  // console.log("quantity:", quantity);
+
   return (
-    <div className="">
+    <>
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-4 w-full">
           <div className="h-[96px] w-[86px] bg-slate-50 flex-shrink-0">
@@ -110,7 +113,7 @@ const CartItem: FC<CartItemProps> = ({
         </div>
       </div>
       <Separator className="mt-[24px] mb-[48px]" />
-    </div>
+    </>
   );
 };
 

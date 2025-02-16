@@ -6,7 +6,6 @@ import {
   WarehouseInventorySummary,
 } from "@/types/models/warehouseInventories";
 import axios from "axios";
-import { url } from "inspector";
 
 const warehouseInventoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSE_INVENTORIES}`;
 

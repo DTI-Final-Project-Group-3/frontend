@@ -15,20 +15,9 @@ import { useSearchStore } from "@/store/searchStore";
 import { usePathname, useRouter } from "next/navigation";
 import { getPaginatedWarehouseInventories } from "@/api/getWarehouseInventories";
 import { useQuery } from "@tanstack/react-query";
+import NotificationDropdown from "./NotificationDropdown";
 
 const menuItems = [
-  {
-    title: "Search",
-    href: "/search",
-    icon: "/icons/search.svg",
-    tooltip: "Search",
-  },
-  {
-    title: "Notification",
-    href: "/notification",
-    icon: "/icons/mail.svg",
-    tooltip: "Notifications",
-  },
   {
     title: "Profile",
     href: "/profile",
@@ -65,8 +54,8 @@ const MenuItems: FC = () => {
   }, [pathname]);
 
   return (
-    <nav className="w-full">
-      <ul className="flex items-center justify-around md:justify-end gap-2">
+    <nav className="w-full flex-1">
+      <ul className="flex items-center justify-around md:justify-end gap-4">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
@@ -127,7 +116,7 @@ const MenuItems: FC = () => {
                 className="hover:bg-slate-100 p-[10px] rounded-xl cursor-pointer relative"
                 onClick={toggleShowCart}
               >
-                <span className="absolute top-0 right-0 text-[14px] font-bold bg-red-500 px-2 text-white rounded-full border-white border-[1px]">
+                <span className="absolute -top-1 -right-1 text-[14px] font-bold bg-red-500 px-2 text-white rounded-full border-white border-[1px]">
                   {cartItems.length < 1 ? "" : cartItems.length}
                 </span>
                 <Image
@@ -140,6 +129,28 @@ const MenuItems: FC = () => {
             </TooltipTrigger>
             <TooltipContent>My Cart</TooltipContent>
           </Tooltip>
+
+          {/* Notifications Menu Icon */}
+          <NotificationDropdown />
+
+          {/* Other Menu Icon */}
+          {menuItems.map((item) => (
+            <Tooltip key={item.title}>
+              <TooltipTrigger>
+                <Link href={item.href}>
+                  <li className="hover:bg-slate-100 p-[10px] rounded-xl cursor-pointer">
+                    <Image
+                      src={item.icon}
+                      alt={item.title}
+                      width={24}
+                      height={24}
+                    />
+                  </li>
+                </Link>
+                <TooltipContent>{item.tooltip}</TooltipContent>
+              </TooltipTrigger>
+            </Tooltip>
+          ))}
         </TooltipProvider>
       </ul>
     </nav>

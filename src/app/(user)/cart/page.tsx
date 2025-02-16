@@ -12,6 +12,8 @@ const CartPage: FC = () => {
   const cartItems = useCartStore((state) => state.cartItems);
   const setCartItems = useCartStore((state) => state.setCartItems);
 
+  console.log(cartItems);
+
   // Load cart data from local storage if there is any data on mount
   useEffect(() => {
     const storedCart = localStorage.getItem("cart-storage");
@@ -27,7 +29,11 @@ const CartPage: FC = () => {
 
   // Calculate total price
   const totalPrice = useMemo(
-    () => cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    () =>
+      cartItems.reduce(
+        (acc, item) => acc + item.product.price * item.quantity,
+        0
+      ),
     [cartItems]
   );
 
@@ -50,10 +56,11 @@ const CartPage: FC = () => {
                   <CartItemLarge
                     key={item.id}
                     id={item.id}
-                    name={item.name}
-                    price={item.price}
+                    name={item.product.name}
+                    price={item.product.price}
                     quantity={item.quantity}
                     stock={item.stock}
+                    category={item.product.category.name}
                   />
                 </div>
               ))
@@ -89,15 +96,14 @@ const CartPage: FC = () => {
 
               <Separator className="my-2" />
 
-              <Button
-                variant={"default"}
-                disabled={cartItems.length < 1}
-                asChild
-              >
-                <Link href="/cart/checkout" className="font-semibold">
-                  Buy
-                  {totalQuantity > 0 && ` (${totalQuantity})`}
-                </Link>
+              <Button variant="default" disabled={cartItems.length < 1} asChild>
+                {cartItems.length > 0 ? (
+                  <Link href="/cart/checkout" className="font-semibold">
+                    Buy ({totalQuantity})
+                  </Link>
+                ) : (
+                  "Buy"
+                )}
               </Button>
             </div>
           </div>

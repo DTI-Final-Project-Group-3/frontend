@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import CartItem from "./components/CartItem";
@@ -38,6 +38,18 @@ const Cart: FC = () => {
       localStorage.setItem("cart-storage", JSON.stringify(cartItems));
     else localStorage.removeItem("cart-storage");
   }, [cartItems]);
+
+  // Calculate total price
+  const totalPrice = useMemo(
+    () =>
+      cartItems.reduce(
+        (acc, item) => acc + item.product.price * item.cartQuantity,
+        0
+      ),
+    [cartItems]
+  );
+
+  // console.log("cart items" , cartItems)
 
   return (
     <>
@@ -88,12 +100,13 @@ const Cart: FC = () => {
               {cartItems.length > 0 ? (
                 cartItems.map((item) => (
                   <CartItem
-                    key={item.id}
-                    id={item.id}
+                    key={item.inventoryId}
+                    id={item.inventoryId}
                     name={item.product.name}
                     price={item.product.price}
-                    quantity={item.quantity}
-                    stock={item.quantity}
+                    imageUrl={item.product.thumbnail}
+                    quantity={item.cartQuantity}
+                    stock={item.stockQuantity}
                   />
                 ))
               ) : (
@@ -108,7 +121,7 @@ const Cart: FC = () => {
               <div className="flex items-center justify-between mb-6">
                 <span className="text-[18px] font-semibold">Sub total</span>
                 <span className="text-[18px] font-bold">
-                  {formatPrice(String(40000))}
+                  {formatPrice(String(totalPrice))}
                 </span>
               </div>
 
@@ -119,7 +132,7 @@ const Cart: FC = () => {
                     View Cart
                   </Link>
                 </Button>
-                <Button variant={"default"}>
+                <Button variant={"default"} asChild>
                   <Link onClick={toggleShowCart} href="/cart/checkout">
                     Checkout
                   </Link>

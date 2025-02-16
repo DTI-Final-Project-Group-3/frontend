@@ -4,7 +4,7 @@ import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/utils/formatter";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 
 type CartItemProps = {
   id: number;
@@ -13,6 +13,8 @@ type CartItemProps = {
   quantity: number;
   stock: number;
   showButton?: boolean;
+  imageUrl?: string;
+  category: string;
 };
 
 const CartItemLarge: FC<CartItemProps> = ({
@@ -22,10 +24,20 @@ const CartItemLarge: FC<CartItemProps> = ({
   quantity,
   stock,
   showButton = false,
+  imageUrl,
+  category,
 }) => {
   const increaseQuantity = useCartStore((state) => state.increaseQuantity);
   const decreaseQuantity = useCartStore((state) => state.decreaseQuantity);
   const removeItem = useCartStore((state) => state.removeFromCart);
+
+  const [imgSrc, setImgSrc] = useState<string>(
+    imageUrl && imageUrl.trim() !== "" ? imageUrl : "/images/no-image-icon.jpg"
+  );
+
+  const handleImageError = () => {
+    setImgSrc("/images/no-image-icon.jpg");
+  };
 
   return (
     <>
@@ -33,21 +45,21 @@ const CartItemLarge: FC<CartItemProps> = ({
         <div className="flex gap-6 w-full">
           <div className="h-[100px] w-[100px] bg-slate-50 flex-shrink-0 rounded-xl">
             <Image
-              src="/images/WareHub.png"
+              src={imgSrc}
               alt="Product image"
               height={100}
               width={100}
               className="cursor-pointer w-auto h-auto object-cover"
+              onError={handleImageError}
             />
           </div>
 
+          {/* Item details */}
           <div className="flex flex-col items-start justify-between">
             {/* Product name */}
             <h3 className="text-xl font-semibold line-clamp-2">{name}</h3>
             {/* product Description */}
-            <p className="text-[16px] line-clamp-1 text-gray-600">
-              Descrption here
-            </p>
+            <p className="text-[16px] line-clamp-1 text-gray-600">{category}</p>
             {/* product stock */}
             <p className="text-[16px] text-[#6C7275] line-clamp-1">
               Stock left : <span className="font-semibold">{stock} </span>

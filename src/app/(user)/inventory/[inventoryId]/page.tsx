@@ -4,16 +4,20 @@ import { getWarehouseInventoryDetailById } from "@/api/getWarehouseInventories";
 import Carousel from "@/components/ui/Carousel";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { useCartStore } from "@/store/cartStore";
-import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
+import { CartItem, useCartStore } from "@/store/cartStore";
+import { ProductSummary } from "@/types/models/products";
+import {
+  WarehouseInventoryDetail,
+  WarehouseInventorySummary,
+} from "@/types/models/warehouseInventories";
 import { formatDimension, formatPrice, formatWeight } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 
 const InventoryPage: FC = () => {
   const { inventoryId } = useParams();
-  const [quantity, setQuantity] = useState<number>(1);
+  const [cartQuantity, setCartQuantity] = useState<number>(1);
   const addToCart = useCartStore((state) => state.addToCart);
 
   const {
@@ -26,24 +30,37 @@ const InventoryPage: FC = () => {
     queryFn: () => getWarehouseInventoryDetailById(Number(inventoryId)),
   });
 
-  const handleAddToCart = (
-    inventory: WarehouseInventorySummary | undefined
-  ) => {
+  const handleAddToCart = (inventory: WarehouseInventoryDetail | undefined) => {
     if (!inventory) return;
-    const updatedInventory = { ...inventory, quantity };
-    console.log(updatedInventory);
-    addToCart(updatedInventory);
+    const productItem: ProductSummary = {
+      id: inventory.product.id,
+      name: inventory.product.name,
+      price: inventory.product.price,
+      thumbnail: inventory.product.images?.find((image) => image.position === 1)
+        ?.url,
+      category: inventory.product.category,
+    };
+
+    const cartItem: CartItem = {
+      inventoryId: inventory.id,
+      product: productItem,
+      stockQuantity: inventory.quantity,
+      cartQuantity: cartQuantity,
+      warehouse: inventory.warehouse,
+    };
+    addToCart(cartItem);
     toast({
       title: "Added to cart",
-
       duration: 2000,
       description: `${inventory.product.name} has been added to your cart.`,
     });
   };
 
   return (
-    <>
-      <div className="container mx-auto px-4 md:pt-16 pt-8 max-w-7xl">
+    <div className="mx-auto px-4 md:pt-16 pt-8 max-w-7xl">
+      {isLoading || isFetching ? (
+        <div>Loading ...</div>
+      ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           <div className="w-full flex justify-center">
             <div className="w-full max-w-md">
@@ -97,35 +114,35 @@ const InventoryPage: FC = () => {
                 <button
                   className={cn(
                     "px-4 py-1 text-xl transition-colors",
-                    quantity <= 1
+                    cartQuantity <= 1
                       ? "text-gray-300 cursor-not-allowed"
                       : "text-gray-600 hover:bg-gray-50"
                   )}
-                  disabled={quantity <= 1}
+                  disabled={cartQuantity <= 1}
                   onClick={(e) => {
                     e.preventDefault();
-                    setQuantity(quantity - 1);
+                    setCartQuantity(cartQuantity - 1);
                   }}
                 >
                   -
                 </button>
                 <input
                   type="text"
-                  value={quantity}
+                  value={cartQuantity}
                   readOnly
                   className="w-12 text-center border-x border-gray-300 pointer-events-none"
                 />
                 <button
                   className={cn(
                     "px-4 py-1 text-xl transition-colors",
-                    quantity >= (inventory?.data.quantity ?? 0)
+                    cartQuantity >= (inventory?.data.quantity ?? 0)
                       ? "text-gray-300 cursor-not-allowed"
                       : "text-gray-600 hover:bg-gray-50"
                   )}
-                  disabled={quantity >= (inventory?.data.quantity ?? 0)}
+                  disabled={cartQuantity >= (inventory?.data.quantity ?? 0)}
                   onClick={(e) => {
                     e.preventDefault();
-                    setQuantity(quantity + 1);
+                    setCartQuantity(cartQuantity + 1);
                   }}
                 >
                   +
@@ -134,7 +151,7 @@ const InventoryPage: FC = () => {
               <button
                 className={cn(
                   "flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors",
-                  quantity >= (inventory?.data.quantity ?? 0)
+                  cartQuantity >= (inventory?.data.quantity ?? 0)
                     ? "cursor-not-allowed text-gray-300"
                     : ""
                 )}
@@ -142,7 +159,7 @@ const InventoryPage: FC = () => {
                   e.preventDefault();
                   handleAddToCart(inventory?.data);
                 }}
-                disabled={quantity >= (inventory?.data.quantity ?? 0)}
+                disabled={cartQuantity >= (inventory?.data.quantity ?? 0)}
               >
                 Add to Cart
               </button>
@@ -158,8 +175,8 @@ const InventoryPage: FC = () => {
             </div>
           </div>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 

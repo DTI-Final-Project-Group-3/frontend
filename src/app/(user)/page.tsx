@@ -7,7 +7,7 @@ import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import LoadingCard from "@/components/ui/loadingCard";
 import { toast } from "@/hooks/use-toast";
 
-import { useCartStore } from "@/store/cartStore";
+import { CartItem, useCartStore } from "@/store/cartStore";
 import InventoryCard from "@/components/inventory/InventoryCard";
 import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
 import { useQuery } from "@tanstack/react-query";
@@ -16,7 +16,6 @@ import Filtering from "@/components/inventory/Filtering";
 import LocationSelector from "@/components/location/LocationSelector";
 import { useLocationStore } from "@/store/locationStore";
 import { useSearchStore } from "@/store/searchStore";
-import Footer from "@/components/footer/Footer";
 
 export default function Home() {
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
@@ -43,7 +42,15 @@ export default function Home() {
   };
 
   const handleAddToCart = (inventory: WarehouseInventorySummary) => {
-    addToCart(inventory);
+    const cartItem: CartItem = {
+      inventoryId: inventory.id,
+      product: inventory.product,
+      stockQuantity: inventory.quantity,
+      cartQuantity: 1,
+      warehouse: inventory.warehouse,
+    };
+
+    addToCart(cartItem);
     toast({
       title: "Added to cart",
 
@@ -79,8 +86,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-70px)] mt-6 mb-10 w-full">
-        {/* Hero Section */}
+      <div className="min-h-[calc(100vh-70px)] mt-6 w-full">
         <div className="relative mx-auto w-full max-w-[1340px] h-[540px] rounded-lg overflow-hidden">
           <Image
             src="/images/dummy-hero-img.png"
@@ -91,10 +97,8 @@ export default function Home() {
           />
         </div>
 
-        {/* Main Content */}
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-            {/* Sidebar */}
             <div className="col-span-1 flex flex-col gap-8 md:sticky md:top-24 h-fit">
               <Filtering
                 onFilterChange={(category) => setProductCategoryId(category)}
@@ -102,7 +106,6 @@ export default function Home() {
               <LocationSelector />
             </div>
 
-            {/* Product Grid */}
             <div className="col-span-3">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {pageLoading || isFetching
@@ -135,7 +138,6 @@ export default function Home() {
           </div>
         </main>
       </div>
-      <Footer />
     </>
   );
 }

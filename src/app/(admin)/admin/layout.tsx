@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import "../../globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import AdminSidebar from "@/components/sidebar/AdminSidebar";
+import Sidebar from "@/components/admin/sidebar/Sidebar";
+import "../../globals.css";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Warehub - Admin",
-  description: "Manage the admins, products, orders, etc.",
+  description:
+    "Manage the admins, warehouses, products, inventories, orders, etc.",
   icons: {
     icon: [
       {
@@ -18,16 +20,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AdminLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const AdminLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex w-full h-[calc(100vh-70px)]">
-      <AdminSidebar />
-      <div className="w-full flex flex-col p-6">{children}</div>
+    <main className="flex w-full min-h-screen">
+      <Sidebar />
+      <div className="w-full flex flex-col p-6 bg-slate-100">
+        <p>Header</p>
+        {children}
+      </div>
       <Toaster />
-    </div>
+    </main>
   );
-}
+};
+
+export default AdminLayout;
