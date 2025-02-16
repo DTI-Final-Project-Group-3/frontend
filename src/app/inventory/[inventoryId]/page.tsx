@@ -63,8 +63,17 @@ const InventoryPage: FC = () => {
             <p className="text-gray-600 text-base md:text-lg">
               {inventory?.data.product.description}
             </p>
-            <h2 className="text-2xl md:text-3xl font-poppins font-medium">
-              {formatPrice(String(inventory?.data.product.price))}
+            <h2
+              className={cn(
+                "text-2xl md:text-3xl font-poppins font-medium",
+                inventory?.data.status.id === 1
+                  ? ""
+                  : "text-red-500 font-semibold"
+              )}
+            >
+              {inventory?.data.status.id === 1
+                ? formatPrice(String(inventory?.data.product.price))
+                : inventory?.data.status.name}
             </h2>
 
             <div className="space-y-4">
@@ -104,7 +113,7 @@ const InventoryPage: FC = () => {
                   type="text"
                   value={quantity}
                   readOnly
-                  className="w-12 text-center border-x border-gray-300"
+                  className="w-12 text-center border-x border-gray-300 pointer-events-none"
                 />
                 <button
                   className={cn(
@@ -123,17 +132,25 @@ const InventoryPage: FC = () => {
                 </button>
               </div>
               <button
-                className="flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors"
+                className={cn(
+                  "flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors",
+                  quantity >= (inventory?.data.quantity ?? 0)
+                    ? "cursor-not-allowed text-gray-300"
+                    : ""
+                )}
                 onClick={(e) => {
                   e.preventDefault();
                   handleAddToCart(inventory?.data);
                 }}
+                disabled={quantity >= (inventory?.data.quantity ?? 0)}
               >
                 Add to Cart
               </button>
             </div>
 
             <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+              <p className="text-gray-600">Remaining stock</p>
+              <p>{inventory?.data.quantity}</p>
               <p className="text-gray-600">Category</p>
               <p>{inventory?.data.product.category.name}</p>
               <p className="text-gray-600">Send from</p>

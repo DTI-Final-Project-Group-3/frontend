@@ -10,9 +10,11 @@ import { useCartStore } from "@/store/cartStore";
 import { useCartToggleStore } from "@/store/cartToggle";
 import Image from "next/image";
 import Link from "next/link";
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useSearchStore } from "@/store/searchStore";
-import { useDebounce } from "@/hooks/useDebounce";
+import { usePathname, useRouter } from "next/navigation";
+import { getPaginatedWarehouseInventories } from "@/api/getWarehouseInventories";
+import { useQuery } from "@tanstack/react-query";
 
 const menuItems = [
   {
@@ -41,9 +43,26 @@ const MenuItems: FC = () => {
   const { searchQuery, setSearchQuery, isSearchOpen, toggleSearch } =
     useSearchStore();
 
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+  const router = useRouter();
+  const pathname = usePathname();
+
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    setLocalSearch(e.target.value);
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setSearchQuery(localSearch);
+      if (pathname !== "/") {
+        router.push("/");
+      }
+    }
+  };
+
+  useEffect(() => {
+    setLocalSearch("");
+  }, [pathname]);
 
   return (
     <nav className="w-full">
@@ -71,8 +90,9 @@ const MenuItems: FC = () => {
                   >
                     <input
                       type="text"
-                      value={searchQuery}
+                      value={localSearch}
                       onChange={handleSearchInput}
+                      onKeyDown={handleKeyDown}
                       placeholder="Search..."
                       className="w-full px-2 py-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
                     />
@@ -80,6 +100,7 @@ const MenuItems: FC = () => {
                 </div>
               </li>
             </TooltipTrigger>
+            <TooltipContent>Search</TooltipContent>
           </Tooltip>
 
           {menuItems.slice(1).map((item) => (
@@ -95,8 +116,8 @@ const MenuItems: FC = () => {
                     />
                   </Link>
                 </li>
-                <TooltipContent>{item.tooltip}</TooltipContent>
               </TooltipTrigger>
+              <TooltipContent>{item.tooltip}</TooltipContent>
             </Tooltip>
           ))}
 

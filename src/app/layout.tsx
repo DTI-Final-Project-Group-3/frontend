@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import TanstackQueryProvider from "@/providers/QueryClientProvider";
-
+import Footer from "@/components/footer/Footer";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
