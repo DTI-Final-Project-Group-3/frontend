@@ -5,11 +5,11 @@ const PUBLIC_PATHS = ["/login", "/signup", "/api/auth", "/favicon", "/icons", "/
 
 const PROTECTED_PATHS = [
     "/user",
-    // "/admin",
+    "/admin",
   ];
 
 const ROLE_PATHS = {
-  // CUSTOMER_VERIFIED: ["/cart", "/order-list"],
+  CUSTOMER_VERIFIED: ["/cart", "/order-list"],
   ADMIN_WAREHOUSE: ["/admin"],
   ADMIN_SUPER: ["/admin"],
 };
