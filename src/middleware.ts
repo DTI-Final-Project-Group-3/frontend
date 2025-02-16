@@ -5,7 +5,7 @@ const PUBLIC_PATHS = ["/login", "/signup", "/api/auth", "/favicon", "/icons", "/
 
 const PROTECTED_PATHS = [
     "/user",
-    "/admin",
+    // "/admin",
   ];
 
 const ROLE_PATHS = {
