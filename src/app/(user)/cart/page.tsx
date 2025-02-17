@@ -12,7 +12,7 @@ const CartPage: FC = () => {
   const cartItems = useCartStore((state) => state.cartItems);
   const setCartItems = useCartStore((state) => state.setCartItems);
 
-  console.log(cartItems)
+  console.log(cartItems);
 
   // Load cart data from local storage if there is any data on mount
   useEffect(() => {
@@ -96,15 +96,14 @@ const CartPage: FC = () => {
 
               <Separator className="my-2" />
 
-              <Button
-                variant={"default"}
-                disabled={cartItems.length < 1}
-                asChild
-              >
-                <Link href="/cart/checkout" className="font-semibold">
-                  Buy
-                  {totalQuantity > 0 && ` (${totalQuantity})`}
-                </Link>
+              <Button variant="default" disabled={cartItems.length < 1} asChild>
+                {cartItems.length > 0 ? (
+                  <Link href="/cart/checkout" className="font-semibold">
+                    Buy ({totalQuantity})
+                  </Link>
+                ) : (
+                  "Buy"
+                )}
               </Button>
             </div>
           </div>

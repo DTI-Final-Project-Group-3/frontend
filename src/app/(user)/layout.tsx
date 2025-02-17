@@ -1,16 +1,19 @@
-// import Cart from "@/components/cart/Cart";
-// import Footer from "@/components/footer/Footer";
-// import Navbar from "@/components/navbar/Navbar";
+import Cart from "@/components/cart/Cart";
+import Footer from "@/components/footer/Footer";
+import Navbar from "@/components/navbar/Navbar";
+import { Toaster } from "@/components/ui/toaster";
+import React from "react";
 
-export default function UserLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <>
-      {/* <Navbar />
-      <Cart /> */}
-      <main>{children}</main>
-      {/* <Footer /> */}
-    </>
+    <main>
+      <Navbar />
+      <Cart />
+      <div>{children}</div>
+      <Toaster />
+      <Footer />
+    </main>
   );
-}
+};
+
+export default Layout;

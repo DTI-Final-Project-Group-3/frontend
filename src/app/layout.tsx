@@ -1,12 +1,8 @@
-import Cart from "@/components/cart/Cart";
-import Navbar from "@/components/navbar/Navbar";
 import SessionProviderWrapper from "@/components/session-provider/SessionProviderWrapper";
-import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import TanstackQueryProvider from "@/providers/QueryClientProvider";
-import Footer from "@/components/footer/Footer";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -40,11 +36,7 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <TanstackQueryProvider>
           <SessionProviderWrapper>
-            <Navbar />
-            <Cart />
             <main>{children}</main>
-            <Toaster />
-            <Footer />
           </SessionProviderWrapper>
         </TanstackQueryProvider>
       </body>
