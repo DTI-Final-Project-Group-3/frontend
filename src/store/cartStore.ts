@@ -55,6 +55,20 @@ export const useCartStore = create<CartState>()(
       // Reset cart when user log out or changes
       resetCart: () => set({ cartItems: [], totalItems: 0 }), // Reset totalItems when resetting the cart
 
+      // Set user data
+      setUser: (userId, role, isVerified) => {
+        set({
+          userId,
+          role,
+          isUserVerified: isVerified,
+          cartItems: [],
+          totalItems: 0,
+        });
+      },
+
+      // Reset cart when user log out or changes
+      resetCart: () => set({ cartItems: [], totalItems: 0 }),
+
       // Add to Cart
       addToCart: (cart) =>
         set((state) => {
@@ -186,7 +200,7 @@ export const useCartStore = create<CartState>()(
         }),
 
       // Set cart items directly (to load data from local Storage)
-      setCartItems: (newCartItems: CartItem[]) =>
+      setCartItems: (newCartItems: WarehouseInventorySummary[]) =>
         set((state) => {
           const totalItems =
             newCartItems.length > 0

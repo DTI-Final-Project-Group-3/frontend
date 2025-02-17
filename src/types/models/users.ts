@@ -1,6 +1,8 @@
 export interface UserAddress {
   id: number;
-  address: string;
+  name: string;
+  detailAddress: string;
   latitude: number;
   longitude: number;
+  primary?: boolean;
 }

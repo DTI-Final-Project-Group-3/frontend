@@ -1,7 +1,6 @@
 "use client";
 
 import { getPaginatedWarehouseInventories } from "@/api/getWarehouseInventories";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import LoadingCard from "@/components/ui/loadingCard";
@@ -14,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/ui/Pagination";
 import Filtering from "@/components/inventory/Filtering";
 import LocationSelector from "@/components/location/LocationSelector";
-import { useLocationStore } from "@/store/locationStore";
+import { useUserAddressStore } from "@/store/userAddressStore";
 import { useSearchStore } from "@/store/searchStore";
 
 export default function Home() {
@@ -25,7 +24,7 @@ export default function Home() {
   const addToCart = useCartStore((state) => state.addToCart);
   useCartStore.getState().isUserVerified = true;
   useCartStore.getState().isUserRegistered = true;
-  const { location } = useLocationStore();
+  const { userAddress } = useUserAddressStore();
   const { searchQuery } = useSearchStore();
 
   const handlePageChange = (
@@ -63,40 +62,28 @@ export default function Home() {
     data: warehouseInventories,
     isLoading: pageLoading,
     isFetching,
-    refetch,
   } = useQuery({
-    queryKey: ["warehouseInventories", page, productCategoryId, searchQuery],
+    queryKey: [
+      "warehouseInventories",
+      page,
+      productCategoryId,
+      searchQuery,
+      userAddress,
+    ],
     queryFn: () =>
       getPaginatedWarehouseInventories({
         page,
         limit: INVENTORY_PER_PAGE,
-        longitude: location?.longitude,
-        latitude: location?.latitude,
+        longitude: userAddress?.longitude,
+        latitude: userAddress?.latitude,
         category: productCategoryId || undefined,
         search: searchQuery,
       }),
-    staleTime: 5 * 60 * 1000,
   });
-
-  useEffect(() => {
-    if (location) {
-      refetch();
-    }
-  }, [location, refetch]);
 
   return (
     <>
       <div className="min-h-[calc(100vh-70px)] mt-6 w-full">
-        {/* <div className="relative mx-auto w-full max-w-[1340px] h-[540px] rounded-lg overflow-hidden">
-          <Image
-            src="/images/dummy-hero-img.png"
-            alt="hero images"
-            height={1000}
-            width={1340}
-            className="h-full w-full object-cover"
-          />
-        </div> */}
-
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
             <div className="col-span-1 flex flex-col gap-8 md:sticky md:top-24 h-fit">

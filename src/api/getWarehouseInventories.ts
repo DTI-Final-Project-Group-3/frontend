@@ -28,7 +28,6 @@ export const getPaginatedWarehouseInventories = async ({
   if (!response.data || !response.data.data) {
     throw new Error("Invalid API response structure.");
   }
-
   return response.data.data;
 };
 
@@ -38,6 +37,5 @@ export const getWarehouseInventoryDetailById = async (
   const response = await axios.get<ApiResponse<WarehouseInventoryDetail>>(
     `${warehouseInventoryUrl}/${id}`
   );
-  console.log(response);
   return response.data;
 };

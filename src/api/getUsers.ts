@@ -3,19 +3,16 @@ import { UserAddress } from "@/types/models/users";
 import axios from "axios";
 import { getSession } from "next-auth/react";
 
-const userUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER}`;
+const userAdrressUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS}`;
 
 export const getUserAddress = async (): Promise<ApiResponse<UserAddress[]>> => {
   const session = await getSession();
-  const accessToken = session;
+  const accessToken = session.accessToken;
 
-  const response = await axios.get<ApiResponse<UserAddress[]>>(
-    `${userUrl}/address`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+  const response = await axios.get<ApiResponse<UserAddress[]>>(userAdrressUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
   return response.data;
 };
