@@ -156,6 +156,7 @@ export default function ProfilePage() {
           const data = await res.json();
           if (data.success) {
             setUserData(data.data);
+            console.log("Profile data", data.data);
             setEditableData({ fullname: data.data.fullname || "", gender: data.data.gender || "", birthdate: data.data.birthdate || "" });
           } else {
             alert("Failed to fetch user details");
@@ -215,7 +216,11 @@ export default function ProfilePage() {
       <div className="text-3xl font-semibold text-center mb-6">My Account</div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="flex flex-col items-center space-y-4">
-          <img src={userData?.profileImageUrl || "https://via.placeholder.com/150"} alt="Profile" className="w-32 h-32 rounded-full object-cover" />
+        <img src={status === "authenticated" && userData ? userData.profileImageUrl || "https://via.placeholder.com/150" : "https://via.placeholder.com/150"}
+            alt="Profile"
+            className="w-32 h-32 rounded-full object-cover"
+        />
+        
           <nav className="w-full text-center space-y-2">
             <button onClick={() => setActiveTab('account')} className={`block w-full py-2 px-4 rounded ${activeTab === 'account' ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-300'}`}>Account</button>
             <button onClick={() => setActiveTab('address')} className={`block w-full py-2 px-4 rounded ${activeTab === 'address' ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-300'}`}>Address</button>
