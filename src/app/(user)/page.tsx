@@ -87,7 +87,7 @@ export default function Home() {
   return (
     <>
       <div className="min-h-[calc(100vh-70px)] mt-6 w-full">
-        <div className="relative mx-auto w-full max-w-[1340px] h-[540px] rounded-lg overflow-hidden">
+        {/* <div className="relative mx-auto w-full max-w-[1340px] h-[540px] rounded-lg overflow-hidden">
           <Image
             src="/images/dummy-hero-img.png"
             alt="hero images"
@@ -95,7 +95,7 @@ export default function Home() {
             width={1340}
             className="h-full w-full object-cover"
           />
-        </div>
+        </div> */}
 
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
