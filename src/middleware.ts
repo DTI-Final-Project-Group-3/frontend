@@ -8,15 +8,9 @@ const PUBLIC_PATHS = [
   "/favicon",
   "/icons",
   "/images",
-  "/product",
-  "/cart",
 ];
 
-const PROTECTED_PATHS = [
-    "/cart",
-    "/order-list",
-    "/admin",
-  ];
+const PROTECTED_PATHS = ["/cart", "/order-list", "/admins"];
 
 type UserRole = "CUSTOMER_VERIFIED" | "ADMIN_WAREHOUSE" | "ADMIN_SUPER";
 
@@ -35,11 +29,18 @@ function isProtectedPath(pathname: string) {
 }
 
 function hasRequiredRole(userRole: string, pathname: string) {
-    return ROLE_PATHS[userRole as UserRole]?.some((path : string) => pathname.startsWith(path)) ?? false;
+  return (
+    ROLE_PATHS[userRole as UserRole]?.some((path: string) =>
+      pathname.startsWith(path)
+    ) ?? false
+  );
 }
 
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
   const { pathname } = new URL(request.url);
 

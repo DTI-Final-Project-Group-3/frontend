@@ -12,10 +12,10 @@ import Filtering from "@/components/product/FilterCategory";
 import LocationSelector from "@/components/product/FilterLocation";
 import { useUserAddressStore } from "@/store/userAddressStore";
 import { useSearchStore } from "@/store/searchStore";
-import ProductCard from "@/components/product/ProductCard";
 import { getNearbyProduct } from "@/api/getProducts";
 import { ProductSummary } from "@/types/models/products";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
+import ProductCard from "@/components/product/ProductCard";
 
 export default function Home() {
   const [productCategoryId, setProductCategoryId] = useState<number | null>(

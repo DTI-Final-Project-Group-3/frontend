@@ -1,10 +1,10 @@
-"use client"
-import { useCartStore } from '@/store/cartStore';
-import { signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+"use client";
+import { useCartStore } from "@/store/cartStore";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const user_detail_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_DETAIL}`;
 
@@ -37,13 +37,33 @@ function Account({
       {userData && (
         <div className="flex flex-col gap-4 w-full">
           {[
-            { label: "Full Name", name: "fullname", value: editableData.fullname, editable: true },
-            { label: "Gender", name: "gender", value: editableData.gender, editable: true, type: "dropdown" },
-            { label: "Birthdate", name: "birthdate", value: editableData.birthdate, editable: true, type: "date" },
+            {
+              label: "Full Name",
+              name: "fullname",
+              value: editableData.fullname,
+              editable: true,
+            },
+            {
+              label: "Gender",
+              name: "gender",
+              value: editableData.gender,
+              editable: true,
+              type: "dropdown",
+            },
+            {
+              label: "Birthdate",
+              name: "birthdate",
+              value: editableData.birthdate,
+              editable: true,
+              type: "date",
+            },
             { label: "Email", value: userData.email },
             { label: "Phone Number", value: userData.phoneNumber },
             { label: "Role", value: userData.role },
-            { label: "Email Verified", value: userData.isEmailVerified ? "Yes" : "No" }
+            {
+              label: "Email Verified",
+              value: userData.isEmailVerified ? "Yes" : "No",
+            },
           ].map((field, index) => (
             <div key={index} className="flex flex-col w-full">
               <label className="font-semibold">{field.label}</label>
@@ -117,13 +137,25 @@ function AddressComponent({
   };
 
   return (
-    <div key={id} className={`p-4 border rounded-lg shadow ${primary ? 'border-green-500' : 'border-gray-300'}`}>
+    <div
+      key={id}
+      className={`p-4 border rounded-lg shadow ${primary ? "border-green-500" : "border-gray-300"}`}
+    >
       <h3 className="text-lg font-bold">{name}</h3>
       <p className="text-gray-600">{detailAddress}</p>
-      <p className="text-sm text-gray-500">Latitude: {latitude}, Longitude: {longitude}</p>
-      <div className='flex justify-between items-center w-full mt-4'>
-        {primary && <span className="text-green-500 font-bold">Active address</span>}
-        <button onClick={handleDelete} className="mt-2 bg-red-500 text-white p-2 rounded">Delete</button>
+      <p className="text-sm text-gray-500">
+        Latitude: {latitude}, Longitude: {longitude}
+      </p>
+      <div className="flex justify-between items-center w-full mt-4">
+        {primary && (
+          <span className="text-green-500 font-bold">Active address</span>
+        )}
+        <button
+          onClick={handleDelete}
+          className="mt-2 bg-red-500 text-white p-2 rounded"
+        >
+          Delete
+        </button>
       </div>
     </div>
   );
@@ -160,19 +192,33 @@ function Address() {
     fetchAddresses();
   }, [session]);
 
-  if (loading) return <div className='w-full h-full flex items-center justify-center'>Loading addresses...</div>;
+  if (loading)
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        Loading addresses...
+      </div>
+    );
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="space-y-4 flex flex-col gap-6">
-      <div className='w-full flex gap-4 flex-col md:flex-row md:justify-between md:items-center'>
+      <div className="w-full flex gap-4 flex-col md:flex-row md:justify-between md:items-center">
         <h2 className="text-2xl font-semibold">My Address</h2>
         <Link href="/profile/create-address">
-          <div className='bg-black text-white px-4 py-2 text-center cursor-pointer rounded-lg'>Create A New Address</div>
+          <div className="bg-black text-white px-4 py-2 text-center cursor-pointer rounded-lg">
+            Create A New Address
+          </div>
         </Link>
       </div>
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-        {addresses.map(address => <AddressComponent key={address.id} {...address} onDelete={fetchAddresses} session={session} />)}
+        {addresses.map((address) => (
+          <AddressComponent
+            key={address.id}
+            {...address}
+            onDelete={fetchAddresses}
+            session={session}
+          />
+        ))}
       </div>
     </div>
   );
@@ -194,6 +240,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
+      console.log(status);
       alert("You are not logged in.");
       router.push("/login");
     }
@@ -264,7 +311,11 @@ export default function ProfilePage() {
   };
 
   if (status === "loading") {
-    return <div className='flex items-center justify-center py-[40px] px-6 min-h-[calc(100vh-70px)] w-full'>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center py-[40px] px-6 min-h-[calc(100vh-70px)] w-full">
+        Loading...
+      </div>
+    );
   }
 
   if (status === "unauthenticated") {
@@ -273,12 +324,11 @@ export default function ProfilePage() {
 
   return (
     <div className="py-[40px] px-6 min-h-[calc(100vh-70px)] bg-slate-100 w-full">
-      <div className='md:max-w-4xl lg:max-w-[1340px] mx-auto w-full'>
+      <div className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
         <h1 className="text-4xl font-semibold">My Profile</h1>
 
         {/* Responsive Layout */}
         <div className="mt-[40px] w-full flex flex-col md:flex-row md:gap-16 items-start">
-
           {/* Left Menu - Auto Height Based on Content */}
           <div className="flex flex-col flex-shrink-0 items-center space-y-4 md:w-1/4 bg-white p-8 rounded-xl w-full">
             <Image
@@ -336,7 +386,6 @@ export default function ProfilePage() {
               <Address />
             )}
           </div>
-
         </div>
       </div>
     </div>
