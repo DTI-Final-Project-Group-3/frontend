@@ -100,13 +100,13 @@ const Cart: FC = () => {
               {cartItems.length > 0 ? (
                 cartItems.map((item) => (
                   <CartItem
-                    key={item.inventoryId}
-                    id={item.inventoryId}
+                    key={item.product.id}
+                    id={item.product.id}
                     name={item.product.name}
                     price={item.product.price}
                     imageUrl={item.product.thumbnail}
                     quantity={item.cartQuantity}
-                    stock={item.stockQuantity}
+                    stock={item.product.totalStock}
                   />
                 ))
               ) : (

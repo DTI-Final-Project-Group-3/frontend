@@ -8,7 +8,7 @@ const PUBLIC_PATHS = [
   "/favicon",
   "/icons",
   "/images",
-  "/inventory",
+  "/product",
   "/cart",
 ];
 

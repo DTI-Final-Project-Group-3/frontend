@@ -1,20 +1,21 @@
 "use client";
 
-import { getPaginatedWarehouseInventories } from "@/api/getWarehouseInventories";
 import { useEffect, useState } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import LoadingCard from "@/components/ui/loadingCard";
 import { toast } from "@/hooks/use-toast";
 
 import { CartItem, useCartStore } from "@/store/cartStore";
-import InventoryCard from "@/components/inventory/InventoryCard";
-import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/ui/Pagination";
-import Filtering from "@/components/inventory/Filtering";
-import LocationSelector from "@/components/location/LocationSelector";
+import Filtering from "@/components/product/FilterCategory";
+import LocationSelector from "@/components/product/FilterLocation";
 import { useUserAddressStore } from "@/store/userAddressStore";
 import { useSearchStore } from "@/store/searchStore";
+import ProductCard from "@/components/product/ProductCard";
+import { getNearbyProduct } from "@/api/getProducts";
+import { ProductSummary } from "@/types/models/products";
+import { LOCATION_RADIUS } from "@/constant/locationConstant";
 
 export default function Home() {
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
@@ -24,6 +25,7 @@ export default function Home() {
   const addToCart = useCartStore((state) => state.addToCart);
   useCartStore.getState().isUserVerified = true;
   useCartStore.getState().isUserRegistered = true;
+  const { cartItems, setCartItems } = useCartStore();
   const { userAddress } = useUserAddressStore();
   const { searchQuery } = useSearchStore();
 
@@ -32,54 +34,77 @@ export default function Home() {
     isDirectPage: boolean = false
   ) => {
     const pageRequest = isDirectPage ? pageChange : page + pageChange;
-    if (
-      pageRequest >= 0 &&
-      pageRequest < (warehouseInventories?.totalPages || 0)
-    ) {
+    if (pageRequest >= 0 && pageRequest < (products?.totalPages || 0)) {
       setPage(pageRequest);
     }
   };
 
-  const handleAddToCart = (inventory: WarehouseInventorySummary) => {
+  const handleAddToCart = (product: ProductSummary) => {
     const cartItem: CartItem = {
-      inventoryId: inventory.id,
-      product: inventory.product,
-      stockQuantity: inventory.quantity,
+      product: product,
       cartQuantity: 1,
-      warehouse: inventory.warehouse,
     };
-
     addToCart(cartItem);
     toast({
       title: "Added to cart",
 
       duration: 2000,
-      description: `${inventory.product.name} has been added to your cart.`,
+      description: `${product.name} has been added to your cart.`,
     });
   };
 
   const {
-    data: warehouseInventories,
-    isLoading: pageLoading,
-    isFetching,
+    data: products,
+    isLoading: productsLoading,
+    isFetching: productsFetching,
   } = useQuery({
     queryKey: [
-      "warehouseInventories",
+      "nearbyProducts",
       page,
       productCategoryId,
       searchQuery,
       userAddress,
     ],
     queryFn: () =>
-      getPaginatedWarehouseInventories({
+      getNearbyProduct({
         page,
         limit: INVENTORY_PER_PAGE,
         longitude: userAddress?.longitude,
         latitude: userAddress?.latitude,
-        category: productCategoryId || undefined,
-        search: searchQuery,
+        radius: LOCATION_RADIUS,
+        productCategoryId: productCategoryId || undefined,
+        searchQuery: searchQuery,
       }),
   });
+
+  useEffect(() => {
+    const currentCart = localStorage.getItem("cart-storage");
+
+    if (currentCart && products?.content) {
+      const parsedcurrentCart: CartItem[] = JSON.parse(currentCart);
+      const updatedCart: CartItem[] = parsedcurrentCart.map((item) => {
+        const updatedProduct = products?.content.find(
+          (product) => product.id === item.product.id
+        );
+
+        if (updatedProduct) {
+          return {
+            ...item,
+            product: updatedProduct,
+          };
+        }
+
+        const existingProduct = item.product;
+        existingProduct.totalStock = 0;
+        return {
+          ...item,
+          product: existingProduct,
+        };
+      });
+
+      setCartItems(updatedCart);
+    }
+  }, [products]);
 
   return (
     <>
@@ -95,31 +120,29 @@ export default function Home() {
 
             <div className="col-span-3">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {pageLoading || isFetching
+                {productsLoading || productsFetching
                   ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
                       <LoadingCard key={index} />
                     ))
-                  : warehouseInventories?.content?.map((inventory) => (
-                      <div key={inventory.id}>
-                        <InventoryCard
-                          id={inventory.id}
-                          product={inventory.product}
-                          status={inventory.status}
-                          warehouse={inventory.warehouse}
-                          quantity={inventory.quantity}
-                          statusId={inventory.status.id}
-                          statusName={inventory.status.name}
-                          onAddToCart={() => handleAddToCart(inventory)}
+                  : products?.content.map((product) => (
+                      <div key={product.id}>
+                        <ProductCard
+                          id={product.id}
+                          name={product.name}
+                          price={product.price}
+                          thumbnail={product.thumbnail ?? "/no-image-icon.jpg"}
+                          totalStock={product.totalStock}
+                          onAddToCart={() => handleAddToCart(product)}
                         />
                       </div>
                     ))}
               </div>
               <Pagination
                 currentPage={page}
-                totalPages={warehouseInventories?.totalPages || 0}
+                totalPages={products?.totalPages || 0}
                 onPageChange={handlePageChange}
-                hasNext={warehouseInventories?.hasNext || false}
-                hasPrev={warehouseInventories?.hasPrev || false}
+                hasNext={products?.hasNext || false}
+                hasPrev={products?.hasPrev || false}
               />
             </div>
           </div>

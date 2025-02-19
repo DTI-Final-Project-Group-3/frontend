@@ -2,11 +2,11 @@ import { FC, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getProductCategory } from "@/api/getProducts";
 
-interface FilterProps {
+interface FilterCategoryProps {
   onFilterChange: (category: number | null) => void;
 }
 
-const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
+const FilterCategory: FC<FilterCategoryProps> = ({ onFilterChange }) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const {
@@ -74,4 +74,4 @@ const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
   );
 };
 
-export default Filtering;
+export default FilterCategory;

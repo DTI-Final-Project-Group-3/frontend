@@ -1,16 +1,12 @@
+import CartItem from "@/components/cart/components/CartItem";
 import { toast } from "@/hooks/use-toast";
 import { ProductSummary } from "@/types/models/products";
-import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
-import { Warehouse } from "@/types/models/warehouses";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface CartItem {
-  inventoryId: number;
   product: ProductSummary;
-  stockQuantity: number;
   cartQuantity: number;
-  warehouse: Warehouse;
 }
 
 type CartState = {
@@ -20,14 +16,14 @@ type CartState = {
   isUserVerified: boolean;
 
   cartItems: CartItem[];
-  totalItems: number; // Aggregate quantity of all items in the cart
+  totalItems: number;
 
   setUser: (userId: string, role: string, isVerified: boolean) => void;
   resetCart: () => void;
   addToCart: (cart: CartItem) => void;
-  increaseQuantity: (inventoryId: number) => void;
-  decreaseQuantity: (inventoryId: number) => void;
-  removeFromCart: (inventoryId: number) => void;
+  increaseQuantity: (productId: number) => void;
+  decreaseQuantity: (productId: number) => void;
+  removeFromCart: (productId: number) => void;
   setCartItems: (newCartItems: CartItem[]) => void;
 };
 
@@ -39,23 +35,8 @@ export const useCartStore = create<CartState>()(
       cartItems: [],
       isUserRegistered: false,
       isUserVerified: false,
-      totalItems: 0, // Initialize totalItems to 0
+      totalItems: 0,
 
-      // Set user data
-      setUser: (userId, role, isVerified) => {
-        set({
-          userId,
-          role,
-          isUserVerified: isVerified,
-          cartItems: [],
-          totalItems: 0, // Reset totalItems when setting a new user
-        });
-      },
-
-      // Reset cart when user log out or changes
-      resetCart: () => set({ cartItems: [], totalItems: 0 }), // Reset totalItems when resetting the cart
-
-      // Set user data
       setUser: (userId, role, isVerified) => {
         set({
           userId,
@@ -66,10 +47,8 @@ export const useCartStore = create<CartState>()(
         });
       },
 
-      // Reset cart when user log out or changes
       resetCart: () => set({ cartItems: [], totalItems: 0 }),
 
-      // Add to Cart
       addToCart: (cart) =>
         set((state) => {
           if (
@@ -94,22 +73,11 @@ export const useCartStore = create<CartState>()(
           }
 
           const existingItemIndex = state.cartItems.findIndex(
-            (item) => item.inventoryId === cart.inventoryId
+            (item) => item.product.id === cart.product.id
           );
 
           if (existingItemIndex >= 0) {
-            // Item already exists in cart
             const existingItem = state.cartItems[existingItemIndex];
-
-            if (existingItem.cartQuantity + 1 > existingItem.stockQuantity) {
-              toast({
-                title: "Out of stock",
-                description: `Only ${existingItem.stockQuantity} of stock available.`,
-                variant: "destructive",
-                duration: 2000,
-              });
-              return state;
-            }
 
             const updatedCartItems = [...state.cartItems];
             updatedCartItems[existingItemIndex] = {
@@ -120,58 +88,61 @@ export const useCartStore = create<CartState>()(
             return {
               ...state,
               cartItems: updatedCartItems,
-              totalItems: state.totalItems + 1, // Increment totalItems by 1
+              totalItems: state.totalItems + 1,
             };
           }
 
-          // Add new cart item to cart
+          const newItem: CartItem = {
+            product: cart.product,
+            cartQuantity: cart.cartQuantity,
+          };
+
           return {
             ...state,
-            cartItems: [
-              ...state.cartItems,
-              {
-                inventoryId: cart.inventoryId,
-                product: cart.product,
-                stockQuantity: cart.stockQuantity,
-                cartQuantity: cart.cartQuantity,
-                warehouse: cart.warehouse,
-              },
-            ],
-            totalItems: state.totalItems + 1, // Increment totalItems by 1
+            cartItems: [...state.cartItems, newItem],
+            totalItems: state.totalItems + cart.cartQuantity,
           };
         }),
 
-      // Increase Product Quantity
-      increaseQuantity: (inventoryId) =>
+      increaseQuantity: (productId) =>
         set((state) => {
-          const updatedCartItems = state.cartItems.map((item) =>
-            item.inventoryId === inventoryId &&
-            item.cartQuantity < item.stockQuantity
-              ? { ...item, cartQuantity: item.cartQuantity + 1 }
-              : item
-          );
+          const updatedCartItems = state.cartItems.map((item) => {
+            if (
+              item.product.id === productId &&
+              item.cartQuantity < item.product.totalStock
+            ) {
+              const newQuantity = item.cartQuantity + 1;
+              return {
+                ...item,
+                cartQuantity: newQuantity,
+                available: item.product.totalStock >= newQuantity,
+              };
+            }
+            return item;
+          });
 
           const totalItems = updatedCartItems.reduce(
             (sum, item) => sum + item.cartQuantity,
             0
           );
 
-          return {
-            ...state,
-            cartItems: updatedCartItems,
-            totalItems, // Update totalItems
-          };
+          return { ...state, cartItems: updatedCartItems, totalItems };
         }),
 
-      // Decrease Product Quantity
-      decreaseQuantity: (inventoryId) =>
+      decreaseQuantity: (productId) =>
         set((state) => {
           const updatedCartItems = state.cartItems
-            .map((item) =>
-              item.inventoryId === inventoryId && item.cartQuantity > 1
-                ? { ...item, cartQuantity: item.cartQuantity - 1 }
-                : item
-            )
+            .map((item) => {
+              if (item.product.id === productId && item.cartQuantity > 1) {
+                const newQuantity = item.cartQuantity - 1;
+                return {
+                  ...item,
+                  cartQuantity: newQuantity,
+                  available: item.product.totalStock >= newQuantity,
+                };
+              }
+              return item;
+            })
             .filter((item) => item.cartQuantity > 0);
 
           const totalItems = updatedCartItems.reduce(
@@ -179,38 +150,32 @@ export const useCartStore = create<CartState>()(
             0
           );
 
-          return {
-            ...state,
-            cartItems: updatedCartItems,
-            totalItems, // Update totalItems
-          };
+          return { ...state, cartItems: updatedCartItems, totalItems };
         }),
 
-      // Remove from Cart
-      removeFromCart: (inventoryId) =>
+      removeFromCart: (productId) =>
         set((state) => {
           const updatedCartItems = state.cartItems.filter(
-            (item) => item.inventoryId !== inventoryId
+            (item) => item.product.id !== productId
           );
           const totalItems = updatedCartItems.reduce(
             (sum, item) => sum + item.cartQuantity,
             0
           );
-          return { ...state, cartItems: updatedCartItems, totalItems }; // Update totalItems
+          return { ...state, cartItems: updatedCartItems, totalItems };
         }),
 
-      // Set cart items directly (to load data from local Storage)
-      setCartItems: (newCartItems: WarehouseInventorySummary[]) =>
+      setCartItems: (newCartItems: CartItem[]) =>
         set((state) => {
           const totalItems =
             newCartItems.length > 0
               ? newCartItems.reduce((sum, item) => sum + item.cartQuantity, 0)
               : 0;
-          return { ...state, cartItems: newCartItems, totalItems }; // Update totalItems
+          return { ...state, cartItems: newCartItems, totalItems };
         }),
     }),
+
     {
-      // Key for the local storage
       name: "cart-storage",
       partialize: (state) => ({
         userId: state.userId,

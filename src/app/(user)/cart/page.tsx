@@ -52,15 +52,15 @@ const CartPage: FC = () => {
           <div className="flex flex-col gap-6 w-full">
             {cartItems.length > 0 ? (
               cartItems.map((item) => (
-                <div className="bg-white p-8 rounded-xl" key={item.inventoryId}>
+                <div className="bg-white p-8 rounded-xl" key={item.product.id}>
                   <CartItemLarge
-                    key={item.inventoryId}
-                    id={item.inventoryId}
+                    key={item.product.id}
+                    id={item.product.id}
                     name={item.product.name}
                     price={item.product.price}
                     quantity={item.cartQuantity}
-                    stock={item.stockQuantity}
-                    category={item.product.category.name}
+                    stock={item.product.totalStock}
+                    category={item.product.categoryName}
                   />
                 </div>
               ))

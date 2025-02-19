@@ -1,9 +1,16 @@
 import { ApiResponse } from "@/types/api/apiResponse";
-import { ProductCategory } from "@/types/models/products";
+import { PaginationResponse } from "@/types/api/pagination";
+import {
+  PaginatedProductParams,
+  ProductCategory,
+  ProductDetail,
+  ProductSummary,
+} from "@/types/models/products";
 import axios from "axios";
+import test from "node:test";
 
-const productUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT}`;
-const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}${process.env.NEXT_PUBLIC_PRODUCT_CATEGORY}`;
+const productUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}`;
+const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT_CATEGORY}`;
 
 export const getProductCategory = async (): Promise<
   ApiResponse<ProductCategory[]>
@@ -13,4 +20,60 @@ export const getProductCategory = async (): Promise<
     `${productCategoryUrl}/all`
   );
   return response.data;
+};
+
+export const getNearbyProduct = async ({
+  page,
+  limit,
+  longitude,
+  latitude,
+  radius,
+  productCategoryId,
+  searchQuery,
+}: PaginatedProductParams): Promise<PaginationResponse<ProductSummary>> => {
+  try {
+    const response = await axios.get<
+      ApiResponse<PaginationResponse<ProductSummary>>
+    >(`${productUrl}/nearby`, {
+      params: {
+        page,
+        limit,
+        longitude,
+        latitude,
+        radius,
+        productCategoryId,
+        searchQuery,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    throw new Error("Failed to fetch nearby products");
+  }
+};
+
+interface LocationParams {
+  longitude?: number;
+  latitude?: number;
+  radius?: number;
+}
+
+interface ProductDetailParams extends LocationParams {
+  productId: number;
+}
+
+export const getProductDetailById = async ({
+  productId,
+  longitude,
+  latitude,
+  radius,
+}: ProductDetailParams): Promise<ProductDetail> => {
+  const response = await axios.get<ApiResponse<ProductDetail>>(productUrl, {
+    params: {
+      productId: productId,
+      longitude: longitude,
+      latitude: latitude,
+      radius: radius,
+    },
+  });
+  return response.data.data;
 };

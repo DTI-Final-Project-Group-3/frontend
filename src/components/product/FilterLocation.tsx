@@ -7,17 +7,20 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useUserAddressStore } from "@/store/userAddressStore";
 import { getDetailAddress, LocationCoordinate } from "@/api/getLocation";
+import { useSession } from "next-auth/react";
 
-export default function LocationSelector() {
+export default function FilterLocation() {
   const [currentLocation, setCurrentLocation] = useState<LocationCoordinate>({
     latitude: 0,
     longitude: 0,
   });
   const setUserAddress = useUserAddressStore((state) => state.setUserAddress);
+  const session = useSession();
 
   const { data: userAddresses, isLoading: addressesLoading } = useQuery({
     queryKey: ["userAddresses"],
     queryFn: getUserAddress,
+    enabled: session.status === "authenticated",
   });
 
   const { data: currentLocationDetail, isLoading: locationLoading } = useQuery({
@@ -104,9 +107,9 @@ export default function LocationSelector() {
       </label>
       <select
         id="address-select"
-        className="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        className="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
         onChange={handleAddressChange}
-        disabled={addressesLoading || locationLoading}
+        disabled={addressesLoading}
       >
         <option value="" disabled>
           Select location
