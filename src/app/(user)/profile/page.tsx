@@ -1,12 +1,28 @@
 "use client";
 import { useCartStore } from "@/store/cartStore";
+import { UserDetail } from "@/types/models/userDetail";
+import { UserAddress } from "@/types/models/users";
+import { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 const user_detail_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_DETAIL}`;
+
+interface AccountProps {
+  userData : UserDetail | null;
+  editableData: {
+    fullname: string;
+    gender: string;
+    birthdate: string;
+  };
+  handleInputChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  handleSave: () => void;
+  handleDiscard: () => void;
+  isModified: boolean;
+}
 
 function Account({
   userData,
@@ -15,7 +31,7 @@ function Account({
   handleSave,
   handleDiscard,
   isModified,
-}) {
+} : AccountProps) {
   return (
     <div className="space-y-4 flex flex-col w-full">
       <div className="flex justify-end space-x-2">
@@ -107,6 +123,17 @@ function Account({
 const user_address_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS}`;
 const user_address_id_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS_ID}`;
 
+interface AddressComponentProps {
+  id : number,
+  name : string,
+  detailAddress : string,
+  latitude : number,
+  longitude : number,
+  primary? : boolean,
+  onDelete :  () => void,
+  session : Session | null
+  }
+
 function AddressComponent({
   id,
   name,
@@ -116,24 +143,25 @@ function AddressComponent({
   primary,
   onDelete,
   session,
-}) {
+} : AddressComponentProps) {
   const handleDelete = async () => {
-    try {
-      const res = await fetch(`${user_address_id_url}/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-        },
-      });
-      if (res.ok) {
-        onDelete();
-      } else {
-        alert("Failed to delete address");
+    if (session)
+      try {
+        const res = await fetch(`${user_address_id_url}/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        });
+        if (res.ok) {
+          onDelete();
+        } else {
+          alert("Failed to delete address");
+        }
+      } catch (err) {
+        console.error("Error deleting address:", err);
+        alert("Error deleting address");
       }
-    } catch (err) {
-      console.error("Error deleting address:", err);
-      alert("Error deleting address");
-    }
   };
 
   return (
@@ -163,9 +191,9 @@ function AddressComponent({
 
 function Address() {
   const { data: session } = useSession();
-  const [addresses, setAddresses] = useState([]);
+  const [addresses, setAddresses] = useState<UserAddress[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   const fetchAddresses = async () => {
     if (session) {
@@ -227,7 +255,7 @@ function Address() {
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<UserDetail | null>(null);
   const [editableData, setEditableData] = useState({
     fullname: "",
     gender: "",
@@ -273,40 +301,49 @@ export default function ProfilePage() {
     }
   }, [session, status]);
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setEditableData({ ...editableData, [e.target.name]: e.target.value });
-    setIsModified(true);
+  setIsModified(true);
   };
 
   const handleSave = async () => {
-    try {
-      const res = await fetch(user_detail_url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.accessToken}`,
-        },
-        body: JSON.stringify(editableData),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("User details updated successfully");
-        setIsModified(false);
-      } else {
-        alert("Failed to update user details");
+    if (session)
+      try {
+        const res = await fetch(user_detail_url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: JSON.stringify(editableData),
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("User details updated successfully");
+          setIsModified(false);
+        } else {
+          alert("Failed to update user details");
+        }
+      } catch (error) {
+        console.error("Error updating user details:", error);
+        alert("Error updating user details");
       }
-    } catch (error) {
-      console.error("Error updating user details:", error);
-      alert("Error updating user details");
-    }
   };
 
   const handleDiscard = () => {
-    setEditableData({
-      fullname: userData.fullname || "",
-      gender: userData.gender || "",
-      birthdate: userData.birthdate || "",
-    });
+    if (userData)
+      setEditableData({
+        fullname: userData.fullname || "",
+        gender: userData.gender || "",
+        birthdate: userData.birthdate || "",
+      });
+    else {
+      setEditableData({
+        fullname: "",
+        gender: "",
+        birthdate: "",
+      });
+    }
     setIsModified(false);
   };
 
