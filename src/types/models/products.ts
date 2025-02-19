@@ -6,8 +6,9 @@ export interface Product {
 
 //use to display in pagination
 export interface ProductSummary extends Product {
-  thumbnail?: ProductImage;
-  category: ProductCategory;
+  totalStock: number;
+  thumbnail?: string;
+  categoryName: string;
 }
 
 // use to display in product detail page
@@ -18,7 +19,8 @@ export interface ProductDetail extends Product {
   width?: number;
   length?: number;
   images?: ProductImage[];
-  category: ProductCategory;
+  totalStock: number;
+  categoryName: string;
 }
 
 export interface ProductImage {
@@ -29,4 +31,14 @@ export interface ProductImage {
 export interface ProductCategory {
   id: number;
   name: string;
+}
+
+export interface PaginatedProductParams {
+  page: number;
+  limit: number;
+  longitude?: number;
+  latitude?: number;
+  radius?: number;
+  productCategoryId?: number;
+  searchQuery?: string;
 }

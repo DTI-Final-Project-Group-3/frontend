@@ -1,6 +1,7 @@
 import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
 import {
+  WarehouseInventoryDetail,
   WarehouseInventoryParams,
   WarehouseInventorySummary,
 } from "@/types/models/warehouseInventories";
@@ -27,6 +28,14 @@ export const getPaginatedWarehouseInventories = async ({
   if (!response.data || !response.data.data) {
     throw new Error("Invalid API response structure.");
   }
-
   return response.data.data;
+};
+
+export const getWarehouseInventoryDetailById = async (
+  id: number
+): Promise<ApiResponse<WarehouseInventoryDetail>> => {
+  const response = await axios.get<ApiResponse<WarehouseInventoryDetail>>(
+    `${warehouseInventoryUrl}/${id}`
+  );
+  return response.data;
 };

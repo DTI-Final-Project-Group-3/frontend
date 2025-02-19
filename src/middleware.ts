@@ -1,7 +1,16 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/signup", "/api/auth", "/favicon", "/icons", "/images"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/signup",
+  "/api/auth",
+  "/favicon",
+  "/icons",
+  "/images",
+  "/product",
+  "/cart",
+];
 
 const PROTECTED_PATHS = [
     "/cart",
@@ -22,8 +31,8 @@ function isPublicPath(pathname: string) {
 }
 
 function isProtectedPath(pathname: string) {
-    return PROTECTED_PATHS.some((path) => pathname.startsWith(path));
-  }
+  return PROTECTED_PATHS.some((path) => pathname.startsWith(path));
+}
 
 function hasRequiredRole(userRole: string, pathname: string) {
     return ROLE_PATHS[userRole as UserRole]?.some((path : string) => pathname.startsWith(path)) ?? false;
@@ -34,7 +43,7 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = new URL(request.url);
 
-  if ((pathname === "/") || isPublicPath(pathname)) {
+  if (pathname === "/" || isPublicPath(pathname)) {
     return NextResponse.next();
   }
 
@@ -53,5 +62,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"], // Apply middleware to all pages except static assets
-  };
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"], // Apply middleware to all pages except static assets
+};
