@@ -16,6 +16,7 @@ import { getNearbyProduct } from "@/api/getProducts";
 import { ProductSummary } from "@/types/models/products";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import ProductCard from "@/components/product/ProductCard";
+import { cookies } from "next/headers";
 
 export default function Home() {
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
@@ -23,9 +24,9 @@ export default function Home() {
   );
   const [page, setPage] = useState<number>(0);
   const addToCart = useCartStore((state) => state.addToCart);
+  const { setCartItems } = useCartStore();
   useCartStore.getState().isUserVerified = true;
   useCartStore.getState().isUserRegistered = true;
-  const { cartItems, setCartItems } = useCartStore();
   const { userAddress } = useUserAddressStore();
   const { searchQuery } = useSearchStore();
 
@@ -45,12 +46,6 @@ export default function Home() {
       cartQuantity: 1,
     };
     addToCart(cartItem);
-    toast({
-      title: "Added to cart",
-
-      duration: 2000,
-      description: `${product.name} has been added to your cart.`,
-    });
   };
 
   const {
@@ -59,7 +54,7 @@ export default function Home() {
     isFetching: productsFetching,
   } = useQuery({
     queryKey: [
-      "nearbyProducts",
+      "nearby-products",
       page,
       productCategoryId,
       searchQuery,
@@ -75,34 +70,30 @@ export default function Home() {
         productCategoryId: productCategoryId || undefined,
         searchQuery: searchQuery,
       }),
+    staleTime: 120000,
   });
 
   useEffect(() => {
     const currentCart = localStorage.getItem("cart-storage");
+    if (currentCart) {
+      try {
+        const parsedCart: CartItem[] = JSON.parse(currentCart);
 
-    if (currentCart && products?.content) {
-      const parsedcurrentCart: CartItem[] = JSON.parse(currentCart);
-      const updatedCart: CartItem[] = parsedcurrentCart.map((item) => {
-        const updatedProduct = products?.content.find(
-          (product) => product.id === item.product.id
-        );
-
-        if (updatedProduct) {
-          return {
-            ...item,
-            product: updatedProduct,
-          };
+        if (Array.isArray(parsedCart) && products?.content) {
+          const updatedCart: CartItem[] = parsedCart.map((item) => {
+            const updatedProduct = products.content.find(
+              (product) => product.id === item.product.id
+            );
+            if (updatedProduct) {
+              return { ...item, product: updatedProduct };
+            }
+            return { ...item, product: { ...item.product, totalStock: 0 } };
+          });
+          setCartItems(updatedCart);
         }
-
-        const existingProduct = item.product;
-        existingProduct.totalStock = 0;
-        return {
-          ...item,
-          product: existingProduct,
-        };
-      });
-
-      setCartItems(updatedCart);
+      } catch (err) {
+        console.error("Error parsing cart-storage:", err);
+      }
     }
   }, [products]);
 
