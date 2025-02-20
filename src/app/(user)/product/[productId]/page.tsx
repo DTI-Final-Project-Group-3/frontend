@@ -43,7 +43,7 @@ const InventoryPage: FC = () => {
       price: product.price,
       totalStock: product.totalStock,
       thumbnail: product.images?.find((image) => image.position === 1)?.url,
-      categoryName: product.categoryName,
+      categoryName: product.category.name,
     };
 
     const cartItem: CartItem = {
@@ -172,7 +172,9 @@ const InventoryPage: FC = () => {
               <p className="text-gray-600">Remaining stock</p>
               <p>{productDetail.totalStock}</p>
               <p className="text-gray-600">Category</p>
-              <p>{productDetail.categoryName}</p>
+              <p>{productDetail.category.name}</p>
+              <p className="text-gray-600">Send from</p>
+              <p>{productDetail.nearestWarehouse.name}</p>
             </div>
           </div>
         </div>

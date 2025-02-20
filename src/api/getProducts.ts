@@ -67,13 +67,16 @@ export const getProductDetailById = async ({
   latitude,
   radius,
 }: ProductDetailParams): Promise<ProductDetail> => {
-  const response = await axios.get<ApiResponse<ProductDetail>>(productUrl, {
-    params: {
-      productId: productId,
-      longitude: longitude,
-      latitude: latitude,
-      radius: radius,
-    },
-  });
+  const response = await axios.get<ApiResponse<ProductDetail>>(
+    `${productUrl}/nearby`,
+    {
+      params: {
+        productId: productId,
+        longitude: longitude,
+        latitude: latitude,
+        radius: radius,
+      },
+    }
+  );
   return response.data.data;
 };
