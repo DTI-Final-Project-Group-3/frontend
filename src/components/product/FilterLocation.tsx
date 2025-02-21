@@ -1,12 +1,12 @@
 "use client";
 
-import { getUserAddress } from "@/api/getUsers";
+import { getUserAddress } from "@/app/api/getUsers";
 import { toast } from "@/hooks/use-toast";
 import { UserAddress } from "@/types/models/users";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useUserAddressStore } from "@/store/userAddressStore";
-import { getDetailAddress, LocationCoordinate } from "@/api/getLocation";
+import { getDetailAddress, LocationCoordinate } from "@/app/api/getLocation";
 import { useSession } from "next-auth/react";
 
 export default function FilterLocation() {
