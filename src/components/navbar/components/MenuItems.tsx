@@ -50,7 +50,6 @@ const MenuItems: FC = () => {
             </TooltipTrigger>
             <TooltipContent>My Cart</TooltipContent>
           </Tooltip>
-
           {/* Notifications Menu Icon */}
           <NotificationDropdown />
 

@@ -1,9 +1,10 @@
 import React, { FC } from "react";
 import CartItemLarge from "../cart/components/CartItemLarge";
 import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
+import { CartItem } from "@/store/cartStore";
 
 type CartItemsListProps = {
-  cartItems: WarehouseInventorySummary[];
+  cartItems: CartItem[];
 };
 
 const CartItemsList: FC<CartItemsListProps> = ({ cartItems }) => {
@@ -11,15 +12,16 @@ const CartItemsList: FC<CartItemsListProps> = ({ cartItems }) => {
     <div className="bg-white rounded-xl">
       {cartItems.length > 0 ? (
         cartItems.map((item) => (
-          <div className="p-8" key={item.id}>
+          <div className="p-8" key={item.product.id}>
             <CartItemLarge
-              id={item.id}
+              id={item.product.id}
               name={item.product.name}
               price={item.product.price}
-              quantity={item.quantity}
-              stock={item.stock}
+              stock={item.product.totalStock}
+              quantity={item.cartQuantity}
+              imageUrl={item.product.thumbnail}
               showButton={true}
-              category={item.product.category.name}
+              category={item.product.categoryName}
             />
           </div>
         ))

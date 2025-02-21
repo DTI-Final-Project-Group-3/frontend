@@ -46,7 +46,7 @@ const CheckoutPage: FC = () => {
   const totalPrice = useMemo(
     () =>
       cartItems.reduce(
-        (acc, item) => acc + item.product.price * item.quantity,
+        (acc, item) => acc + item.product.price * item.cartQuantity,
         0
       ),
     [cartItems]
@@ -54,7 +54,7 @@ const CheckoutPage: FC = () => {
 
   // Calculate total quantity
   const totalQuantity = useMemo(
-    () => cartItems.reduce((acc, item) => acc + item.quantity, 0),
+    () => cartItems.reduce((acc, item) => acc + item.cartQuantity, 0),
     [cartItems]
   );
 
@@ -63,8 +63,8 @@ const CheckoutPage: FC = () => {
     try {
       // Set order items
       const orderItems = cartItems.map((item) => ({
-        productId: item.product.id,
-        quantity: item.quantity,
+        productId: 3,
+        quantity: item.cartQuantity,
         unitPrice: item.product.price,
       }));
 
@@ -112,8 +112,8 @@ const CheckoutPage: FC = () => {
     try {
       // Set order items
       const orderItems = cartItems.map((item) => ({
-        productId: item.product.id,
-        quantity: item.quantity,
+        productId: 3,
+        quantity: item.cartQuantity,
         unitPrice: item.product.price,
       }));
 

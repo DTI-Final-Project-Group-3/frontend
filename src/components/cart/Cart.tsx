@@ -43,7 +43,7 @@ const Cart: FC = () => {
   const totalPrice = useMemo(
     () =>
       cartItems.reduce(
-        (acc, item) => acc + item.product.price * item.quantity,
+        (acc, item) => acc + item.product.price * item.cartQuantity,
         0
       ),
     [cartItems]
@@ -100,12 +100,13 @@ const Cart: FC = () => {
               {cartItems.length > 0 ? (
                 cartItems.map((item) => (
                   <CartItem
-                    key={item.id}
-                    id={item.id}
+                    key={item.product.id}
+                    id={item.product.id}
                     name={item.product.name}
                     price={item.product.price}
-                    quantity={item.quantity}
-                    stock={item.stock}
+                    imageUrl={item.product.thumbnail}
+                    quantity={item.cartQuantity}
+                    stock={item.product.totalStock}
                   />
                 ))
               ) : (

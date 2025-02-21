@@ -12,26 +12,24 @@ const CartPage: FC = () => {
   const cartItems = useCartStore((state) => state.cartItems);
   const setCartItems = useCartStore((state) => state.setCartItems);
 
-  console.log(cartItems);
-
   // Load cart data from local storage if there is any data on mount
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart-storage");
-    if (storedCart) setCartItems(JSON.parse(storedCart));
-  }, [setCartItems]);
+  // useEffect(() => {
+  //   const storedCart = localStorage.getItem("cart-storage");
+  //   if (storedCart) setCartItems(JSON.parse(storedCart));
+  // }, [setCartItems]);
 
-  // Sync cart data to local storage whenever cartItems change
-  useEffect(() => {
-    if (cartItems.length > 0)
-      localStorage.setItem("cart-storage", JSON.stringify(cartItems));
-    else localStorage.removeItem("cart-storage");
-  }, [cartItems]);
+  // // Sync cart data to local storage whenever cartItems change
+  // useEffect(() => {
+  //   if (cartItems.length > 0)
+  //     localStorage.setItem("cart-storage", JSON.stringify(cartItems));
+  //   else localStorage.removeItem("cart-storage");
+  // }, [cartItems]);
 
   // Calculate total price
   const totalPrice = useMemo(
     () =>
       cartItems.reduce(
-        (acc, item) => acc + item.product.price * item.quantity,
+        (acc, item) => acc + item.product.price * item.cartQuantity,
         0
       ),
     [cartItems]
@@ -39,7 +37,7 @@ const CartPage: FC = () => {
 
   // Calculate total quantity
   const totalQuantity = useMemo(
-    () => cartItems.reduce((acc, item) => acc + item.quantity, 0),
+    () => cartItems.reduce((acc, item) => acc + item.cartQuantity, 0),
     [cartItems]
   );
 
@@ -52,15 +50,15 @@ const CartPage: FC = () => {
           <div className="flex flex-col gap-6 w-full">
             {cartItems.length > 0 ? (
               cartItems.map((item) => (
-                <div className="bg-white p-8 rounded-xl" key={item.id}>
+                <div className="bg-white p-8 rounded-xl" key={item.product.id}>
                   <CartItemLarge
-                    key={item.id}
-                    id={item.id}
+                    key={item.product.id}
+                    id={item.product.id}
                     name={item.product.name}
                     price={item.product.price}
-                    quantity={item.quantity}
-                    stock={item.stock}
-                    category={item.product.category.name}
+                    quantity={item.cartQuantity}
+                    stock={item.product.totalStock}
+                    category={item.product.categoryName}
                   />
                 </div>
               ))

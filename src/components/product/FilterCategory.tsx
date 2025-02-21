@@ -2,11 +2,11 @@ import { FC, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getProductCategory } from "@/api/getProducts";
 
-interface FilterProps {
+interface FilterCategoryProps {
   onFilterChange: (category: number | null) => void;
 }
 
-const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
+const FilterCategory: FC<FilterCategoryProps> = ({ onFilterChange }) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const {
@@ -26,14 +26,14 @@ const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="filtering-container font-inter">
-      <div className="h-[300px] overflow-y-auto ">
-        <h1 className="text-xl font-bold mb-4">Categories</h1>
+    <div className="font-inter">
+      <div className="h-[320px] overflow-y-auto">
+        <h1 className="mb-4 text-xl font-bold">Categories</h1>
 
         {isLoading ? (
-          <div className="p-3 animate-pulse flex flex-col gap-5">
+          <div className="flex flex-col gap-5 p-3 animate-pulse">
             {Array.from({ length: 10 }).map((_, index) => (
-              <div key={index} className="bg-gray-200 p-4 rounded-md"></div>
+              <div key={index} className="rounded-md bg-gray-200 p-4"></div>
             ))}
           </div>
         ) : error ? (
@@ -43,12 +43,12 @@ const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
               : "Error loading categories"}
           </div>
         ) : (
-          <div className="space-y-1">
+          <div className="space-y-2">
             <button
-              className={`block w-full text-left p-2 hover:bg-gray-100 ${
+              className={`w-full rounded-md p-2 text-left transition-colors ${
                 selectedCategory === null
-                  ? "underline text-black"
-                  : "text-gray-500"
+                  ? "font-medium text-black"
+                  : "text-gray-600 hover:bg-gray-50"
               }`}
               onClick={() => handleCategoryChange(null)}
             >
@@ -57,10 +57,10 @@ const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
             {categories?.map((category) => (
               <button
                 key={category.id}
-                className={`block w-full text-left p-2 hover:bg-gray-100 ${
+                className={`w-full rounded-md p-2 text-left transition-colors ${
                   selectedCategory === category.id
-                    ? "underline text-black"
-                    : "text-gray-500"
+                    ? "font-medium text-black"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`}
                 onClick={() => handleCategoryChange(category.id)}
               >
@@ -74,4 +74,4 @@ const Filtering: FC<FilterProps> = ({ onFilterChange }) => {
   );
 };
 
-export default Filtering;
+export default FilterCategory;

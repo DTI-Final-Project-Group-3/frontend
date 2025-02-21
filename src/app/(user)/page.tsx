@@ -1,140 +1,144 @@
 "use client";
 
-import { getPaginatedWarehouseInventories } from "@/api/getWarehouseInventories";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import LoadingCard from "@/components/ui/loadingCard";
-import { useCartStore } from "@/store/cartStore";
-import InventoryCard from "@/components/inventory/InventoryCard";
-import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
+import { toast } from "@/hooks/use-toast";
+
+import { CartItem, useCartStore } from "@/store/cartStore";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/pagination/Pagination";
-import Filtering from "@/components/inventory/Filtering";
-import LocationSelector from "@/components/location/LocationSelector";
-import { useLocationStore } from "@/store/location";
+import Filtering from "@/components/product/FilterCategory";
+import LocationSelector from "@/components/product/FilterLocation";
+import { useUserAddressStore } from "@/store/userAddressStore";
 import { useSearchStore } from "@/store/searchStore";
-import { useDebounce } from "@/hooks/useDebounce";
-import { useSession } from "next-auth/react";
+import { getNearbyProduct } from "@/api/getProducts";
+import { ProductSummary } from "@/types/models/products";
+import { LOCATION_RADIUS } from "@/constant/locationConstant";
+import ProductCard from "@/components/product/ProductCard";
+import { cookies } from "next/headers";
 
-export default function HomePage() {
-  const { data: session, status } = useSession();
-  console.log(session, "status: ", status);
-
+export default function Home() {
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
     null
   );
   const [page, setPage] = useState<number>(0);
-  const { location } = useLocationStore();
-  const { searchQuery } = useSearchStore();
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
-
   const addToCart = useCartStore((state) => state.addToCart);
+  const { setCartItems } = useCartStore();
   useCartStore.getState().isUserVerified = true;
   useCartStore.getState().isUserRegistered = true;
+  const { userAddress } = useUserAddressStore();
+  const { searchQuery } = useSearchStore();
 
   const handlePageChange = (
     pageChange: number,
     isDirectPage: boolean = false
   ) => {
     const pageRequest = isDirectPage ? pageChange : page + pageChange;
-    if (
-      pageRequest >= 0 &&
-      pageRequest < (warehouseInventories?.totalPages || 0)
-    ) {
+    if (pageRequest >= 0 && pageRequest < (products?.totalPages || 0)) {
       setPage(pageRequest);
     }
   };
 
-  const handleAddToCart = (inventory: WarehouseInventorySummary) => {
-    addToCart(inventory);
+  const handleAddToCart = (product: ProductSummary) => {
+    const cartItem: CartItem = {
+      product: product,
+      cartQuantity: 1,
+    };
+    addToCart(cartItem);
   };
 
   const {
-    data: warehouseInventories,
-    isLoading: pageLoading,
-    isFetching,
-    refetch,
+    data: products,
+    isLoading: productsLoading,
+    isFetching: productsFetching,
   } = useQuery({
     queryKey: [
-      "warehouseInventories",
+      "nearby-products",
       page,
       productCategoryId,
-      debouncedSearchQuery,
+      searchQuery,
+      userAddress,
     ],
     queryFn: () =>
-      getPaginatedWarehouseInventories({
+      getNearbyProduct({
         page,
         limit: INVENTORY_PER_PAGE,
-        longitude: location?.longitude,
-        latitude: location?.latitude,
-        category: productCategoryId || undefined,
-        search: debouncedSearchQuery,
+        longitude: userAddress?.longitude,
+        latitude: userAddress?.latitude,
+        radius: LOCATION_RADIUS,
+        productCategoryId: productCategoryId || undefined,
+        searchQuery: searchQuery,
       }),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 120000,
   });
 
   useEffect(() => {
-    if (location) {
-      refetch();
+    const currentCart = localStorage.getItem("cart-storage");
+    if (currentCart) {
+      try {
+        const parsedCart: CartItem[] = JSON.parse(currentCart);
+
+        if (Array.isArray(parsedCart) && products?.content) {
+          const updatedCart: CartItem[] = parsedCart.map((item) => {
+            const updatedProduct = products.content.find(
+              (product) => product.id === item.product.id
+            );
+            if (updatedProduct) {
+              return { ...item, product: updatedProduct };
+            }
+            return { ...item, product: { ...item.product, totalStock: 0 } };
+          });
+          setCartItems(updatedCart);
+        }
+      } catch (err) {
+        console.error("Error parsing cart-storage:", err);
+      }
     }
-  }, [location, refetch]);
+  }, [products]);
 
   return (
-    <div className="min-h-[calc(100vh-70px)] mt-[24px] w-full">
-      <div className="h-[540px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full relative bg-slate-50 rounded-md">
-        <Image
-          src="/images/dummy-hero-img.png"
-          alt="hero images"
-          height={1000}
-          width={1340}
-          className="h-full w-full object-cover rounded-md"
-        />
-      </div>
+    <>
+      <div className="min-h-[calc(100vh-70px)] mt-6 w-full">
+        <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+            <div className="col-span-1 flex flex-col gap-8 md:sticky md:top-24 h-fit">
+              <Filtering
+                onFilterChange={(category) => setProductCategoryId(category)}
+              />
+              <LocationSelector />
+            </div>
 
-      <main className="mt-[24px] md:max-w-4xl lg:max-w-[1340px] mx-auto w-full px-6 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="col-span-1 flex flex-col gap-10">
-            <Filtering
-              onFilterChange={(category) => setProductCategoryId(category)}
-            />
-            <LocationSelector />
-          </div>
-          <div className="col-span-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {pageLoading || isFetching
-                ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
-                    <LoadingCard key={index} />
-                  ))
-                : warehouseInventories?.content?.map((inventory) => (
-                    <div key={inventory.id}>
-                      <InventoryCard
-                        id={inventory.id}
-                        product={inventory.product}
-                        status={inventory.status}
-                        warehouse={inventory.warehouse}
-                        quantity={inventory.quantity}
-                        statusId={inventory.status.id}
-                        statusName={inventory.status.name}
-                        stock={inventory.stock}
-                        onAddToCart={() => {
-                          handleAddToCart(inventory);
-                        }}
-                      />
-                    </div>
-                  ))}
+            <div className="col-span-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {productsLoading || productsFetching
+                  ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
+                      <LoadingCard key={index} />
+                    ))
+                  : products?.content.map((product) => (
+                      <div key={product.id}>
+                        <ProductCard
+                          id={product.id}
+                          name={product.name}
+                          price={product.price}
+                          thumbnail={product.thumbnail ?? "/no-image-icon.jpg"}
+                          totalStock={product.totalStock}
+                          onAddToCart={() => handleAddToCart(product)}
+                        />
+                      </div>
+                    ))}
+              </div>
+              <Pagination
+                currentPage={page}
+                totalPages={products?.totalPages || 0}
+                onPageChange={handlePageChange}
+                hasNext={products?.hasNext || false}
+                hasPrev={products?.hasPrev || false}
+              />
             </div>
           </div>
-        </div>
-
-        <Pagination
-          currentPage={page}
-          totalPages={warehouseInventories?.totalPages || 0}
-          onPageChange={handlePageChange}
-          hasNext={warehouseInventories?.hasNext || false}
-          hasPrev={warehouseInventories?.hasPrev || false}
-        />
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
