@@ -3,6 +3,7 @@ export const formatDateTime = (dateString: Date) => {
     weekday: "short", // abbreviated weekday name (e.g., 'Mon')
     month: "short", // abbreviated month name (e.g., 'Oct')
     day: "numeric", // numeric day of the month (e.g., '25')
+    year: "numeric", // numeric year (e.g., '2023')
     hour: "numeric", // numeric hour (e.g., '8')
     minute: "numeric", // numeric minute (e.g., '30')
     hour12: true, // use 12-hour clock (true) or 24-hour clock (false)
@@ -10,7 +11,7 @@ export const formatDateTime = (dateString: Date) => {
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     weekday: "long", // abbreviated weekday name (e.g., 'Monday')
-    month: "long", // abbreviated month name (e.g., 'October')
+    month: "short", // abbreviated month name (e.g., 'October')
     year: "numeric", // numeric year (e.g., '2023')
     day: "numeric", // numeric day of the month (e.g., '25')
   };

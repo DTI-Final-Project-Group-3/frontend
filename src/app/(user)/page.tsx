@@ -7,7 +7,7 @@ import { toast } from "@/hooks/use-toast";
 
 import { CartItem, useCartStore } from "@/store/cartStore";
 import { useQuery } from "@tanstack/react-query";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/pagination/Pagination";
 import Filtering from "@/components/product/FilterCategory";
 import LocationSelector from "@/components/product/FilterLocation";
 import { useUserAddressStore } from "@/store/userAddressStore";
