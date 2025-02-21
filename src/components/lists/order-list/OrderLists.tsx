@@ -15,6 +15,7 @@ import OrderDetailsModal from "./OrderDetailsModal";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import OrderListLoadingSkeleton from "@/components/skeleton/OrderListLoadingSkeleton";
 
 export const fetchOrders = async (
   page: number,
@@ -109,12 +110,14 @@ const OrderLists: FC = () => {
   );
 
   return (
-    <div className="w-full h-full bg-white rounded-xl md:p-6">
+    <div className="w-full min-h-[500px] bg-white rounded-xl md:p-6">
       <div className="p-6 flex flex-col gap-6">
         {/* Handle loading state */}
         {isLoading && (
-          <div className="h-[500px] flex items-center justify-center w-full">
-            Loading data...
+          <div className="min-h-[500px] flex flex-col items-center justify-center w-full gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+              <OrderListLoadingSkeleton key={num} />
+            ))}
           </div>
         )}
 
@@ -195,7 +198,7 @@ const OrderLists: FC = () => {
                 </div>
 
                 {/* Detail payment */}
-                <div className="flex flex-col items-start justify-start gap-2 md:pr-14 ">
+                <div className="flex flex-col items-start justify-start gap-2 md:pr-14">
                   <span className="font-semibold text-gray-600 text-sm px-2 py-1 bg-slate-100 whitespace-nowrap">
                     {order.paymentMethodName}
                   </span>
