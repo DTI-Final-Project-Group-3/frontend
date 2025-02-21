@@ -59,7 +59,7 @@ const InventoryPage: FC = () => {
   };
 
   return (
-    <div className="flex flex-col p-5 md:p-0">
+    <div className="flex flex-col w-full min-h-[calc(100vh-70px)] p-5 md:p-0">
       <div className="mx-auto px-4 md:pt-16 pt-0 max-w-7xl">
         {!productDetail || isLoading || isFetching ? (
           <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 md:min-h-screen">
