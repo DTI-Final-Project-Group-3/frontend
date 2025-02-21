@@ -1,3 +1,5 @@
+import { Warehouse } from "./warehouses";
+
 export interface Product {
   id: number;
   name: string;
@@ -19,8 +21,9 @@ export interface ProductDetail extends Product {
   width?: number;
   length?: number;
   images?: ProductImage[];
+  category: ProductCategory;
   totalStock: number;
-  categoryName: string;
+  nearestWarehouse: Warehouse;
 }
 
 export interface ProductImage {

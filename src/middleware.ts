@@ -8,11 +8,9 @@ const PUBLIC_PATHS = [
   "/favicon",
   "/icons",
   "/images",
-  "/product",
-  "/cart",
 ];
 
-const PROTECTED_PATHS = ["/cart", "/order-list", "/admin"];
+const PROTECTED_PATHS = ["/cart", "/order-list", "/admins"];
 
 type UserRole = "CUSTOMER_VERIFIED" | "ADMIN_WAREHOUSE" | "ADMIN_SUPER";
 

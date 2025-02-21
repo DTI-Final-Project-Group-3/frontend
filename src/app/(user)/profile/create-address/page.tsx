@@ -10,13 +10,18 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 const user_address_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS}`;
 
+interface Position {
+    lat: number;
+    lng: number;
+}
+
 export default function CreateAddress() {
     const { data: session, status } = useSession();
     const router = useRouter();
     
     const [name, setName] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
-    const [position, setPosition] = useState(null);
+    const [position, setPosition] = useState<Position | null>(null);
     
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -38,15 +43,26 @@ export default function CreateAddress() {
     
     function LocationMarker() {
         useMapEvents({
-            click(e) {
+            click(e: { latlng: Position }) {
                 setPosition(e.latlng);
             },
         });
-        return position === null ? null : <Marker position={position} 
-            icon={new Icon({iconUrl: '/icons/marker-icon.png', iconSize: [25, 41], iconAnchor: [12, 41]})} />;
+        return position ? (
+            <Marker position={position} 
+                icon={new Icon({iconUrl: '/icons/marker-icon.png', iconSize: [25, 41], iconAnchor: [12, 41]})} />
+        ) : null;
     }
     
     const handleSubmit = async () => {
+        if (!session) {
+            alert("Session is not available");
+            return;
+        }
+        if (!position) {
+            alert("Please select a location on the map.");
+            return;
+        }
+        
         const response = await fetch(user_address_url, {
             method: "POST",
             headers: { 
