@@ -21,14 +21,14 @@ const CartItemLists: FC<CartItemListsProps> = ({ showButton = true }) => {
     >
       {cartItems.length > 0 ? (
         cartItems.map((item) => (
-          <div className="bg-white p-8 rounded-xl" key={item.id}>
+          <div className="bg-white p-8 rounded-xl" key={item.product.id}>
             <CartItemLarge
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              price={item.price}
-              quantity={item.quantity}
-              stock={item.stock}
+              key={item.product.id}
+              id={item.product.id}
+              name={item.product.name}
+              price={item.product.price}
+              quantity={item.cartQuantity}
+              stock={item.product.totalStock}
               showButton={showButton}
             />
           </div>
