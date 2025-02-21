@@ -7,10 +7,9 @@ import {
   ProductSummary,
 } from "@/types/models/products";
 import axios from "axios";
-import test from "node:test";
 
 const productUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}`;
-const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT_CATEGORY}`;
+const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}${process.env.NEXT_PUBLIC_PRODUCT_CATEGORY}`;
 
 export const getProductCategory = async (): Promise<
   ApiResponse<ProductCategory[]>
