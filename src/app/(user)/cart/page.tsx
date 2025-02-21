@@ -58,6 +58,7 @@ const CartPage: FC = () => {
                     price={item.product.price}
                     quantity={item.cartQuantity}
                     stock={item.product.totalStock}
+                    imageUrl={item.product.thumbnail}
                     category={item.product.categoryName}
                   />
                 </div>
