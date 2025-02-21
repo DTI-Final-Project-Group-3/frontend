@@ -1,3 +1,5 @@
+import { Warehouse } from "./warehouses";
+
 export interface Product {
   id: number;
   name: string;
@@ -6,8 +8,9 @@ export interface Product {
 
 //use to display in pagination
 export interface ProductSummary extends Product {
-  thumbnail?: ProductImage;
-  category: ProductCategory;
+  totalStock: number;
+  thumbnail?: string;
+  categoryName: string;
 }
 
 // use to display in product detail page
@@ -19,6 +22,8 @@ export interface ProductDetail extends Product {
   length?: number;
   images?: ProductImage[];
   category: ProductCategory;
+  totalStock: number;
+  nearestWarehouse: Warehouse;
 }
 
 export interface ProductImage {
@@ -29,4 +34,14 @@ export interface ProductImage {
 export interface ProductCategory {
   id: number;
   name: string;
+}
+
+export interface PaginatedProductParams {
+  page: number;
+  limit: number;
+  longitude?: number;
+  latitude?: number;
+  radius?: number;
+  productCategoryId?: number;
+  searchQuery?: string;
 }

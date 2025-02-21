@@ -14,7 +14,7 @@ type CartItemProps = {
   stock: number;
   showButton?: boolean;
   imageUrl?: string;
-  category: string;
+  category?: string;
 };
 
 const CartItemLarge: FC<CartItemProps> = ({

@@ -28,7 +28,6 @@ export interface WarehouseInventorySummary {
   id: number;
   product: ProductSummary;
   quantity: number;
-  stock: number;
   status: WarehouseInventoryStatus;
   warehouse: Warehouse;
 }

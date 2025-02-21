@@ -35,9 +35,6 @@ const CartItem: FC<CartItemProps> = ({
     setImgSrc("/images/no-image-icon.jpg");
   };
 
-  // console.log("stock:", stock);
-  // console.log("quantity:", quantity);
-
   return (
     <>
       <div className="flex items-start justify-between gap-4">

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,12 +17,17 @@ function ImagePlaceholder() {
   );
 }
 
-function LoginForm({ onSubmit, onGoogleLogin }) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+interface LoginFormProps {
+  onSubmit: (email: string, password: string) => void;
+  onGoogleLogin: () => void;
+}
 
-  const handleFormSubmit = (e) => {
+function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(email, password);
   };
@@ -31,7 +37,7 @@ function LoginForm({ onSubmit, onGoogleLogin }) {
       <div className="w-4/5 md:w-4/5 max-w-md">
         <h2 className="text-2xl font-bold text-center">Sign In</h2>
         <p className="text-center mt-2">
-          Don't have an account yet?
+          Don&apos;t have an account yet?
           <Link href="/signup">
             <span className="ml-2 px-3 py-1 bg-yellow-400 rounded-md cursor-pointer">
               Sign Up
@@ -63,11 +69,7 @@ function LoginForm({ onSubmit, onGoogleLogin }) {
               className="absolute inset-y-0 right-3 flex items-center"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? (
-                <EyeOff className="w-5 h-5" />
-              ) : (
-                <Eye className="w-5 h-5" />
-              )}
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
           </div>
 
@@ -78,31 +80,27 @@ function LoginForm({ onSubmit, onGoogleLogin }) {
             <span className="font-bold cursor-pointer">Forgot Password?</span>
           </div>
 
-          {/* Regular Login Button */}
-          <Button
-            type="submit"
-            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-md"
-          >
+          <Button type="submit" className="w-full mt-6 bg-blue-600 text-white py-3 rounded-md">
             Sign In
           </Button>
 
-          {/* Divider */}
           <div className="flex items-center my-4">
             <hr className="flex-grow border-gray-300" />
             <span className="mx-2 text-gray-500">or</span>
             <hr className="flex-grow border-gray-300" />
           </div>
 
-          {/* Google Login Button */}
           <button
             type="button"
             onClick={onGoogleLogin}
             className="w-full flex items-center justify-center border border-gray-300 py-3 rounded-md hover:bg-gray-100"
           >
-            <img
+            <Image
               src="/images/google-logo.svg"
               alt="Google Logo"
-              className="w-5 h-5 mr-2"
+              width={20}
+              height={20}
+              className="mr-2"
             />
             Sign in with Google
           </button>
@@ -113,17 +111,16 @@ function LoginForm({ onSubmit, onGoogleLogin }) {
 }
 
 export default function LoginPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
-  // Redirect to profile if already logged in
   useEffect(() => {
     if (status === "authenticated") {
       router.push("/");
     }
   }, [status, router]);
 
-  const handleSubmit = async (email, password) => {
+  const handleSubmit = async (email: string, password: string) => {
     const result = await signIn("credentials", {
       email,
       password,
@@ -140,7 +137,7 @@ export default function LoginPage() {
     } else {
       toast({
         title: "Login successful",
-        description: "Welcome to warehub",
+        description: "Welcome to WareHub",
         duration: 3000,
       });
       router.push("/");

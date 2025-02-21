@@ -1,14 +1,20 @@
 import { getToken } from "next-auth/jwt";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/signup", "/api/auth", "/favicon", "/icons", "/images"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/signup",
+  "/api/auth",
+  "/favicon",
+  "/icons",
+  "/images",
+];
 
-const PROTECTED_PATHS = [
-    "/user",
-    // "/admin",
-  ];
+const PROTECTED_PATHS = ["/cart", "/order-list", "/admins"];
 
-const ROLE_PATHS = {
+type UserRole = "CUSTOMER_VERIFIED" | "ADMIN_WAREHOUSE" | "ADMIN_SUPER";
+
+const ROLE_PATHS: Record<UserRole, string[]> = {
   CUSTOMER_VERIFIED: ["/cart", "/order-list"],
   ADMIN_WAREHOUSE: ["/admin"],
   ADMIN_SUPER: ["/admin"],
@@ -19,19 +25,26 @@ function isPublicPath(pathname: string) {
 }
 
 function isProtectedPath(pathname: string) {
-    return PROTECTED_PATHS.some((path) => pathname.startsWith(path));
-  }
-
-function hasRequiredRole(userRole: string, pathname: string) {
-    return ROLE_PATHS[userRole]?.some((path) => pathname.startsWith(path)) ?? false;
+  return PROTECTED_PATHS.some((path) => pathname.startsWith(path));
 }
 
-export async function middleware(request: Request) {
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+function hasRequiredRole(userRole: string, pathname: string) {
+  return (
+    ROLE_PATHS[userRole as UserRole]?.some((path: string) =>
+      pathname.startsWith(path)
+    ) ?? false
+  );
+}
+
+export async function middleware(request: NextRequest) {
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
   const { pathname } = new URL(request.url);
 
-  if ((pathname === "/") || isPublicPath(pathname)) {
+  if (pathname === "/" || isPublicPath(pathname)) {
     return NextResponse.next();
   }
 
@@ -50,5 +63,5 @@ export async function middleware(request: Request) {
 }
 
 export const config = {
-    matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"], // Apply middleware to all pages except static assets
-  };
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"], // Apply middleware to all pages except static assets
+};
