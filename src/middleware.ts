@@ -8,6 +8,7 @@ const PUBLIC_PATHS = [
   "/favicon",
   "/icons",
   "/images",
+  "/product",
 ];
 
 const PROTECTED_PATHS = ["/cart", "/order-list", "/admins"];
