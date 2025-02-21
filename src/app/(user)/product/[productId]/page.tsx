@@ -1,19 +1,20 @@
 "use client";
 
-import { getProductDetailById } from "@/api/getProducts";
+import { getProductDetailById } from "@/app/api/getProducts";
 import Carousel from "@/components/ui/Carousel";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
-import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { CartItem, useCartStore } from "@/store/cartStore";
 import { useUserAddressStore } from "@/store/userAddressStore";
 import { ProductDetail, ProductSummary } from "@/types/models/products";
 import { formatDimension, formatPrice, formatWeight } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { FC, useState } from "react";
+import {redirect, useParams} from "next/navigation";
+import { FC, useEffect, useState } from "react";
+import {useSession} from "next-auth/react";
 
 const InventoryPage: FC = () => {
+  const session = useSession();
   const { productId } = useParams();
   const [cartQuantity, setCartQuantity] = useState<number>(1);
   const { userAddress } = useUserAddressStore();
@@ -35,6 +36,10 @@ const InventoryPage: FC = () => {
   });
 
   const handleAddToCart = (product: ProductDetail | undefined) => {
+    if (session.status === "unauthenticated"){
+      redirect("/login")
+    }
+
     if (!product) return;
 
     const productItem: ProductSummary = {
@@ -54,17 +59,15 @@ const InventoryPage: FC = () => {
   };
 
   return (
-    <div className="flex flex-col p-5 md:p-0">
+    <div className="flex flex-col w-full min-h-[calc(100vh-70px)] p-5 md:p-0">
       <div className="mx-auto px-4 md:pt-16 pt-0 max-w-7xl">
         {!productDetail || isLoading || isFetching ? (
-          <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-            {/* Skeleton for Carousel/Image */}
+          <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 md:min-h-screen">
             <div className="w-full flex justify-center">
               <div className="w-full max-w-md">
                 <div className="w-full h-64 bg-gray-300 rounded"></div>
               </div>
             </div>
-            {/* Skeleton for Product Details */}
             <div className="flex flex-col gap-6">
               <div className="h-8 w-3/4 bg-gray-300 rounded"></div>
               <div className="h-6 w-full bg-gray-300 rounded"></div>
@@ -112,12 +115,12 @@ const InventoryPage: FC = () => {
               <h2
                 className={cn(
                   "text-2xl md:text-3xl font-poppins font-medium",
-                  productDetail.totalStock !== 0
+                  productDetail.totalStock > 0
                     ? ""
-                    : "text-red-500 font-semibold"
+                    : "text-red-500 font-semibold",
                 )}
               >
-                {productDetail.totalStock !== 0
+                {productDetail.totalStock > 0
                   ? formatPrice(String(productDetail.price))
                   : "Out of Stock"}
               </h2>
@@ -141,37 +144,45 @@ const InventoryPage: FC = () => {
               </div>
 
               <div className="flex gap-4 py-6">
-                <div className="flex items-center border border-gray-300 rounded-md h-12 md:w-24">
+                <div className="flex items-center border border-gray-300 rounded-md h-12">
                   <button
                     className={cn(
                       "px-4 py-1 text-xl transition-colors",
                       cartQuantity <= 1
                         ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-gray-50"
+                        : "text-gray-600 hover:bg-gray-50",
                     )}
                     disabled={cartQuantity <= 1}
                     onClick={(e) => {
+                      if (session.status === "unauthenticated"){
+                        redirect("/login")
+                      };
                       e.preventDefault();
                       setCartQuantity(cartQuantity - 1);
                     }}
                   >
                     -
                   </button>
+
                   <input
                     type="text"
                     value={cartQuantity}
                     readOnly
                     className="w-12 text-center border-x border-gray-300 pointer-events-none"
                   />
+
                   <button
                     className={cn(
                       "px-4 py-1 text-xl transition-colors",
                       cartQuantity >= productDetail.totalStock
                         ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-gray-50"
+                        : "text-gray-600 hover:bg-gray-50",
                     )}
                     disabled={cartQuantity >= productDetail.totalStock}
                     onClick={(e) => {
+                      if (session.status === "unauthenticated"){
+                        redirect("/login")
+                      };
                       e.preventDefault();
                       setCartQuantity(cartQuantity + 1);
                     }}
@@ -181,7 +192,7 @@ const InventoryPage: FC = () => {
                 </div>
                 <button
                   className={cn(
-                    "flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors"
+                    "flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors",
                   )}
                   onClick={(e) => {
                     e.preventDefault();
@@ -198,12 +209,8 @@ const InventoryPage: FC = () => {
                 <p>{productDetail.totalStock}</p>
                 <p className="text-gray-600">Category</p>
                 <p>{productDetail.category.name}</p>
-                {productDetail.nearestWarehouse.name && (
-                  <>
-                    <p className="text-gray-600">Send from</p>
-                    <p>{productDetail.nearestWarehouse.name}</p>
-                  </>
-                )}
+                <p className="text-gray-600">Send from</p>
+                <p>{productDetail.nearestWarehouse.name}</p>
               </div>
             </div>
           </div>

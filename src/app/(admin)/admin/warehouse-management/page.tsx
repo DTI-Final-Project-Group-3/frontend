@@ -1,7 +1,10 @@
 import React from "react";
 
 const WarehouseManagementPage = () => {
-  return <div>WarehouseManagementPage</div>;
+  return (
+      <div>
+        Test
+      </div>);
 };
 
 export default WarehouseManagementPage;

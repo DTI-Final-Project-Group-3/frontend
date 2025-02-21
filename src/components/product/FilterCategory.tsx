@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getProductCategory } from "@/api/getProducts";
+import { getProductCategory } from "@/app/api/getProducts";
 
 interface FilterCategoryProps {
   onFilterChange: (category: number | null) => void;

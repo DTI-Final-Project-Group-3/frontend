@@ -12,7 +12,7 @@ import Filtering from "@/components/product/FilterCategory";
 import LocationSelector from "@/components/product/FilterLocation";
 import { useUserAddressStore } from "@/store/userAddressStore";
 import { useSearchStore } from "@/store/searchStore";
-import { getNearbyProduct } from "@/api/getProducts";
+import { getNearbyProduct } from "@/app/api/getProducts";
 import { ProductSummary } from "@/types/models/products";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import ProductCard from "@/components/product/ProductCard";
@@ -99,7 +99,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-70px)] mt-6 w-full">
+      <div className="min-h-[calc(100vh-70px)] mt-6 mb-12 w-full">
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
             <div className="col-span-1 flex flex-col gap-8 md:sticky md:top-24 h-fit">
