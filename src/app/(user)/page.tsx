@@ -9,7 +9,7 @@ import { useCartStore } from "@/store/cartStore";
 import InventoryCard from "@/components/inventory/InventoryCard";
 import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
 import { useQuery } from "@tanstack/react-query";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/pagination/Pagination";
 import Filtering from "@/components/inventory/Filtering";
 import LocationSelector from "@/components/location/LocationSelector";
 import { useLocationStore } from "@/store/location";

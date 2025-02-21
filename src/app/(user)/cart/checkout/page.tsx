@@ -58,25 +58,25 @@ const CheckoutPage: FC = () => {
     [cartItems]
   );
 
-  // Handle checkout
+  // Handle payment gateway checkout
   const handleCheckout = async () => {
     try {
       // Set order items
       const orderItems = cartItems.map((item) => ({
-        productId: 3,
+        productId: item.product.id,
         quantity: item.quantity,
         unitPrice: item.product.price,
       }));
 
       // Set payload
       const payload = {
-        orderId: `ORD-${Date.now()}-${Math.random().toString(10)}`,
+        orderId: `ORDER-${Date.now()}-${Math.random().toString(10)}`,
         grossAmount: Math.ceil(totalPrice + 25000),
         userId: 3,
         warehouseId: 3,
         paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
         shippingCost: 25000,
-        orderStatusId: 2,
+        orderStatusId: 1, // Default status for waiting payment
         orderItems: orderItems,
       };
 
@@ -101,6 +101,7 @@ const CheckoutPage: FC = () => {
       toast({
         title: "Payment failed",
         duration: 2000,
+        variant: "destructive",
         description: "Please check your order and payment detail.",
       });
     }
@@ -111,7 +112,7 @@ const CheckoutPage: FC = () => {
     try {
       // Set order items
       const orderItems = cartItems.map((item) => ({
-        productId: 3,
+        productId: item.product.id,
         quantity: item.quantity,
         unitPrice: item.product.price,
       }));
@@ -122,7 +123,7 @@ const CheckoutPage: FC = () => {
         warehouseId: 3,
         paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
         shippingCost: 25000,
-        orderStatusId: 1, // Status defaul pending
+        orderStatusId: 1, // Default status for waiting payment
         orderItems: orderItems,
       };
 
