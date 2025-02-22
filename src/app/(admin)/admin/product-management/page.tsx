@@ -6,6 +6,7 @@ import { ADMIN_PRODUCT_PER_PAGE } from "@/constant/productConstant";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const ProductManagementPage = () => {
@@ -49,7 +50,7 @@ const ProductManagementPage = () => {
   return (
     <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
       {/* Title */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center px-4 md:px-7 justify-between gap-4 border-b pb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center px-4 md:px-7 justify-between gap-4 border-b pb-4 md:pb-7">
         <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
           Product Management
         </h2>
@@ -111,7 +112,7 @@ const ProductManagementPage = () => {
             </p>
           </div>
         ) : (
-          <div>
+          <div className="md:min-h-[calc(100vh-300px)]">
             {/* Desktop Table View */}
             <div className="hidden md:block">
               <table className="w-full border-separate border-spacing-y-2">
@@ -176,7 +177,7 @@ const ProductManagementPage = () => {
                       </td>
                       <td className="py-4 border-b border-gray-100">
                         <div className="flex justify-center space-x-2">
-                          <ActionButtons />
+                          <ActionButtons productId={product.id} />
                         </div>
                       </td>
                     </tr>
@@ -215,13 +216,12 @@ const ProductManagementPage = () => {
                       </span>
                     </div>
                   </div>
-
                   <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                     <span className="font-medium text-gray-800">
                       {formatPrice(String(product.price))}
                     </span>
                     <div className="flex space-x-2">
-                      <ActionButtons />
+                      <ActionButtons productId={product.id} />
                     </div>
                   </div>
                 </div>
@@ -249,63 +249,71 @@ const ProductManagementPage = () => {
 };
 
 // Extracted Action Buttons Component
-const ActionButtons = () => (
-  <>
-    <button className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-blue-600">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-        />
-      </svg>
-    </button>
-    <button className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-green-600">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-        />
-      </svg>
-    </button>
-    <button className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-red-600">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-        />
-      </svg>
-    </button>
-  </>
-);
+const ActionButtons = ({ productId }: { productId: number }) => {
+  return (
+    <>
+      <Link href={`/admin/product-management/${productId}`}>
+        <button className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-blue-600 ">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+            />
+          </svg>
+        </button>
+      </Link>
+
+      <Link href={`/admin/product-management/edit/${productId}`}>
+        <button className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-green-600">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            />
+          </svg>
+        </button>
+      </Link>
+
+      <button className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-red-600">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
+        </svg>
+      </button>
+    </>
+  );
+};
 
 export default ProductManagementPage;
