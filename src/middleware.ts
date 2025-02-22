@@ -11,7 +11,7 @@ const PUBLIC_PATHS = [
   "/product",
 ];
 
-const PROTECTED_PATHS = ["/cart", "/order-list", "/admins"];
+const PROTECTED_PATHS = ["/cart", "/order-list", "/admin"];
 
 type UserRole = "CUSTOMER_VERIFIED" | "ADMIN_WAREHOUSE" | "ADMIN_SUPER";
 
