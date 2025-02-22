@@ -1,5 +1,6 @@
 import { ApiResponse } from "@/types/api/apiResponse";
-import { PaginationResponse } from "@/types/api/pagination";
+import { PaginationParams, PaginationResponse } from "@/types/api/pagination";
+import { LocationParams } from "@/types/location";
 import {
   PaginatedProductParams,
   ProductCategory,
@@ -50,12 +51,6 @@ export const getNearbyProduct = async ({
   }
 };
 
-interface LocationParams {
-  longitude?: number;
-  latitude?: number;
-  radius?: number;
-}
-
 interface ProductDetailParams extends LocationParams {
   productId: number;
 }
@@ -77,5 +72,27 @@ export const getProductDetailById = async ({
       },
     }
   );
+  return response.data.data;
+};
+
+export const getPaginatedProducts = async ({
+  page,
+  limit,
+  productId,
+  productCategoryId,
+  searchQuery,
+}: PaginatedProductParams): Promise<PaginationResponse<ProductSummary>> => {
+  const response = await axios.get<
+    ApiResponse<PaginationResponse<ProductSummary>>
+  >(productUrl, {
+    params: {
+      page,
+      limit,
+      productId,
+      productCategoryId,
+      searchQuery,
+    },
+  });
+
   return response.data.data;
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { getProductDetailById } from "@/app/api/getProducts";
-import Carousel from "@/components/ui/Carousel";
+import ProductCarousel from "@/components/product/ProductCarousel";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import { cn } from "@/lib/utils";
 import { CartItem, useCartStore } from "@/store/cartStore";
@@ -9,9 +9,9 @@ import { useUserAddressStore } from "@/store/userAddressStore";
 import { ProductDetail, ProductSummary } from "@/types/models/products";
 import { formatDimension, formatPrice, formatWeight } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import {redirect, useParams} from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { FC, useEffect, useState } from "react";
-import {useSession} from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const InventoryPage: FC = () => {
   const session = useSession();
@@ -36,8 +36,8 @@ const InventoryPage: FC = () => {
   });
 
   const handleAddToCart = (product: ProductDetail | undefined) => {
-    if (session.status === "unauthenticated"){
-      redirect("/login")
+    if (session.status === "unauthenticated") {
+      redirect("/login");
     }
 
     if (!product) return;
@@ -97,7 +97,7 @@ const InventoryPage: FC = () => {
             <div className="w-full flex justify-center">
               <div className="w-full max-w-md">
                 {productDetail && (
-                  <Carousel
+                  <ProductCarousel
                     productName={productDetail.name ?? "product"}
                     images={productDetail.images ?? []}
                   />
@@ -117,7 +117,7 @@ const InventoryPage: FC = () => {
                   "text-2xl md:text-3xl font-poppins font-medium",
                   productDetail.totalStock > 0
                     ? ""
-                    : "text-red-500 font-semibold",
+                    : "text-red-500 font-semibold"
                 )}
               >
                 {productDetail.totalStock > 0
@@ -150,13 +150,13 @@ const InventoryPage: FC = () => {
                       "px-4 py-1 text-xl transition-colors",
                       cartQuantity <= 1
                         ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-gray-50",
+                        : "text-gray-600 hover:bg-gray-50"
                     )}
                     disabled={cartQuantity <= 1}
                     onClick={(e) => {
-                      if (session.status === "unauthenticated"){
-                        redirect("/login")
-                      };
+                      if (session.status === "unauthenticated") {
+                        redirect("/login");
+                      }
                       e.preventDefault();
                       setCartQuantity(cartQuantity - 1);
                     }}
@@ -176,13 +176,13 @@ const InventoryPage: FC = () => {
                       "px-4 py-1 text-xl transition-colors",
                       cartQuantity >= productDetail.totalStock
                         ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-gray-50",
+                        : "text-gray-600 hover:bg-gray-50"
                     )}
                     disabled={cartQuantity >= productDetail.totalStock}
                     onClick={(e) => {
-                      if (session.status === "unauthenticated"){
-                        redirect("/login")
-                      };
+                      if (session.status === "unauthenticated") {
+                        redirect("/login");
+                      }
                       e.preventDefault();
                       setCartQuantity(cartQuantity + 1);
                     }}
@@ -192,7 +192,7 @@ const InventoryPage: FC = () => {
                 </div>
                 <button
                   className={cn(
-                    "flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors",
+                    "flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors"
                   )}
                   onClick={(e) => {
                     e.preventDefault();

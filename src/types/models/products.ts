@@ -1,3 +1,5 @@
+import { PaginationParams } from "../api/pagination";
+import { LocationParams } from "../location";
 import { Warehouse } from "./warehouses";
 
 export interface Product {
@@ -36,12 +38,13 @@ export interface ProductCategory {
   name: string;
 }
 
-export interface PaginatedProductParams {
-  page: number;
-  limit: number;
-  longitude?: number;
-  latitude?: number;
-  radius?: number;
+export interface ProductParams {
+  productId?: number;
   productCategoryId?: number;
   searchQuery?: string;
 }
+
+export interface PaginatedProductParams
+  extends PaginationParams,
+    LocationParams,
+    ProductParams {}

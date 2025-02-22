@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
-import LoadingCard from "@/components/ui/loadingCard";
-import { toast } from "@/hooks/use-toast";
+import ProductCardLoading from "@/components/product/ProductCardLoading";
 
 import { CartItem, useCartStore } from "@/store/cartStore";
 import { useQuery } from "@tanstack/react-query";
-import Pagination from "@/components/pagination/Pagination";
+import Pagination from "@/components/pagination/PaginationUser";
 import Filtering from "@/components/product/FilterCategory";
 import LocationSelector from "@/components/product/FilterLocation";
 import { useUserAddressStore } from "@/store/userAddressStore";
@@ -16,7 +15,6 @@ import { getNearbyProduct } from "@/app/api/getProducts";
 import { ProductSummary } from "@/types/models/products";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import ProductCard from "@/components/product/ProductCard";
-import { cookies } from "next/headers";
 
 export default function Home() {
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
@@ -113,7 +111,7 @@ export default function Home() {
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {productsLoading || productsFetching
                   ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
-                      <LoadingCard key={index} />
+                      <ProductCardLoading key={index} />
                     ))
                   : products?.content.map((product) => (
                       <div key={product.id}>
