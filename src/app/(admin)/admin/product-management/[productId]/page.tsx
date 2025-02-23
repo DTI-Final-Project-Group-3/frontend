@@ -1,6 +1,7 @@
 "use client";
 
 import { getProductDetailById } from "@/app/api/getProducts";
+import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
 import ProductCarousel from "@/components/product/ProductCarousel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -19,21 +20,12 @@ const ProductAdmin: FC = () => {
 
   return (
     <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center px-4 md:px-7 justify-between gap-4 border-b pb-4 md:pb-7">
-        <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
-          Product Management
-        </h2>
-        <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
-          <button className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition duration-200">
-            Edit Product
-          </button>
-        </div>
-      </div>
+      <ProductManagementHeader />
 
       {!productDetail || productDetailLoading ? (
         <Skeleton className="w-10"></Skeleton>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mt-10 px-20">
           <div className="w-full flex justify-center">
             <div className="w-full max-w-md">
               {productDetail && (

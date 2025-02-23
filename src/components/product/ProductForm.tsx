@@ -77,7 +77,14 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
     categoryId: Yup.number()
       .min(1, "Category is required")
       .required("Category is required"),
-    images: Yup.array().min(1, "At least one image is required"),
+    images: Yup.array()
+      .min(1, "At least one image is required")
+      .test(
+        "Max size",
+        "Maximum image size is 1MB",
+        (values) =>
+          !values || values.every((value) => value.size <= 1024 * 1024)
+      ),
   });
 
   const handleOnSubmit = async (values: Product) => {
@@ -117,11 +124,9 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
     >
       {({ values, errors, touched, setFieldValue }) => (
         <Form className="space-y-6">
-          {/* Basic Information Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h2 className="text-xl font-semibold mb-6">Basic Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4">
-              {/* Product Name */}
               <div className="">
                 <label className="block text-gray-700 font-medium">
                   Product Name
@@ -141,7 +146,6 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
                 />
               </div>
 
-              {/* Price */}
               <div className="flex items-center">
                 <label className="block text-gray-700 font-medium">Price</label>
               </div>
@@ -162,7 +166,6 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
                 />
               </div>
 
-              {/* Description */}
               <div className="flex items-start pt-2">
                 <label className="block text-gray-700 font-medium">
                   Description
@@ -184,7 +187,6 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
             </div>
           </div>
 
-          {/* Images Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h2 className="text-xl font-semibold mb-6">Product Images</h2>
             <div className="space-y-4">
@@ -260,7 +262,6 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
             </div>
           </div>
 
-          {/* Dimensions Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h2 className="text-xl font-semibold mb-6">Product Dimensions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -285,7 +286,6 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
             </div>
           </div>
 
-          {/* Category Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h2 className="text-xl font-semibold mb-6">Category</h2>
             <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 items-center">
@@ -314,7 +314,6 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
             </div>
           </div>
 
-          {/* Submit Button */}
           <div className="grid grid-cols-1">
             <div className="flex justify-end">
               <button

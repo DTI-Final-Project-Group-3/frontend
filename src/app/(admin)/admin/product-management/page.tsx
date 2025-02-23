@@ -8,7 +8,6 @@ import { ADMIN_PRODUCT_PER_PAGE } from "@/constant/productConstant";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const ProductManagementPage = () => {
@@ -51,11 +50,9 @@ const ProductManagementPage = () => {
 
   return (
     <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
-      {/* Title */}
       <ProductManagementHeader />
 
-      {/* Content */}
-      <div className="mt-4 md:mt-7 w-full overflow-x-auto px-4 md:px-7 text-gray-600">
+      <div className="mt-4 md:mt-7 px-4 md:px-10">
         {productsLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
@@ -83,80 +80,67 @@ const ProductManagementPage = () => {
           </div>
         ) : (
           <div className="md:min-h-[calc(100vh-300px)]">
-            {/* Desktop Table View */}
             <div className="hidden md:block">
-              <table className="w-full border-separate border-spacing-y-2">
-                <thead>
-                  <tr>
-                    <th className="text-left pl-4 py-3 bg-gray-50 rounded-l-lg font-medium text-gray-700">
-                      Name
-                    </th>
-                    <th className="text-left py-3 bg-gray-50 font-medium text-gray-700">
-                      Category
-                    </th>
-                    <th className="text-left py-3 bg-gray-50 font-medium text-gray-700">
-                      Price
-                    </th>
-                    <th className="text-center py-3 bg-gray-50 font-medium text-gray-700">
-                      Thumbnail
-                    </th>
-                    <th className="text-center py-3 bg-gray-50 rounded-r-lg font-medium text-gray-700">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products?.content.map((product) => (
-                    <tr
-                      className="hover:bg-gray-50 transition-colors duration-150"
-                      key={product.id}
-                    >
-                      <td className="pl-4 py-4 border-b border-gray-100">
-                        <div className="font-medium text-gray-800">
-                          {product.name}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          ID: {product.id}
-                        </div>
-                      </td>
-                      <td className="py-4 border-b border-gray-100">
-                        <span className="px-3 py-1 text-sm rounded-full bg-gray-200">
-                          {product.categoryName}
-                        </span>
-                      </td>
-                      <td className="py-4 border-b border-gray-100">
-                        <span className="font-medium text-gray-800">
-                          {formatPrice(String(product.price))}
-                        </span>
-                      </td>
-                      <td className="py-4 border-b border-gray-100">
-                        <div className="flex justify-center">
-                          <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100">
-                            <Image
-                              src={
-                                imageUrls?.get(product.id) ??
-                                "/images/no-image-icon.jpg"
-                              }
-                              fill
-                              className="object-cover"
-                              alt={`${product.name} thumbnail`}
-                              onError={() => handleImageOnError(product.id)}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 border-b border-gray-100">
-                        <div className="flex justify-center space-x-2">
-                          <ActionButtons productId={product.id} />
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="grid grid-cols-[40%_20%_10%_15%_15%] mb-2 px-2 border-b border-gray-200 pb-2">
+                <div className="text-gray-700 font-medium">Name</div>
+                <div className="text-gray-700 font-medium">Category</div>
+                <div className="text-gray-700 font-medium">Price</div>
+                <div className="text-gray-700 font-medium text-center">
+                  Thumbnail
+                </div>
+                <div className="text-gray-700 font-medium text-center">
+                  Actions
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {products?.content.map((product) => (
+                  <div
+                    key={product.id}
+                    className="grid grid-cols-[40%_20%_10%_15%_15%] items-center p-2 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-100"
+                  >
+                    <div className="min-w-0">
+                      <div className="font-medium text-gray-800 truncate">
+                        {product.name}
+                      </div>
+                      <div className="text-xs text-gray-500 truncate">
+                        ID: {product.id}
+                      </div>
+                    </div>
+
+                    <div className="min-w-0">
+                      <span className="px-3 py-1 text-sm rounded-full bg-gray-200 truncate inline-block max-w-full">
+                        {product.categoryName}
+                      </span>
+                    </div>
+
+                    <div className="font-medium text-gray-800 truncate">
+                      {formatPrice(String(product.price))}
+                    </div>
+
+                    <div className="flex justify-center">
+                      <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100">
+                        <Image
+                          src={
+                            imageUrls.get(product.id) ??
+                            "/images/no-image-icon.jpg"
+                          }
+                          fill
+                          className="object-cover"
+                          alt={`${product.name} thumbnail`}
+                          onError={() => handleImageOnError(product.id)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center space-x-2">
+                      <ActionButtons productId={product.id} />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Mobile Card View */}
             <div className="md:hidden space-y-4">
               {products?.content.map((product) => (
                 <div
@@ -167,7 +151,7 @@ const ProductManagementPage = () => {
                     <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
                       <Image
                         src={
-                          imageUrls?.get(product.id) ??
+                          imageUrls.get(product.id) ??
                           "/images/no-image-icon.jpg"
                         }
                         fill
@@ -181,7 +165,7 @@ const ProductManagementPage = () => {
                         {product.name}
                       </h3>
                       <p className="text-xs text-gray-500">ID: {product.id}</p>
-                      <span className="inline-block px-3 py-1 text-sm rounded-full bg-gray-200 mt-1">
+                      <span className="inline-block px-3 py-1 text-sm rounded-full bg-gray-200 mt-1 truncate">
                         {product.categoryName}
                       </span>
                     </div>
