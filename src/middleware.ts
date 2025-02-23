@@ -13,9 +13,10 @@ const PUBLIC_PATHS = [
 
 const PROTECTED_PATHS = ["/cart", "/order-list", "/admin"];
 
-type UserRole = "CUSTOMER_VERIFIED" | "ADMIN_WAREHOUSE" | "ADMIN_SUPER";
+type UserRole = "NOT_VERIFIED" | "CUSTOMER_VERIFIED" | "ADMIN_WAREHOUSE" | "ADMIN_SUPER";
 
 const ROLE_PATHS: Record<UserRole, string[]> = {
+  NOT_VERIFIED: [],
   CUSTOMER_VERIFIED: ["/cart", "/order-list"],
   ADMIN_WAREHOUSE: ["/admin"],
   ADMIN_SUPER: ["/admin"],
