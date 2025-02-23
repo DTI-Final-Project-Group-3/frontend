@@ -1,4 +1,4 @@
-import { fetchOrders } from "@/app/api/order/getCustomerOrders";
+import { getAllCustomerOrders } from "@/app/api/order/getCustomerOrders";
 import { useQuery } from "@tanstack/react-query";
 
 export const useOrders = (
@@ -22,7 +22,7 @@ export const useOrders = (
       endDate,
     ],
     queryFn: () =>
-      fetchOrders(
+      getAllCustomerOrders(
         page,
         limit,
         accessToken!,
