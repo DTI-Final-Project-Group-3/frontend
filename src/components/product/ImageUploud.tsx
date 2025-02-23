@@ -83,7 +83,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
             alt="Uploaded image"
             width={200}
             height={200}
-            className="object-cover"
+            className="object-center"
           />
         ) : (
           <div className="flex items-center justify-center h-full bg-gray-50">

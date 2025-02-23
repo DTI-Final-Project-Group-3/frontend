@@ -1,12 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { FC, useState } from "react";
 
 const ProductManagementHeader: FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center px-4 md:px-7 justify-between gap-4 border-b pb-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center px-4 md:px-7 justify-between gap-4 border-b pb-4 md:pb-7">
       <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
         Product Management
       </h2>
@@ -15,7 +16,7 @@ const ProductManagementHeader: FC = () => {
           <input
             type="text"
             placeholder="Search products..."
-            className="w-full sm:w-auto pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full sm:w-auto pl-10 pr-4 py-2 rounded-lg border border-gray-300"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -34,10 +35,14 @@ const ProductManagementHeader: FC = () => {
             />
           </svg>
         </div>
-        <button className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition duration-200">
-          Add Product
-        </button>
+        <Link href={`/admin/product-management/form`}>
+          <button className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition duration-200">
+            Add Product
+          </button>
+        </Link>
       </div>
     </div>
   );
 };
+
+export default ProductManagementHeader;

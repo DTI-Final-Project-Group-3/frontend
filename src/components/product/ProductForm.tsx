@@ -115,25 +115,23 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
       validationSchema={validationSchema}
       onSubmit={handleOnSubmit}
     >
-      {({ values, errors, touched }) => (
-        <Form className="space-y-6 max-w-2xl">
+      {({ values, errors, touched, setFieldValue }) => (
+        <Form className="space-y-6">
           {/* Basic Information Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
+            <h2 className="text-xl font-semibold mb-6">Basic Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4">
+              {/* Product Name */}
+              <div className="">
+                <label className="block text-gray-700 font-medium">
                   Product Name
                 </label>
+              </div>
+              <div className="space-y-2">
                 <Field
                   name="name"
                   type="text"
-                  className={cn(
-                    "input-field w-full text-gray-700 h-10 border-2 rounded-md px-3",
-                    errors.name && touched.name
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  )}
+                  className={"w-full h-10 border-2 rounded-md px-3"}
                   placeholder="Product name"
                 />
                 <ErrorMessage
@@ -143,21 +141,20 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
                 />
               </div>
 
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Price
-                </label>
-                <Field
-                  name="price"
-                  type="number"
-                  className={cn(
-                    "input-field w-full text-gray-700 h-10 border-2 rounded-md px-3",
-                    errors.price && touched.price
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  )}
-                  placeholder="Product price"
-                />
+              {/* Price */}
+              <div className="flex items-center">
+                <label className="block text-gray-700 font-medium">Price</label>
+              </div>
+              <div className="space-y-2">
+                <div className="grid grid-cols-[auto_1fr] gap-2 items-center">
+                  <span className="font-semibold">Rp</span>
+                  <Field
+                    name="price"
+                    type="number"
+                    className={"w-full h-10 border-2 rounded-md px-3"}
+                    placeholder="Product price"
+                  />
+                </div>
                 <ErrorMessage
                   name="price"
                   component="div"
@@ -165,19 +162,17 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
                 />
               </div>
 
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
+              {/* Description */}
+              <div className="flex items-start pt-2">
+                <label className="block text-gray-700 font-medium">
                   Description
                 </label>
+              </div>
+              <div className="space-y-2">
                 <Field
                   as="textarea"
                   name="description"
-                  className={cn(
-                    "input-field w-full text-gray-700 h-32 border-2 rounded-md p-3",
-                    errors.description && touched.description
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  )}
+                  className={"w-full h-32 border-2 rounded-md p-3"}
                   placeholder="Product description"
                 />
                 <ErrorMessage
@@ -191,9 +186,9 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
 
           {/* Images Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <h2 className="text-xl font-semibold mb-4">Product Images</h2>
-            <div>
-              <label className="block text-gray-700 font-medium mb-4">
+            <h2 className="text-xl font-semibold mb-6">Product Images</h2>
+            <div className="space-y-4">
+              <label className="block text-gray-700 font-medium">
                 Upload up to 5 images
               </label>
               <FieldArray
@@ -202,7 +197,7 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
                   const images = arrayHelper.form.values.images;
 
                   return (
-                    <div className="flex gap-4 flex-wrap">
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                       {Array.from({ length: 5 }).map((_, index) => {
                         const currentImage = images[index];
                         const previousImage =
@@ -212,29 +207,25 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
                         return (
                           <div
                             key={index}
-                            className={cn(isDisabled ? "opacity-50" : "")}
+                            className={cn(
+                              "aspect-square",
+                              isDisabled ? "opacity-50" : ""
+                            )}
                           >
                             <ImageUpload
                               imageUrl={currentImage?.url}
                               onImageChange={(url) => {
                                 if (url === "") {
-                                  const updatedImages: ProductImage[] =
-                                    images.filter(
-                                      (_: ProductImage, i: number) =>
-                                        i !== index
-                                    );
-
+                                  const updatedImages = images.filter(
+                                    (_: ProductImage, i: number) => i !== index
+                                  );
                                   const reorderedImages = updatedImages.map(
-                                    (img, idx) => ({
+                                    (img: ProductImage, idx: number) => ({
                                       url: img.url,
                                       position: idx + 1,
                                     })
                                   );
-
-                                  arrayHelper.form.setFieldValue(
-                                    "images",
-                                    reorderedImages
-                                  );
+                                  setFieldValue("images", reorderedImages);
                                 } else {
                                   if (currentImage) {
                                     const updatedImages = [...images];
@@ -242,22 +233,13 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
                                       url,
                                       position: index + 1,
                                     };
-                                    arrayHelper.form.setFieldValue(
-                                      "images",
-                                      updatedImages
-                                    );
+                                    setFieldValue("images", updatedImages);
                                   } else {
                                     const updatedImages = [
                                       ...images,
-                                      {
-                                        url,
-                                        position: images.length + 1,
-                                      },
+                                      { url, position: images.length + 1 },
                                     ];
-                                    arrayHelper.form.setFieldValue(
-                                      "images",
-                                      updatedImages
-                                    );
+                                    setFieldValue("images", updatedImages);
                                   }
                                 }
                               }}
@@ -280,149 +262,81 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
 
           {/* Dimensions Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <h2 className="text-xl font-semibold mb-4">Product Dimensions</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Weight (kg)
-                </label>
-                <Field
-                  name="weight"
-                  type="number"
-                  className={cn(
-                    "input-field w-full text-gray-700 h-10 border-2 rounded-md px-3",
-                    errors.weight && touched.weight
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  )}
-                  placeholder="Weight"
-                />
-                <ErrorMessage
-                  name="weight"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Height (cm)
-                </label>
-                <Field
-                  name="height"
-                  type="number"
-                  className={cn(
-                    "input-field w-full text-gray-700 h-10 border-2 rounded-md px-3",
-                    errors.height && touched.height
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  )}
-                  placeholder="Height"
-                />
-                <ErrorMessage
-                  name="height"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Width (cm)
-                </label>
-                <Field
-                  name="width"
-                  type="number"
-                  className={cn(
-                    "input-field w-full text-gray-700 h-10 border-2 rounded-md px-3",
-                    errors.width && touched.width
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  )}
-                  placeholder="Width"
-                />
-                <ErrorMessage
-                  name="width"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Length (cm)
-                </label>
-                <Field
-                  name="length"
-                  type="number"
-                  className={cn(
-                    "input-field w-full text-gray-700 h-10 border-2 rounded-md px-3",
-                    errors.length && touched.length
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  )}
-                  placeholder="Length"
-                />
-                <ErrorMessage
-                  name="length"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
+            <h2 className="text-xl font-semibold mb-6">Product Dimensions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {["weight", "height", "width", "length"].map((field) => (
+                <div key={field} className="space-y-2">
+                  <label className="block text-gray-700 font-medium capitalize">
+                    {field} ({field === "weight" ? "kg" : "cm"})
+                  </label>
+                  <Field
+                    name={field}
+                    type="number"
+                    className={"w-full h-10 border-2 rounded-md px-3"}
+                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  />
+                  <ErrorMessage
+                    name={field}
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+              ))}
             </div>
           </div>
+
           {/* Category Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <h2 className="text-xl font-semibold mb-4">Category</h2>
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
+            <h2 className="text-xl font-semibold mb-6">Category</h2>
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 items-center">
+              <label className="block text-gray-700 font-medium">
                 Select Category
               </label>
-              <Field
-                name="categoryId"
-                as="select"
-                className={cn(
-                  "input-field w-full text-gray-700 h-11 border-2 rounded-md px-3",
-                  errors.categoryId && touched.categoryId
-                    ? "border-red-500"
-                    : "border-gray-200"
-                )}
-              >
-                <option value="">Select a category</option>
-                {productCategories?.data?.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage
-                name="categoryId"
-                component="div"
-                className="text-red-500 text-sm mt-1"
-              />
+              <div className="space-y-2">
+                <Field
+                  name="categoryId"
+                  as="select"
+                  className={"w-full h-11 border-2 rounded-md px-3"}
+                >
+                  <option value="">Select a category</option>
+                  {productCategories?.data?.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </Field>
+                <ErrorMessage
+                  name="categoryId"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
             </div>
           </div>
+
           {/* Submit Button */}
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={cn(
-                "px-6 py-2 rounded-md font-medium text-white",
-                isSubmitting
-                  ? "bg-blue-400 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-600"
-              )}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center">
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Submitting...
-                </span>
-              ) : (
-                "Submit"
-              )}
-            </button>
+          <div className="grid grid-cols-1">
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={cn(
+                  "px-6 py-2 rounded-md font-medium text-white transition-colors",
+                  isSubmitting
+                    ? "bg-gray-800 cursor-not-allowed"
+                    : "bg-black hover:bg-gray-800"
+                )}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center">
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Submitting...
+                  </span>
+                ) : (
+                  "Submit"
+                )}
+              </button>
+            </div>
           </div>
         </Form>
       )}
