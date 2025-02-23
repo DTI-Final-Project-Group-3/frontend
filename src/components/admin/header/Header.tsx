@@ -27,7 +27,7 @@ const Header: FC = () => {
       <div className="flex items-center justify-end w-full">
         <HoverCard>
           <HoverCardTrigger>
-            <div className="flex items-center gap-4 rounded-2xl bg-slate-50 px-4 py-2">
+            <div className="flex items-center gap-4 rounded-2xl bg-slate-50 px-4 py-2 cursor-pointer hover:shadow-sm">
               <Avatar>
                 <AvatarImage
                   height={40}
