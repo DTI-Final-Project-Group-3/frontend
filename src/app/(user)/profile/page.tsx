@@ -176,7 +176,7 @@ function AddressComponent({
       </p>
       <div className="flex justify-between items-center w-full mt-4">
         {primary && (
-          <span className="text-green-500 font-bold">Active address</span>
+          <span className="text-green-500 font-bold">Main address</span>
         )}
         <button
           onClick={handleDelete}
@@ -396,6 +396,13 @@ export default function ProfilePage() {
               >
                 Address
               </button>
+              {session && (session.role === "ADMIN_WAREHOUSE" || session.role === "ADMIN_SUPER") && (
+                <Link href={"/admin"}>
+                  <button className="block w-full py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600">
+                    Admin
+                  </button>
+                </Link>
+              )}
               <button
                 onClick={() => {
                   resetCart();
