@@ -1,4 +1,5 @@
 "use client";
+import Logo from "@/components/navbar/components/Logo";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
@@ -10,9 +11,24 @@ import { useEffect, useState } from "react";
 
 function ImagePlaceholder() {
   return (
-    <div className="md:w-1/2 bg-gray-200 flex flex-col justify-center items-center p-4">
-      <h1 className="text-2xl font-bold mb-4">WareHub</h1>
-      <div className="w-[90%] h-[40vh] bg-gray-300 rounded-lg"></div>
+    <div className="relative w-1/2 h-screen hidden md:flex">
+      {/* Image fully covering the left 50% */}
+      <Image
+        src="/images/auth-image.jpg"
+        alt="Auth image"
+        height={1920}
+        width={2880}
+        className="object-cover"
+      />
+
+      {/* Overlay effect */}
+      <div className="absolute inset-0 bg-black/50"></div>
+
+      {/* Caption text */}
+      <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-6 text-center">
+        <h2 className="text-3xl font-bold">Welcome to WareHub</h2>
+        <p className="mt-2 text-lg">Join us and explore the best deals!</p>
+      </div>
     </div>
   );
 }
@@ -33,20 +49,25 @@ function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
   };
 
   return (
-    <div className="md:w-1/2 flex flex-col justify-center items-center bg-white p-6">
+    <div className="w-full h-full md:w-1/2 flex flex-col justify-center items-center bg-white md:p-6">
       <div className="w-4/5 md:w-4/5 max-w-md">
-        <h2 className="text-2xl font-bold text-center">Sign In</h2>
-        <p className="text-center mt-2">
-          Don&apos;t have an account yet?
-          <Link href="/signup">
-            <span className="ml-2 px-3 py-1 bg-yellow-400 rounded-md cursor-pointer">
-              Sign Up
+        <div className="flex flex-col gap-4 items-start">
+          <Logo />
+          <h2 className="mt-8 text-3xl font-bold text-center">Sign In</h2>
+          <div className="flex gap-3 items-center justify-center">
+            <span className="md:text-[18px] text-gray-600">
+              Don&apos;t have an account yet?
             </span>
-          </Link>
-        </p>
+            <Link href="/signup">
+              <span className="md:text-[18px] font-bold text-green-600 rounded-md cursor-pointer hover:text-green-700">
+                Sign Up
+              </span>
+            </Link>
+          </div>
+        </div>
 
         <form onSubmit={handleFormSubmit}>
-          <div className="mt-6">
+          <div className="mt-8">
             <input
               type="text"
               placeholder="Your username or email address"
@@ -77,17 +98,15 @@ function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
             </button>
           </div>
 
-          <div className="mt-4 flex justify-between items-center">
+          <div className="text-sm md:text-[16px] mt-4 flex gap-2 items-center justify-between">
             <label className="flex items-center">
-              <input type="checkbox" className="mr-2" /> Remember me
+              <input type="checkbox" className="mr-2" />
+              Remember me
             </label>
             <span className="font-bold cursor-pointer">Forgot Password?</span>
           </div>
 
-          <Button
-            type="submit"
-            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-md"
-          >
+          <Button type="submit" className="w-full mt-6 font-semibold">
             Sign In
           </Button>
 

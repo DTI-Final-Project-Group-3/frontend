@@ -3,7 +3,7 @@ import { PaginationResponse } from "@/types/api/pagination";
 import { Order } from "@/types/models/orders/orders";
 import axios from "axios";
 
-export const fetchOrders = async (
+export const getAllCustomerOrders = async (
   page: number,
   limit: number,
   accessToken: string,

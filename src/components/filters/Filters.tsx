@@ -28,7 +28,7 @@ const Filters: FC = () => {
   return (
     <div
       className={cn(
-        "md:sticky md:top-[70px] z-50 flex flex-col items-center justify-between gap-8 w-full bg-white rounded-xl p-6 md:p-12",
+        "md:sticky md:top-[70px] z-[40] flex flex-col items-center justify-between gap-8 w-full bg-white rounded-xl p-6 md:p-12",
         hasShadow ? "shadow-lg" : ""
       )}
     >
