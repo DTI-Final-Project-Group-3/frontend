@@ -69,7 +69,11 @@ function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
               className="absolute inset-y-0 right-3 flex items-center"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
             </button>
           </div>
 
@@ -80,7 +84,10 @@ function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
             <span className="font-bold cursor-pointer">Forgot Password?</span>
           </div>
 
-          <Button type="submit" className="w-full mt-6 bg-blue-600 text-white py-3 rounded-md">
+          <Button
+            type="submit"
+            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-md"
+          >
             Sign In
           </Button>
 
@@ -111,14 +118,18 @@ function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
 }
 
 export default function LoginPage() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/");
+      const role = session?.role;
+
+      if (role === "ADMIN_SUPER" || role === "ADMIN_WAREHOUSE")
+        router.push("/admin");
+      else router.push("/");
     }
-  }, [status, router]);
+  }, [status, router, session]);
 
   const handleSubmit = async (email: string, password: string) => {
     const result = await signIn("credentials", {
