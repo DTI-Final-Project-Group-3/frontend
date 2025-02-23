@@ -1,97 +1,17 @@
 "use client";
 
 import React, { FC } from "react";
-import { Order } from "@/types/models/orders/orders";
-import { useQuery } from "@tanstack/react-query";
+import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
-import { ApiResponse } from "@/types/api/apiResponse";
+import { ShoppingBag } from "lucide-react";
 import { useOrderStore } from "@/store/orderStore";
-import { PaginationResponse } from "@/types/api/pagination";
 import { formatDateTime, formatPrice } from "@/utils/formatter";
+import OrderListLoadingSkeleton from "@/components/skeleton/OrderListLoadingSkeleton";
 import PaginationComponent from "./PaginationComponent";
 import ConfirmOrderModal from "./ConfirmOrderModal";
-import axios from "axios";
 import OrderDetailsModal from "./OrderDetailsModal";
-import { Separator } from "@/components/ui/separator";
-import { ShoppingBag } from "lucide-react";
 import Image from "next/image";
-import OrderListLoadingSkeleton from "@/components/skeleton/OrderListLoadingSkeleton";
-
-export const fetchOrders = async (
-  page: number,
-  limit: number,
-  accessToken: string,
-  status?: number,
-  search?: string,
-  startDate?: Date,
-  endDate?: Date
-): Promise<ApiResponse<PaginationResponse<Order>>> => {
-  const ENDPOINT_URL = "/api/v1/orders";
-
-  // Set query params
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-  });
-
-  if (status) params.append("customerOrderStatusId", status.toString());
-  if (search) params.append("search", search);
-  if (startDate) params.append("startDate", startDate.toISOString());
-  if (endDate) params.append("endDate", endDate.toISOString());
-
-  if (!accessToken) {
-    throw new Error("Access token is missing");
-  }
-
-  // Fetch the API
-  const response = await axios.get<ApiResponse<PaginationResponse<Order>>>(
-    `${
-      process.env.NEXT_PUBLIC_BACKEND_URL
-    }${ENDPOINT_URL}?${params.toString()}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  return response.data;
-};
-
-export const useOrders = (
-  page: number,
-  limit: number,
-  accessToken?: string,
-  status?: number,
-  search?: string,
-  startDate?: Date,
-  endDate?: Date
-) => {
-  return useQuery({
-    queryKey: [
-      "orders",
-      page,
-      limit,
-      accessToken,
-      status,
-      search,
-      startDate,
-      endDate,
-    ],
-    queryFn: () =>
-      fetchOrders(
-        page,
-        limit,
-        accessToken!,
-        status,
-        search,
-        startDate,
-        endDate
-      ),
-    enabled: !!accessToken,
-    staleTime: 1000 * 60 * 2, // Cache results for 5 minutes
-  });
-};
+import { useOrders } from "@/hooks/useOrders";
 
 const OrderLists: FC = () => {
   const { data: session } = useSession();

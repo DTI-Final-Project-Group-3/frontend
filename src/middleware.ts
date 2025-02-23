@@ -11,7 +11,7 @@ const PUBLIC_PATHS = [
   "/product",
 ];
 
-const PROTECTED_PATHS = ["/cart", "/order-list", "/admins"];
+const PROTECTED_PATHS = ["/cart", "/order-list", "/admin"];
 
 type UserRole = "CUSTOMER_VERIFIED" | "ADMIN_WAREHOUSE" | "ADMIN_SUPER";
 
@@ -54,6 +54,11 @@ export async function middleware(request: NextRequest) {
   }
 
   const userRole = token.role;
+
+  // Force ADMIN_SUPER & ADMIN_WAREHOUSE users to always go to /admin
+  if ((userRole === "ADMIN_SUPER" || userRole === "ADMIN_WAREHOUSE") && !pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/admin", request.url));
+  }
 
   if (isProtectedPath(pathname) && !hasRequiredRole(userRole, pathname)) {
     console.log(`Unauthorized access detected for ${pathname}, redirecting`);
