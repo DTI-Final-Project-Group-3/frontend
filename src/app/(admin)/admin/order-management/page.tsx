@@ -6,7 +6,7 @@ const OrderManagementPage = () => {
   return (
     <section className="w-full rounded-2xl min-h-[calc(100vh-178px)]">
       {/* Title */}
-      <div className="flex flex-wrap items-center justify-between gap-2 p-7 md:sticky md:top-[0] z-[100] bg-white w-full rounded-xl">
+      <div className="flex flex-wrap items-center justify-between gap-2 p-7 md:sticky md:top-[0] z-[40] bg-white w-full rounded-xl">
         <h1 className="text-3xl font-bold">Order Management</h1>
       </div>
       {/* Content */}
