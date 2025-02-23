@@ -277,7 +277,7 @@ const ActionButtons = ({ productId }: { productId: number }) => {
         </button>
       </Link>
 
-      <Link href={`/admin/product-management/edit/${productId}`}>
+      <Link href={`/admin/product-management/form/${productId}`}>
         <button className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-green-600">
           <svg
             xmlns="http://www.w3.org/2000/svg"
