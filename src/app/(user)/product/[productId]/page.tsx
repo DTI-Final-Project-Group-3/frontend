@@ -1,6 +1,6 @@
 "use client";
 
-import { getProductDetailById } from "@/app/api/getProducts";
+import { getProductDetailById } from "@/app/api/product/getProducts";
 import ProductCarousel from "@/components/product/ProductCarousel";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import { cn } from "@/lib/utils";

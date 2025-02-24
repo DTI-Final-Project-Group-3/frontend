@@ -48,3 +48,15 @@ export interface PaginatedProductParams
   extends PaginationParams,
     LocationParams,
     ProductParams {}
+
+export interface ProductForm {
+  name: string;
+  price: number;
+  description: string;
+  weight?: number;
+  height?: number;
+  width?: number;
+  length?: number;
+  images?: ProductImage[];
+  categoryId: number;
+}

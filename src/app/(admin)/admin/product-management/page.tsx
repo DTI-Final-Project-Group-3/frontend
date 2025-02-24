@@ -1,6 +1,6 @@
 "use client";
 
-import { getPaginatedProducts } from "@/app/api/getProducts";
+import { getPaginatedProducts } from "@/app/api/product/getProducts";
 import { PaginationProductAdmin } from "@/components/pagination/PaginationProductAdmin";
 import ActionButtons from "@/components/product-management/ActionButtons";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";

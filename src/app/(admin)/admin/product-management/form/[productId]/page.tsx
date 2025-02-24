@@ -1,8 +1,8 @@
 "use client";
 
-import { getProductDetailById } from "@/app/api/getProducts";
+import { getProductDetailById } from "@/app/api/product/getProducts";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
-import ProductForm from "@/components/product/ProductForm";
+import ProductFormComponent from "@/components/product/ProductForm";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { FC } from "react";
@@ -21,7 +21,7 @@ const EditProductFormPage: FC = () => {
 
       <div className="mt-4 md:mt-7 w-full overflow-x-auto flex justify-center px-4 md:px-17 text-gray-600">
         {data && !isLoading && !isFetching && (
-          <ProductForm props={data}></ProductForm>
+          <ProductFormComponent props={data}></ProductFormComponent>
         )}
       </div>
     </section>

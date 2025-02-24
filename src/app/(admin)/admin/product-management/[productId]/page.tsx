@@ -1,6 +1,6 @@
 "use client";
 
-import { getProductDetailById } from "@/app/api/getProducts";
+import { getProductDetailById } from "@/app/api/product/getProducts";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
 import ProductCarousel from "@/components/product/ProductCarousel";
 import { Skeleton } from "@/components/ui/skeleton";

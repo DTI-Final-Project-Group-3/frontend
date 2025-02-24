@@ -1,12 +1,12 @@
 "use client";
 
-import { FC, useRef, useState } from "react";
+import { FC, useRef } from "react";
 import Image from "next/image";
-import { Loader2, X, ImagePlus } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
 
 interface ImageUploadProps {
   imageUrl?: string;
-  onImageChange: (url: string) => void;
+  onImageChange: (file: File | null) => void;
   disabled?: boolean;
 }
 
@@ -16,8 +16,6 @@ const ImageUpload: FC<ImageUploadProps> = ({
   disabled = false,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleImageClick = () => {
     if (!disabled) {
@@ -25,39 +23,30 @@ const ImageUpload: FC<ImageUploadProps> = ({
     }
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.currentTarget.files?.[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
 
     if (file) {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        if (!file.type.startsWith("image/")) {
-          throw new Error("Please upload an image file");
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error("Image size should be less than 5MB");
-        }
-        const url = URL.createObjectURL(file);
-        onImageChange(url);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to upload image");
-      } finally {
-        setIsLoading(false);
-        event.target.value = "";
+      // Validate file
+      if (!file.type.startsWith("image/")) {
+        alert("Please upload an image file");
+        return;
       }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Image size should be less than 5MB");
+        return;
+      }
+
+      onImageChange(file);
     }
+    event.target.value = "";
   };
 
   const handleImageRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!disabled) {
-      onImageChange("");
-      setError(null);
+      onImageChange(null);
     }
   };
 
@@ -65,35 +54,28 @@ const ImageUpload: FC<ImageUploadProps> = ({
     <div
       className={`
         relative 
-        w-[200px] 
-        h-[200px] 
+        w-full 
+        aspect-square 
         border-2 
         rounded-lg 
         overflow-hidden
         transition-all
         ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:border-gray-300"}
-        ${error ? "border-red-500" : "border-gray-200"}
-        ${isLoading ? "border-blue-500" : ""}
+        border-gray-200
       `}
     >
       <div onClick={handleImageClick} className="w-full h-full relative">
         {imageUrl ? (
           <Image
             src={imageUrl}
-            alt="Uploaded image"
-            width={200}
-            height={200}
-            className="object-center"
+            alt="Product image"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 50vw, 20vw"
           />
         ) : (
           <div className="flex items-center justify-center h-full bg-gray-50">
             <ImagePlus className="w-12 h-12 text-gray-400" />
-          </div>
-        )}
-
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <Loader2 className="w-8 h-8 text-white animate-spin" />
           </div>
         )}
       </div>
@@ -107,12 +89,6 @@ const ImageUpload: FC<ImageUploadProps> = ({
         >
           <X className="w-4 h-4" />
         </button>
-      )}
-
-      {error && (
-        <div className="absolute bottom-0 left-0 right-0 p-2 bg-red-500 text-white text-xs">
-          {error}
-        </div>
       )}
 
       <input

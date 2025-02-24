@@ -3,31 +3,22 @@
 import { FC, useState } from "react";
 import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
-import { ProductDetail, ProductImage } from "@/types/models/products";
-import { getProductCategory } from "@/app/api/getProducts";
+import { ProductDetail, ProductForm } from "@/types/models/products";
+import { getProductCategory } from "@/app/api/product/getProducts";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import ImageUpload from "./ImageUploud";
 import { cn } from "@/lib/utils";
-
-interface Product {
-  name: string;
-  price: number;
-  description: string;
-  weight?: number;
-  height?: number;
-  width?: number;
-  length?: number;
-  images?: ProductImage[];
-  categoryId: number;
-}
+import { postFileBuilderIo } from "@/app/api/builder-io/postBuilderIo";
+import { updateProductById } from "@/app/api/product/putProducts";
 
 interface ProductFormProps {
   props?: ProductDetail;
 }
 
-const ProductForm: FC<ProductFormProps> = ({ props }) => {
+const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   const {
     data: productCategories,
@@ -38,7 +29,7 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
     queryFn: getProductCategory,
   });
 
-  const initialValues: Product = {
+  const initialValues: ProductForm = {
     name: props?.name ?? "",
     price: props?.price ?? 0,
     description: props?.description ?? "",
@@ -77,24 +68,64 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
     categoryId: Yup.number()
       .min(1, "Category is required")
       .required("Category is required"),
-    images: Yup.array()
-      .min(1, "At least one image is required")
-      .test(
-        "Max size",
-        "Maximum image size is 1MB",
-        (values) =>
-          !values || values.every((value) => value.size <= 1024 * 1024)
-      ),
+    images: Yup.array().min(1, "At least one image is required"),
   });
 
-  const handleOnSubmit = async (values: Product) => {
+  const handleOnSubmit = async (values: ProductForm) => {
+    if (!props || !props.id) return;
+
     try {
       setIsSubmitting(true);
-      console.log("Submitting form with values:", values);
-      // Add your API call here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
+
+      const filesToUpload = imageFiles
+        .map((file, index) => ({ file, index }))
+        .filter(
+          (item): item is { file: File; index: number } => item.file !== null
+        );
+
+      const uploadPromises = filesToUpload.map(({ file, index }) =>
+        postFileBuilderIo({
+          name: `product-${values.name}-${Date.now()}`,
+          altText: values.name,
+          folder: "products",
+          file,
+        }).then((response) => ({ ...response, index }))
+      );
+
+      const uploadedImages = await Promise.all(uploadPromises);
+
+      const finalImages = Array.from({ length: 5 })
+        .map((_, index) => {
+          const existingImage = values.images?.[index];
+          const file = imageFiles[index];
+
+          if (file) {
+            const uploadedImage = uploadedImages.find(
+              (img) => img.index === index
+            );
+            return uploadedImage
+              ? { url: uploadedImage.url, position: index + 1 }
+              : null;
+          } else if (existingImage) {
+            return existingImage;
+          } else {
+            return null;
+          }
+        })
+        .filter(Boolean);
+
+      const finalValues = {
+        ...values,
+        images: finalImages,
+      };
+
+      console.log("Submitting form with values:", finalValues);
+      await new Promise((resolve) => updateProductById(props?.id, finalValues));
+
+      setImageFiles([]);
     } catch (error) {
       console.error("Error submitting form:", error);
+      alert("Error submitting form. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -193,67 +224,53 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
               <label className="block text-gray-700 font-medium">
                 Upload up to 5 images
               </label>
-              <FieldArray
-                name="images"
-                render={(arrayHelper) => {
-                  const images = arrayHelper.form.values.images;
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {Array.from({ length: 5 }).map((_, index) => {
+                  const currentImage = values.images?.[index];
+                  const previousImage =
+                    index > 0 ? values.images?.[index - 1] : true;
+                  const isDisabled = !previousImage && index !== 0;
 
                   return (
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                      {Array.from({ length: 5 }).map((_, index) => {
-                        const currentImage = images[index];
-                        const previousImage =
-                          index > 0 ? images[index - 1] : true;
-                        const isDisabled = !previousImage && index !== 0;
+                    <ImageUpload
+                      key={index}
+                      imageUrl={
+                        currentImage?.url ||
+                        (imageFiles[index]
+                          ? URL.createObjectURL(imageFiles[index])
+                          : undefined)
+                      }
+                      disabled={isDisabled}
+                      onImageChange={(file) => {
+                        if (file === null) {
+                        } else {
+                          const newImageFiles = [...imageFiles];
+                          newImageFiles[index] = file;
+                          setImageFiles(newImageFiles);
 
-                        return (
-                          <div
-                            key={index}
-                            className={cn(
-                              "aspect-square",
-                              isDisabled ? "opacity-50" : ""
-                            )}
-                          >
-                            <ImageUpload
-                              imageUrl={currentImage?.url}
-                              onImageChange={(url) => {
-                                if (url === "") {
-                                  const updatedImages = images.filter(
-                                    (_: ProductImage, i: number) => i !== index
-                                  );
-                                  const reorderedImages = updatedImages.map(
-                                    (img: ProductImage, idx: number) => ({
-                                      url: img.url,
-                                      position: idx + 1,
-                                    })
-                                  );
-                                  setFieldValue("images", reorderedImages);
-                                } else {
-                                  if (currentImage) {
-                                    const updatedImages = [...images];
-                                    updatedImages[index] = {
-                                      url,
-                                      position: index + 1,
-                                    };
-                                    setFieldValue("images", updatedImages);
-                                  } else {
-                                    const updatedImages = [
-                                      ...images,
-                                      { url, position: images.length + 1 },
-                                    ];
-                                    setFieldValue("images", updatedImages);
-                                  }
-                                }
-                              }}
-                              disabled={isDisabled}
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
+                          const newImages = [...(values.images || [])];
+                          if (file) {
+                            if (newImages[index]) {
+                              newImages[index] = {
+                                ...newImages[index],
+                                position: index + 1,
+                              };
+                            } else {
+                              newImages[index] = {
+                                url: "",
+                                position: index + 1,
+                              };
+                            }
+                          } else {
+                            newImages.splice(index, 1);
+                          }
+                          setFieldValue("images", newImages);
+                        }
+                      }}
+                    />
                   );
-                }}
-              />
+                })}
+              </div>
               <ErrorMessage
                 name="images"
                 component="div"
@@ -343,4 +360,4 @@ const ProductForm: FC<ProductFormProps> = ({ props }) => {
   );
 };
 
-export default ProductForm;
+export default ProductFormComponent;
