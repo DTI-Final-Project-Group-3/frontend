@@ -29,7 +29,7 @@ export default function Home() {
   const addToCart = useCartStore((state) => state.addToCart);
   const { setCartItems } = useCartStore();
   useCartStore.getState().isUserVerified =
-    session?.role !== "CUSTOMER_VERIFIED" ? true : false;
+    session?.role === "CUSTOMER_VERIFIED" ? true : false;
   useCartStore.getState().isUserRegistered = !session;
   const { userAddress } = useUserAddressStore();
   const { searchQuery } = useSearchStore();
