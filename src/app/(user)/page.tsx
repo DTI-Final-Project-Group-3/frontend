@@ -28,11 +28,15 @@ export default function Home() {
   const [page, setPage] = useState<number>(0);
   const addToCart = useCartStore((state) => state.addToCart);
   const { setCartItems } = useCartStore();
-  useCartStore.getState().isUserVerified =
-    session?.role === "CUSTOMER_VERIFIED" ? true : false;
-  useCartStore.getState().isUserRegistered = !session;
   const { userAddress } = useUserAddressStore();
   const { searchQuery } = useSearchStore();
+
+  // Verify the user (verified and registred)
+  useEffect(() => {
+    useCartStore.getState().isUserVerified =
+      session?.role === "CUSTOMER_VERIFIED";
+    useCartStore.getState().isUserRegistered = !session; // true if session is null (user is not logged in)
+  }, [session]);
 
   const handlePageChange = (
     pageChange: number,
@@ -97,6 +101,10 @@ export default function Home() {
         }
       } catch (err) {
         console.error("Error parsing cart-storage:", err);
+        toast({
+          title: "Error parsing cart storage",
+          description: `${err}`,
+        });
       }
     }
   }, [products]);
