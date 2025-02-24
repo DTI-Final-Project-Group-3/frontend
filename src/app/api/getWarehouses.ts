@@ -13,3 +13,12 @@ export const getNearbyWarehouse = async (
   );
   return response.data;
 };
+
+export const getAllWarehouses = async (): Promise<
+  ApiResponse<WarehouseDetail[]>
+> => {
+  const response = await axios.get<ApiResponse<WarehouseDetail[]>>(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/warehouses/all`
+  );
+  return response.data;
+};

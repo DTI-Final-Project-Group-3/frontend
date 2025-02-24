@@ -1,25 +1,18 @@
 "use client";
 
-import CartItemsList from "@/components/checkout/CartItemsList";
+import React, { FC, useEffect, useMemo, useState } from "react";
+import { toast } from "@/hooks/use-toast";
+import { Address } from "@/types/models/checkout/userAddresses";
+import { useSession } from "next-auth/react";
+import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
+import { CartItem, useCartStore } from "@/store/cartStore";
+import { createManualTransaction } from "@/app/api/transaction/createManualTransaction";
+import { getAllAddress, getMainAddress } from "@/app/api/transaction/getUserAddresses";
 import CheckoutSummary from "@/components/checkout/CheckoutSummary";
 import ShippingAddress from "@/components/checkout/ShippingAddress";
-import { toast } from "@/hooks/use-toast";
-import { useCartStore } from "@/store/cartStore";
-import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
-import { Address } from "@/types/models/checkout/userAddresses";
-
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+import CartItemsList from "@/components/checkout/CartItemsList";
 import Script from "next/script";
-import React, { FC, useEffect, useMemo, useState } from "react";
-
-declare global {
-  interface Window {
-    snap: {
-      pay: (token: string, callbacks?: any) => void;
-    };
-  }
-}
+import Link from "next/link";
 
 const CheckoutPage: FC = () => {
   const { data: session } = useSession();
@@ -28,6 +21,7 @@ const CheckoutPage: FC = () => {
   const setCartItems = useCartStore((state) => state.setCartItems);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>("gateway");
   const [userAddress, setUserAddress] = useState<Address[]>([]);
+  const [mainAddress, setMainAddress] = useState<Address | null>(null);
 
   // Load cart data from local storage if there is any data on mount
   useEffect(() => {
@@ -107,104 +101,19 @@ const CheckoutPage: FC = () => {
     }
   };
 
-  // Handle manual transfer payment
-  const handleManualCheckout = async () => {
-    try {
-      // Set order items
-      const orderItems = cartItems.map((item) => ({
-        productId: 3,
-        quantity: item.cartQuantity,
-        unitPrice: item.product.price,
-      }));
-
-      const payload = {
-        grossAmount: Math.ceil(totalPrice + 25000),
-        userId: 3,
-        warehouseId: 3,
-        paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
-        shippingCost: 25000,
-        orderStatusId: 1, // Default status for waiting payment
-        orderItems: orderItems,
-      };
-
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL +
-          "/api/v1/transactions/create-manual",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to create manual transaction");
-
-      toast({
-        title: "Manual Payment Initiated",
-        description: "Please follow the instructions to complete your payment.",
-        duration: 3000,
-      });
-
-      // Optionally, redirect user to instructions page
-    } catch (error) {
-      toast({
-        title: "Payment Error",
-        description: `${error} Something went wrong. Please try again.`,
-        variant: "destructive",
-        duration: 2000,
-      });
-    }
-  };
-
-  // Get all current user address
-  const getAllAddress = async () => {
-    try {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + "/api/v1/user/address",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        toast({
-          title: "Failed to fetch address",
-          description: "Please login first and try again",
-          variant: "destructive",
-          duration: 2000,
-        });
-      }
-
-      const data = await response.json();
-      console.log(data);
-      return data.data as Address;
-    } catch (error) {
-      toast({
-        title: "Something went wrong",
-        description: `${error}`,
-        variant: "destructive",
-        duration: 2000,
-      });
-    }
-  };
-
   useEffect(() => {
     const fetchUserAddress = async () => {
-      try {
-        const userAddress = await getAllAddress();
-        setUserAddress(userAddress ?? []);
-      } catch (error) {
-        console.error(error);
-        setUserAddress([]);
+      if (session) {
+        const userAddress = await getAllAddress(session.accessToken);
+        const mainAddress = await getMainAddress(session.accessToken);
+        setUserAddress(userAddress);
+        setMainAddress(mainAddress);
+
+        console.log(mainAddress);
       }
     };
 
-    if (session) fetchUserAddress();
+    fetchUserAddress();
   }, [session]);
 
   return (
@@ -240,9 +149,20 @@ const CheckoutPage: FC = () => {
                 setPaymentMethod={setPaymentMethod}
                 totalQuantity={totalQuantity}
                 totalPrice={totalPrice}
-                shippingCost={25000} // Or any other cost
+                shippingCost={25000} // Still waiting the API
                 handleCheckout={handleCheckout}
-                handleManualCheckout={handleManualCheckout}
+                handleManualCheckout={() =>
+                  createManualTransaction({
+                    accessToken: session?.accessToken,
+                    latitude: mainAddress?.latitude || 0,
+                    longitude: mainAddress?.longitude || 0,
+                    shippingCost: 25000,
+                    paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
+                    totalPrice: totalPrice,
+                    paymentProofUrl: "https://google.com",
+                    cartItems: cartItems as CartItem[],
+                  })
+                }
                 isDisabled={cartItems.length < 1}
               />
             </div>
