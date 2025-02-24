@@ -17,16 +17,20 @@ import { ProductSummary } from "@/types/models/products";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import ProductCard from "@/components/product/ProductCard";
 import { cookies } from "next/headers";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const { data: session } = useSession();
+
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
     null
   );
   const [page, setPage] = useState<number>(0);
   const addToCart = useCartStore((state) => state.addToCart);
   const { setCartItems } = useCartStore();
-  useCartStore.getState().isUserVerified = true;
-  useCartStore.getState().isUserRegistered = true;
+  useCartStore.getState().isUserVerified =
+    session?.role !== "CUSTOMER_VERIFIED" ? true : false;
+  useCartStore.getState().isUserRegistered = !session;
   const { userAddress } = useUserAddressStore();
   const { searchQuery } = useSearchStore();
 

@@ -8,6 +8,7 @@ type OrderState = {
   search?: string;
   startDate?: Date;
   endDate?: Date;
+  warehouseId?: number;
   setFilters: (filters: Partial<OrderState>) => void;
   resetFilters: () => void;
 };
@@ -29,6 +30,7 @@ export const useOrderStore = create<OrderState>()(
           search: "",
           startDate: undefined,
           endDate: undefined,
+          warehouseId: undefined,
         }),
     }),
     { name: "order-list-filters" }
