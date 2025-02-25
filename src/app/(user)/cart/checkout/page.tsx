@@ -1,18 +1,22 @@
 "use client";
 
-import React, { FC, useEffect, useMemo, useState } from "react";
-import { toast } from "@/hooks/use-toast";
-import { Address } from "@/types/models/checkout/userAddresses";
-import { useSession } from "next-auth/react";
-import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
-import { CartItem, useCartStore } from "@/store/cartStore";
 import { createManualTransaction } from "@/app/api/transaction/createManualTransaction";
 import { getAllAddress, getMainAddress } from "@/app/api/transaction/getUserAddresses";
+import CartItemsList from "@/components/checkout/CartItemsList";
 import CheckoutSummary from "@/components/checkout/CheckoutSummary";
 import ShippingAddress from "@/components/checkout/ShippingAddress";
-import CartItemsList from "@/components/checkout/CartItemsList";
-import Script from "next/script";
+import { toast } from "@/hooks/use-toast";
+import { CartItem, useCartStore } from "@/store/cartStore";
+import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
+import { Address } from "@/types/models/checkout/userAddresses";
+import { ShippingCost } from "@/types/models/shippingCost";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import Script from "next/script";
+import { FC, useEffect, useMemo, useState } from "react";
+
+const shipping_cost_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost`;
+const shipping_cost_dummy_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost-dummy`;
 
 const CheckoutPage: FC = () => {
   const { data: session } = useSession();
@@ -22,6 +26,8 @@ const CheckoutPage: FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>("gateway");
   const [userAddress, setUserAddress] = useState<Address[]>([]);
   const [mainAddress, setMainAddress] = useState<Address | null>(null);
+  const [shippingCost, setShippingCost] = useState(0);
+  const [shippingCostResponse, setShippingCostResponse] = useState<ShippingCost | null>(null);
 
   // Load cart data from local storage if there is any data on mount
   useEffect(() => {
@@ -65,11 +71,11 @@ const CheckoutPage: FC = () => {
       // Set payload
       const payload = {
         orderId: `ORDER-${Date.now()}-${Math.random().toString(10)}`,
-        grossAmount: Math.ceil(totalPrice + 25000),
+        grossAmount: Math.ceil(totalPrice + shippingCost),
         userId: 3,
         warehouseId: 3,
         paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
-        shippingCost: 25000,
+        shippingCost: shippingCost,
         orderStatusId: 1, // Default status for waiting payment
         orderItems: orderItems,
       };
@@ -108,8 +114,28 @@ const CheckoutPage: FC = () => {
         const mainAddress = await getMainAddress(session.accessToken);
         setUserAddress(userAddress);
         setMainAddress(mainAddress);
-
         console.log(mainAddress);
+        
+        const res = await fetch(shipping_cost_dummy_url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: JSON.stringify({
+            warehouseId: 1,
+            userAddressId: mainAddress?.id,
+            courier: "jne",
+            weight: 100, // gram
+          }),
+        });
+        const response = await res.json();
+        if (response.success) {
+          setShippingCostResponse(response.data);
+          setShippingCost(response.data.costs[0].cost);  // mengambil harga pertama yang juga lowest price
+        } else {
+          alert("Failed to get shipping cost. Message = " + response.message);
+        }
       }
     };
 
@@ -149,14 +175,14 @@ const CheckoutPage: FC = () => {
                 setPaymentMethod={setPaymentMethod}
                 totalQuantity={totalQuantity}
                 totalPrice={totalPrice}
-                shippingCost={25000} // Still waiting the API
+                shippingCost={shippingCost} // Still waiting the API
                 handleCheckout={handleCheckout}
                 handleManualCheckout={() =>
                   createManualTransaction({
                     accessToken: session?.accessToken,
                     latitude: mainAddress?.latitude || 0,
                     longitude: mainAddress?.longitude || 0,
-                    shippingCost: 25000,
+                    shippingCost: {shippingCost},
                     paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
                     totalPrice: totalPrice,
                     paymentProofUrl: "https://google.com",
