@@ -4,13 +4,17 @@ import { ProductImage } from "@/types/models/products";
 import Image from "next/image";
 import { FC, useEffect, useState } from "react";
 
-interface CarouselProps {
+interface ProductCarouselProps {
   productName: string;
   images: ProductImage[];
   isBanner?: boolean;
 }
 
-const Carousel: FC<CarouselProps> = ({ productName, images, isBanner }) => {
+const ProductCarousel: FC<ProductCarouselProps> = ({
+  productName,
+  images,
+  isBanner,
+}) => {
   const [selectedImagePosition, setSelectedImagePosition] = useState<number>(1);
   const [mainImageUrl, setMainImageUrl] = useState<string>(
     "/images/no-image-icon.jpg"
@@ -151,4 +155,4 @@ const Carousel: FC<CarouselProps> = ({ productName, images, isBanner }) => {
   );
 };
 
-export default Carousel;
+export default ProductCarousel;

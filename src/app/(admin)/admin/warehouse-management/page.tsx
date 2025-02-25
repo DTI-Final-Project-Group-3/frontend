@@ -8,12 +8,13 @@ import { useEffect, useState } from "react";
 const warehouse_all = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSES}/all-assigned`;
 const admin_not_assigned = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_NOT_ASSIGNED}`;
 const admin_assigned = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_ASSIGNED}`;
-const admin_assign = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_ASSIGN_WAREHOUSE}`; 
-
+const admin_assign = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_ASSIGN_WAREHOUSE}`;
 
 const WarehouseManagementPage = () => {
   const { data: session, status } = useSession();
-  const [warehouses, setWarehouses] = useState<WarehouseAssignedDetail[] | null>(null);
+  const [warehouses, setWarehouses] = useState<
+    WarehouseAssignedDetail[] | null
+  >(null);
 
   const fetchWarehouses = async () => {
     try {
@@ -39,7 +40,11 @@ const WarehouseManagementPage = () => {
   }, [status, session]);
 
   if (status === "loading") {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading...
+      </div>
+    );
   }
 
   return (
@@ -50,7 +55,11 @@ const WarehouseManagementPage = () => {
       <div className="mt-7 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {warehouses && warehouses.length > 0 ? (
           warehouses.map((warehouse) => (
-            <WarehouseCard key={warehouse.id} warehouse={warehouse} fetchWarehouses={fetchWarehouses} />
+            <WarehouseCard
+              key={warehouse.id}
+              warehouse={warehouse}
+              fetchWarehouses={fetchWarehouses}
+            />
           ))
         ) : (
           <p>No warehouses available.</p>
@@ -60,8 +69,13 @@ const WarehouseManagementPage = () => {
   );
 };
 
-
-const WarehouseCard = ({ warehouse, fetchWarehouses }: { warehouse: WarehouseAssignedDetail; fetchWarehouses: () => void }) => {
+const WarehouseCard = ({
+  warehouse,
+  fetchWarehouses,
+}: {
+  warehouse: WarehouseAssignedDetail;
+  fetchWarehouses: () => void;
+}) => {
   const { data: session } = useSession();
   const [showModal, setShowModal] = useState(false);
   const [admins, setAdmins] = useState<UserAdminDetail[] | null>(null);
@@ -166,19 +180,27 @@ const WarehouseCard = ({ warehouse, fetchWarehouses }: { warehouse: WarehouseAss
     <div className="bg-gray-100 p-5 rounded-xl shadow-md flex flex-col">
       <h3 className="text-lg font-semibold">{warehouse.name}</h3>
       <p className="text-sm text-gray-600">{warehouse.description}</p>
-      <p className="text-sm font-medium mt-2">Address: {warehouse.detailAddress}</p>
-      <p className="text-sm font-medium mt-2">Longitude: {warehouse.longitude}</p>
+      <p className="text-sm font-medium mt-2">
+        Address: {warehouse.detailAddress}
+      </p>
+      <p className="text-sm font-medium mt-2">
+        Longitude: {warehouse.longitude}
+      </p>
       <p className="text-sm font-medium mt-2">Latitude: {warehouse.latitude}</p>
-      <p className="text-sm font-medium mt-2">Assigned Admins: {warehouse.assignedAdmins.length}</p>
+      <p className="text-sm font-medium mt-2">
+        Assigned Admins: {warehouse.assignedAdmins.length}
+      </p>
 
       <button
         onClick={fetchUnassignedAdmins}
-        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+      >
         Assign Admin
       </button>
       <button
         onClick={fetchAssignedAdmins}
-        className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+        className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
+      >
         Remove Admin
       </button>
 
@@ -191,7 +213,9 @@ const WarehouseCard = ({ warehouse, fetchWarehouses }: { warehouse: WarehouseAss
                 <li
                   key={admin.id}
                   className={`cursor-pointer p-2 rounded-md ${
-                    selectedAdmin === admin.id ? "bg-blue-300" : "hover:bg-gray-200"
+                    selectedAdmin === admin.id
+                      ? "bg-blue-300"
+                      : "hover:bg-gray-200"
                   }`}
                   onClick={() => setSelectedAdmin(admin.id)}
                 >
@@ -219,6 +243,5 @@ const WarehouseCard = ({ warehouse, fetchWarehouses }: { warehouse: WarehouseAss
     </div>
   );
 };
-
 
 export default WarehouseManagementPage;

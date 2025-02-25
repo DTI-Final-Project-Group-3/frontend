@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import CartItemLarge from "../cart/components/CartItemLarge";
-import { WarehouseInventorySummary } from "@/types/models/warehouseInventories";
 import { CartItem } from "@/store/cartStore";
 
 type CartItemsListProps = {
