@@ -10,8 +10,8 @@ export interface WarehouseInventory {
   id: number;
   productId: number;
   warehouseId: number;
-  stock: number;
-  warehouseInventoryStatusId: number;
+  totalQuantity: number;
+  warehouseInventoryStatusId?: number;
 }
 
 export interface WarehouseInventoryStatus {
@@ -26,7 +26,7 @@ export interface WarehouseInventoryParams {
   searchQuery?: string;
 }
 
-// use to display in pagination
+// use to display in pagination admin
 export interface WarehouseInventoryPagination {
   id: number;
   productId: number;

@@ -10,7 +10,6 @@ import React, { FC } from "react";
 
 const Header: FC = () => {
   const { data: session, status } = useSession();
-  console.log(session);
 
   const getInitials = (role?: string): string => {
     if (!role) return "u";
@@ -50,7 +49,7 @@ const Header: FC = () => {
                 <p className="text-base text-slate-500">{status}</p>
               </div>
             </div>
-            <Separator className="my-6"/>
+            <Separator className="my-6" />
             <Button
               onClick={() => signOut({ callbackUrl: "/login" })}
               variant={"destructive"}

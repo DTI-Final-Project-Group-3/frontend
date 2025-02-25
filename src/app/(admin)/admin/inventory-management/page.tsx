@@ -3,6 +3,7 @@
 import { getPaginatedWarehouseInventories } from "@/app/api/warehouse-inventories/getWarehouseInventories";
 import ImageComponent from "@/components/common/ImageComponent";
 import InventoryManagementHeader from "@/components/inventory-management/InventoryManagementHeader";
+import MutationDialog from "@/components/inventory-management/MutationDialog";
 import { PaginationProductAdmin } from "@/components/pagination/PaginationProductAdmin";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import { formatPrice } from "@/utils/formatter";
@@ -115,7 +116,10 @@ const InventoryManagementPage = () => {
                       {inventory.quantity}
                     </div>
                     <div className="flex justify-center space-x-2">
-                      Request mutation
+                      <MutationDialog
+                        productId={inventory.productId}
+                        totalQuantity={inventory.quantity}
+                      />
                     </div>
                   </div>
                 ))}

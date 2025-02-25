@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FC, useState } from "react";
+import ProductSelection from "../product/ProductSelection";
 
 const InventoryManagementHeader: FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
