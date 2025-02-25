@@ -26,7 +26,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
     <main className="flex w-full min-h-screen">
       <Sidebar />
       <div className="w-full flex flex-col gap-6 p-6 bg-slate-100">
-        {/* <Header /> */}
+        <Header />
         {children}
       </div>
       <Toaster />

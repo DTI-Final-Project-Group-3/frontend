@@ -10,8 +10,11 @@ import { useOrderStore } from "@/store/orderStore";
 import { CalendarIcon, SearchIcon, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import "react-day-picker/dist/style.css";
+import SelectWarehouse from "./component/SelectWarehouse";
+import { useSession } from "next-auth/react";
 
 const Filters: FC = () => {
+  const { data: session } = useSession();
   const [hasShadow, setHasShadow] = useState(false);
 
   const { search, statusId, startDate, endDate, setFilters, resetFilters } =
@@ -28,7 +31,7 @@ const Filters: FC = () => {
   return (
     <div
       className={cn(
-        "md:sticky md:top-[70px] z-50 flex flex-col items-center justify-between gap-8 w-full bg-white rounded-xl p-6 md:p-12",
+        "md:sticky md:top-[70px] z-[40] flex flex-col items-center justify-between gap-8 w-full bg-white rounded-xl p-6 md:p-12",
         hasShadow ? "shadow-lg" : ""
       )}
     >
@@ -69,7 +72,7 @@ const Filters: FC = () => {
               <button className="flex items-center justify-start gap-3 border border-gray-300 bg-white text-lg text-gray-400 px-3 py-3 rounded-lg shadow-sm hover:border-green-500 focus:ring-2 focus:ring-green-500 transition-all w-full">
                 <CalendarIcon size={20} />
                 {startDate ? (
-                  <span className="line-clamp-1">
+                  <span className="line-clamp-1 text-black">
                     {format(startDate, "dd MMM yyyy")} -{" "}
                     {endDate ? format(endDate, "dd MMM yyyy") : "..."}
                   </span>
@@ -112,8 +115,16 @@ const Filters: FC = () => {
           </Popover>
         </div>
 
+        {/* Warehouse Select Filter */}
+        {session?.role === "ADMIN_SUPER" && (
+          <div className="w-full">
+            <SelectWarehouse />
+          </div>
+        )}
+
         {/* Reset Filters Button */}
         <Button
+          variant={session?.role !== "ADMIN_SUPER" ? "default" : "green"}
           onClick={() => {
             resetFilters();
           }}

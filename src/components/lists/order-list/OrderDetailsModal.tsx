@@ -10,16 +10,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Order } from "@/types/models/orders/orders";
-import { ApiResponse } from "@/types/api/apiResponse";
-import axios from "axios";
-import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { formatDateTime, formatPrice } from "@/utils/formatter";
 import { Separator } from "@/components/ui/separator";
+import { useSession } from "next-auth/react";
+import { ApiResponse } from "@/types/api/apiResponse";
 import { SquareArrowOutUpRight } from "lucide-react";
+import { formatDateTime, formatPrice } from "@/utils/formatter";
 import Image from "next/image";
+import axios from "axios";
 
 type OrderDetailsModalProps = {
   orderId: number;
@@ -148,26 +148,26 @@ const OrderDetailsModal: FC<OrderDetailsModalProps> = ({ orderId }) => {
                 <div className="flex flex-col gap-2">
                   <h3 className="text-lg font-bold mb-3">Payment Details</h3>
                   <div className="flex items-center justify-between">
-                    <p className="text-[16px] text-gray-500 font-medium">
-                      Warehouse
+                    <p className="text-[16px] text-gray-500 font-normal">
+                      Sent from warehouse
                     </p>
-                    <span className="text-[16px] font-semibold text-gray-900">
+                    <span className="text-[16px] font-semibold text-black">
                       {data.data.warehouseName}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-[16px] text-gray-500 font-medium">
+                    <p className="text-[16px] text-gray-500 font-normal">
                       Payment method
                     </p>
-                    <span className="text-[16px] font-semibold text-gray-900">
+                    <span className="text-[16px] font-semibold text-black">
                       {data.data.paymentMethodName}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-[16px] text-gray-500 font-medium">
+                    <p className="text-[16px] text-gray-500 font-normal">
                       Shipping cost
                     </p>
-                    <span className="text-[16px] font-semibold text-gray-900">
+                    <span className="text-[16px] font-semibold text-black">
                       {formatPrice(String(data.data.shippingCost))}
                     </span>
                   </div>

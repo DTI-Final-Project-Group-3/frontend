@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 
 const user_detail_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_DETAIL}`;
+const reset_password_request_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/reset-password-request`;
 
 interface AccountProps {
   userData : UserDetail | null;
@@ -176,7 +177,7 @@ function AddressComponent({
       </p>
       <div className="flex justify-between items-center w-full mt-4">
         {primary && (
-          <span className="text-green-500 font-bold">Active address</span>
+          <span className="text-green-500 font-bold">Main address</span>
         )}
         <button
           onClick={handleDelete}
@@ -330,6 +331,30 @@ export default function ProfilePage() {
       }
   };
 
+  const resetPassword = async () => {
+    if (session)
+      try {
+        const res = await fetch(reset_password_request_url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: JSON.stringify(editableData),
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("Check your email for password change link");
+          setIsModified(false);
+        } else {
+          alert("Failed to send password change link");
+        }
+      } catch (error) {
+        console.error("Error sending password change link:", error);
+        alert("Error sending password change link");
+      }
+  }
+
   const handleDiscard = () => {
     if (userData)
       setEditableData({
@@ -395,6 +420,21 @@ export default function ProfilePage() {
                 }`}
               >
                 Address
+              </button>
+              {session && (session.role === "ADMIN_WAREHOUSE" || session.role === "ADMIN_SUPER") && (
+                <Link href={"/admin"}>
+                  <button className="block w-full py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600">
+                    Admin
+                  </button>
+                </Link>
+              )}
+              <button
+                onClick={() => {
+                  resetPassword();
+                }}
+                className="block w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Reset Password
               </button>
               <button
                 onClick={() => {

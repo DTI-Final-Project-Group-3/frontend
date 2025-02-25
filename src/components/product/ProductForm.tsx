@@ -87,7 +87,7 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
         postFileBuilderIo({
           name: `product-${values.name}-${Date.now()}`,
           altText: values.name,
-          folder: "products",
+          folder: process.env.NEXT_PUBLIC_BUILDER_IO_PRODUCT_FOLDER_ID,
           file,
         }).then((response) => ({ ...response, index }))
       );

@@ -11,10 +11,10 @@ const Logo: FC = () => {
     >
       <Image
         alt="logo"
-        height="50"
-        width="200"
         src="/images/WareHub.svg"
-        className="cursor-pointer h-[25px]"
+        height={50}
+        width={200}
+        className="cursor-pointer h-auto"
       />
     </Link>
   );
