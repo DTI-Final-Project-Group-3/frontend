@@ -1,23 +1,22 @@
 "use client";
 
 import { getPaginatedProducts } from "@/app/api/product/getProducts";
+import ImageComponent from "@/components/common/ImageComponent";
 import { PaginationProductAdmin } from "@/components/pagination/PaginationProductAdmin";
 import ActionButtons from "@/components/product-management/ActionButtons";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
 import { ADMIN_PRODUCT_PER_PAGE } from "@/constant/productConstant";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const ProductManagementPage = () => {
   const [page, setPage] = useState<number>(0);
   const [productCategoryId, setProductCategoryId] = useState<number>();
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [imageUrls, setImageUrls] = useState<Map<number, string>>(new Map());
 
   const { data: products, isLoading: productsLoading } = useQuery({
-    queryKey: ["products", page, productCategoryId, searchQuery],
+    queryKey: ["products-admin", page, productCategoryId, searchQuery],
     queryFn: () =>
       getPaginatedProducts({
         page: page,
@@ -26,27 +25,6 @@ const ProductManagementPage = () => {
         searchQuery,
       }),
   });
-
-  const handleImageOnError = (productId: number) => {
-    setImageUrls((prev) => {
-      const newMap = new Map(prev);
-      newMap.set(productId, "/images/no-image-icon.jpg");
-      return newMap;
-    });
-  };
-
-  useEffect(() => {
-    if (products) {
-      const newMap = new Map<number, string>();
-      products.content.forEach((product) => {
-        newMap.set(
-          product.id,
-          product.thumbnail ?? "/images/no-image-icon.jpg"
-        );
-      });
-      setImageUrls(newMap);
-    }
-  }, [products]);
 
   return (
     <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
@@ -92,7 +70,6 @@ const ProductManagementPage = () => {
                   Actions
                 </div>
               </div>
-
               <div className="space-y-2">
                 {products?.content.map((product) => (
                   <div
@@ -107,32 +84,25 @@ const ProductManagementPage = () => {
                         ID: {product.id}
                       </div>
                     </div>
-
                     <div className="min-w-0">
                       <span className="px-3 py-1 text-sm rounded-full bg-gray-200 truncate inline-block max-w-full">
                         {product.categoryName}
                       </span>
                     </div>
-
                     <div className="font-medium text-gray-800 truncate">
                       {formatPrice(String(product.price))}
                     </div>
-
                     <div className="flex justify-center">
                       <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100">
-                        <Image
-                          src={
-                            imageUrls.get(product.id) ??
-                            "/images/no-image-icon.jpg"
-                          }
-                          fill
+                        <ImageComponent
+                          src={product.thumbnail}
+                          fill={true}
                           className="object-cover"
                           alt={`${product.name} thumbnail`}
-                          onError={() => handleImageOnError(product.id)}
+                          sizes="50px, 50px"
                         />
                       </div>
                     </div>
-
                     <div className="flex justify-center space-x-2">
                       <ActionButtons productId={product.id} />
                     </div>
@@ -149,15 +119,12 @@ const ProductManagementPage = () => {
                 >
                   <div className="flex items-center gap-3">
                     <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
-                      <Image
-                        src={
-                          imageUrls.get(product.id) ??
-                          "/images/no-image-icon.jpg"
-                        }
-                        fill
+                      <ImageComponent
+                        src={product.thumbnail}
                         className="object-cover"
                         alt={`${product.name} thumbnail`}
-                        onError={() => handleImageOnError(product.id)}
+                        fill={true}
+                        sizes="50px, 50px"
                       />
                     </div>
                     <div className="flex-1 min-w-0">

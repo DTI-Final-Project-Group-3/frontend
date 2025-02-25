@@ -1,9 +1,8 @@
 import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
 import {
-  WarehouseInventoryDetail,
+  WarehouseInventoryPagination,
   WarehouseInventoryParams,
-  WarehouseInventorySummary,
 } from "@/types/models/warehouseInventories";
 import axios from "axios";
 
@@ -12,30 +11,19 @@ const warehouseInventoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.e
 export const getPaginatedWarehouseInventories = async ({
   page,
   limit,
-  longitude,
-  latitude,
-  category,
-  search,
+  warehouseId,
+  searchQuery,
 }: WarehouseInventoryParams): Promise<
-  PaginationResponse<WarehouseInventorySummary>
+  PaginationResponse<WarehouseInventoryPagination>
 > => {
   const response = await axios.get<
-    ApiResponse<PaginationResponse<WarehouseInventorySummary>>
+    ApiResponse<PaginationResponse<WarehouseInventoryPagination>>
   >(warehouseInventoryUrl, {
-    params: { page, limit, longitude, latitude, category, search },
+    params: { page, limit, warehouseId, searchQuery },
   });
 
-  if (!response.data || !response.data.data) {
+  if (!response.data || !response.data) {
     throw new Error("Invalid API response structure.");
   }
   return response.data.data;
-};
-
-export const getWarehouseInventoryDetailById = async (
-  id: number
-): Promise<ApiResponse<WarehouseInventoryDetail>> => {
-  const response = await axios.get<ApiResponse<WarehouseInventoryDetail>>(
-    `${warehouseInventoryUrl}/${id}`
-  );
-  return response.data;
 };
