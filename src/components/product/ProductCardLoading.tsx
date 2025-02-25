@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-const LoadingCard: FC = () => {
+const ProductCardLoading: FC = () => {
   return (
     <div className="animate-pulse">
       <div className="bg-gray-200 h-[300px] rounded-lg mb-4"></div>
@@ -10,4 +10,4 @@ const LoadingCard: FC = () => {
   );
 };
 
-export default LoadingCard;
+export default ProductCardLoading;

@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "product-images.weber.com" },
       { protocol: "https", hostname: "example.com" },
       { protocol: "https", hostname: "down-id.img.susercontent.com" },
+      { protocol: "https", hostname: "cdn.builder.io" },
     ],
     domains: ["lh3.googleusercontent.com"],
   },
