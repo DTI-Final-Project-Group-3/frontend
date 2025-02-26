@@ -6,21 +6,30 @@ import InventoryManagementHeader from "@/components/inventory-management/Invento
 import MutationDialog from "@/components/inventory-management/MutationDialog";
 import { PaginationProductAdmin } from "@/components/pagination/PaginationProductAdmin";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
+import { toast } from "@/hooks/use-toast";
+import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const InventoryManagementPage = () => {
   const [page, setPage] = useState<number>(0);
   const [warehouseId, setWarehouseId] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>();
+  const { productMutationQuantity } = useProductMutation();
 
   const {
     data: inventories,
     isLoading: inventoriesLoading,
     error: inventoriesError,
   } = useQuery({
-    queryKey: ["warehouse-inventories-admin", page, warehouseId, searchQuery],
+    queryKey: [
+      "warehouse-inventories-admin",
+      page,
+      warehouseId,
+      searchQuery,
+      productMutationQuantity,
+    ],
     queryFn: () =>
       getPaginatedWarehouseInventories({
         page,
@@ -29,6 +38,14 @@ const InventoryManagementPage = () => {
         searchQuery,
       }),
   });
+
+  // useEffect(() => {
+  //   toast({
+  //     title: "Update product quantity",
+  //     description: "Success",
+  //     duration: 20000,
+  //   });
+  // }, [productMutationQuantity]);
 
   return (
     <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
@@ -117,7 +134,9 @@ const InventoryManagementPage = () => {
                     </div>
                     <div className="flex justify-center space-x-2">
                       <MutationDialog
+                        warehouseInventoryId={inventory.id}
                         productId={inventory.productId}
+                        warehouseId={warehouseId}
                         totalQuantity={inventory.quantity}
                       />
                     </div>
