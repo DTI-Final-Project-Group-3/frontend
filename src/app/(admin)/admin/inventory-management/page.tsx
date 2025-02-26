@@ -6,7 +6,6 @@ import InventoryManagementHeader from "@/components/inventory-management/Invento
 import MutationDialog from "@/components/inventory-management/MutationDialog";
 import { PaginationProductAdmin } from "@/components/pagination/PaginationProductAdmin";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
-import { toast } from "@/hooks/use-toast";
 import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
@@ -14,9 +13,8 @@ import React, { useEffect, useState } from "react";
 
 const InventoryManagementPage = () => {
   const [page, setPage] = useState<number>(0);
-  const [warehouseId, setWarehouseId] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>();
-  const { productMutationQuantity } = useProductMutation();
+  const { productMutatationRequest } = useProductMutation();
 
   const {
     data: inventories,
@@ -26,33 +24,29 @@ const InventoryManagementPage = () => {
     queryKey: [
       "warehouse-inventories-admin",
       page,
-      warehouseId,
       searchQuery,
-      productMutationQuantity,
+      productMutatationRequest,
     ],
     queryFn: () =>
       getPaginatedWarehouseInventories({
         page,
         limit: INVENTORY_PER_PAGE,
-        warehouseId,
+        warehouseId: productMutatationRequest?.destinationWarehouseId,
         searchQuery,
       }),
+    enabled: !!productMutatationRequest?.destinationWarehouseId,
   });
-
-  // useEffect(() => {
-  //   toast({
-  //     title: "Update product quantity",
-  //     description: "Success",
-  //     duration: 20000,
-  //   });
-  // }, [productMutationQuantity]);
 
   return (
     <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
       <InventoryManagementHeader />
 
       <div className="mt-4 md:mt-7 px-4 md:px-10">
-        {inventoriesLoading ? (
+        {!productMutatationRequest?.destinationWarehouseId ? (
+          <div className="text-center py-16 text-red-500">
+            Please select warehouse !
+          </div>
+        ) : inventoriesLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
           </div>
@@ -136,8 +130,6 @@ const InventoryManagementPage = () => {
                       <MutationDialog
                         warehouseInventoryId={inventory.id}
                         productId={inventory.productId}
-                        warehouseId={warehouseId}
-                        totalQuantity={inventory.quantity}
                       />
                     </div>
                   </div>

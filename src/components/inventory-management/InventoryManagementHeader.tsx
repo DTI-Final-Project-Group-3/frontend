@@ -1,11 +1,28 @@
 "use client";
 
+import { useProductMutation } from "@/store/productMutationStore";
 import Link from "next/link";
 import { FC, useState } from "react";
-import ProductSelection from "../product/ProductSelection";
+import WarehouseSelection from "../warehouse/WarehouseSelection";
+import { ProductMutationRequest } from "@/types/models/productMutation";
 
 const InventoryManagementHeader: FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { productMutatationRequest, setProductMutationRequest } =
+    useProductMutation();
+
+  const handleWarehouseChange = (warehouseId: number) => {
+    if (productMutatationRequest) {
+      setProductMutationRequest({
+        ...productMutatationRequest,
+        destinationWarehouseId: warehouseId,
+      });
+    } else {
+      setProductMutationRequest({
+        destinationWarehouseId: warehouseId,
+      } as ProductMutationRequest);
+    }
+  };
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center px-4 md:px-7 justify-between gap-4 border-b pb-4 md:pb-7">
@@ -13,6 +30,13 @@ const InventoryManagementHeader: FC = () => {
         Inventory Management
       </h2>
       <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
+        <div className="min-w-80">
+          <WarehouseSelection
+            warehouseId={productMutatationRequest?.destinationWarehouseId}
+            setWarehouseId={handleWarehouseChange}
+          />
+        </div>
+
         <div className="relative w-full sm:w-auto">
           <input
             type="text"

@@ -16,26 +16,22 @@ import ProductSelection from "../product/ProductSelection";
 import QuantityChange from "../common/QuantityChange";
 import { useSession } from "next-auth/react";
 import { Checkbox } from "../ui/checkbox";
-import {
-  ProductMutationManual,
-  ProductMutationQuantity,
-} from "@/types/models/productMutation";
+import { ProductMutationRequest } from "@/types/models/productMutation";
 import { updateQuantityWarehouseInventoryById } from "@/app/api/warehouse-inventories/putWarehouseInventoris";
 import { useProductMutation } from "@/store/productMutationStore";
 import { toast } from "@/hooks/use-toast";
+import { createProductMutationManual } from "@/app/api/producti-mutation/postProductMutation";
 
 interface ProductMutationProps {
+  isProductMutation?: boolean;
   warehouseInventoryId: number;
   productId: number;
-  warehouseId: number;
-  totalQuantity: number;
 }
 
 const MutationDialog: FC<ProductMutationProps> = ({
+  isProductMutation,
   warehouseInventoryId,
   productId,
-  warehouseId,
-  totalQuantity,
 }) => {
   const { data } = useSession();
   const [isMutation, setIsMutation] = useState<boolean>(false);
@@ -45,32 +41,33 @@ const MutationDialog: FC<ProductMutationProps> = ({
   const [ItemQuantity, setItemQuantity] = useState<number>(0);
   const [notes, setNotes] = useState<string>();
   const requsterId = data?.userDetail?.id;
-  const [destinationWarehouseId, setDestinationWarehouseId] =
+  const [selectedOriginWarehouseId, setSelectedOriginWarehouseId] =
     useState<number>();
   const [submitIsLoading, setSubmitIsLoading] = useState<boolean>(false);
-  const { setProductMutationQuantity } = useProductMutation();
+  const { productMutatationRequest, setProductMutationRequest } =
+    useProductMutation();
 
   useEffect(() => {
+    if (isProductMutation) {
+      setIsMutation(isProductMutation);
+    }
     if (productId) {
       setSelectedProductId(productId);
     }
-    if (warehouseId) {
-      setDestinationWarehouseId(warehouseId);
-    }
-  }, [productId, warehouseId]);
+  }, [productId, isProductMutation]);
 
   const handleProductMutationQuantity = (
-    newMutation: ProductMutationQuantity
+    newMutation: ProductMutationRequest
   ) => {
     setSubmitIsLoading(true);
     updateQuantityWarehouseInventoryById(warehouseInventoryId, newMutation)
       .then(() => {
-        setProductMutationQuantity(newMutation);
+        setProductMutationRequest(newMutation);
         setDialogOpen(false);
         toast({
           title: `Update Product Quantity`,
           description: `Successfully update ${ItemQuantity} quantity`,
-          duration: 20000,
+          duration: 5000,
         });
       })
       .catch((error) => {
@@ -81,16 +78,16 @@ const MutationDialog: FC<ProductMutationProps> = ({
       });
   };
 
-  const handleProductMutationManual = (newMutation: ProductMutationManual) => {
+  const handleProductMutationManual = (newMutation: ProductMutationRequest) => {
     setSubmitIsLoading(true);
-    updateQuantityWarehouseInventoryById(warehouseInventoryId, newMutation)
+    createProductMutationManual(newMutation)
       .then(() => {
-        setProductMutationQuantity(newMutation);
+        setProductMutationRequest(newMutation);
         setDialogOpen(false);
         toast({
-          title: "Update product quantity",
-          description: "Success",
-          duration: 20000,
+          title: "Manual Product Mutation",
+          description: "Successfully create new request",
+          duration: 5000,
         });
       })
       .catch((error) => {
@@ -106,25 +103,28 @@ const MutationDialog: FC<ProductMutationProps> = ({
       !selectedProductId ||
       !ItemQuantity ||
       !requsterId ||
-      !destinationWarehouseId
+      !productMutatationRequest?.destinationWarehouseId
     )
       return;
 
-    const newMutation: ProductMutationQuantity = {
+    const newProductMutation: ProductMutationRequest = {
       productId: selectedProductId,
       quantity: ItemQuantity,
       notes: notes,
       requesterId: requsterId,
-      destinationWarehouseId: destinationWarehouseId,
+      originWarehouseId: selectedOriginWarehouseId,
+      destinationWarehouseId: productMutatationRequest?.destinationWarehouseId,
     };
 
     if (isMutation) {
+      handleProductMutationManual(newProductMutation);
     } else {
-      handleProductMutationQuantity(newMutation);
+      handleProductMutationQuantity(newProductMutation);
     }
   };
 
   const handelOpenChange = () => {
+    setSelectedOriginWarehouseId(undefined);
     setDialogOpen(true);
     setIsMutation(false);
     setItemQuantity(0);
@@ -178,12 +178,15 @@ const MutationDialog: FC<ProductMutationProps> = ({
 
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right grid-cols-1">
-                Warehouse
+                Request from
               </Label>
               <div className="col-span-3">
                 <WarehouseSelection
-                  warehouseId={destinationWarehouseId}
-                  setWarehouseId={setDestinationWarehouseId}
+                  warehouseId={selectedOriginWarehouseId}
+                  setWarehouseId={setSelectedOriginWarehouseId}
+                  excludeFromSelection={
+                    productMutatationRequest?.destinationWarehouseId
+                  }
                 />
               </div>
             </div>

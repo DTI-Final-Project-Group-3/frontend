@@ -9,6 +9,5 @@ export const updateProductById = async (
 ) => {
   const response = await axios.put(`${productUrl}/${productId}`, values);
 
-  console.log(response);
   return response.data;
 };

@@ -96,3 +96,15 @@ export const getPaginatedProducts = async ({
 
   return response.data.data;
 };
+
+interface ProductBasic {
+  id: number;
+  name: string;
+}
+
+export const getAllProductList = async (): Promise<ProductBasic[]> => {
+  const response = await axios.get<ApiResponse<ProductBasic[]>>(
+    `${productUrl}/all`
+  );
+  return response.data.data;
+};

@@ -1,24 +1,15 @@
-import {
-  ProductMutationManual,
-  ProductMutationQuantity,
-} from "@/types/models/productMutation";
+import { ProductMutationRequest } from "@/types/models/productMutation";
 import { create } from "zustand";
 
 type ProductMutationState = {
-  productMutationQuantity: ProductMutationQuantity | null;
-  productMutatationManual: ProductMutationManual | null;
+  productMutatationRequest: ProductMutationRequest | null;
 
-  setProductMutation: (mutation: ProductMutationManual) => void;
-  setProductMutationQuantity: (mutation: ProductMutationQuantity) => void;
+  setProductMutationRequest: (mutation: ProductMutationRequest) => void;
 };
 
 export const useProductMutation = create<ProductMutationState>((set) => ({
-  productMutationQuantity: null,
-  productMutatationManual: null,
-  setProductMutation: (mutation: ProductMutationManual) => {
-    set({ productMutatationManual: mutation });
-  },
-  setProductMutationQuantity: (mutation: ProductMutationQuantity) => {
-    set({ productMutationQuantity: mutation });
+  productMutatationRequest: null,
+  setProductMutationRequest: (mutation: ProductMutationRequest) => {
+    set({ productMutatationRequest: mutation });
   },
 }));
