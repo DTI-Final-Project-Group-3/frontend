@@ -71,3 +71,11 @@ export const formatWeight = (weight: number | undefined): string => {
   const formattedWeight = Math.round(weight * 100) / 100;
   return `${formattedWeight} kg`;
 };
+
+export function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  const day = date.getUTCDate();
+  const month = date.getUTCMonth() + 1; // Months are zero-indexed, so add 1.
+  const year = date.getUTCFullYear();
+  return `${day}-${month}-${year}`;
+}

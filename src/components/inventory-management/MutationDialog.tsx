@@ -1,3 +1,5 @@
+"use client";
+
 import { FC, useEffect, useState } from "react";
 import {
   Dialog,
@@ -20,18 +22,20 @@ import { ProductMutationRequest } from "@/types/models/productMutation";
 import { updateQuantityWarehouseInventoryById } from "@/app/api/warehouse-inventories/putWarehouseInventoris";
 import { useProductMutation } from "@/store/productMutationStore";
 import { toast } from "@/hooks/use-toast";
-import { createProductMutationManual } from "@/app/api/producti-mutation/postProductMutation";
+import { createProductMutationManual } from "@/app/api/product-mutation/postProductMutation";
 
 interface ProductMutationProps {
   isProductMutation?: boolean;
-  warehouseInventoryId: number;
-  productId: number;
+  warehouseInventoryId?: number;
+  productId?: number;
+  buttonName: string;
 }
 
 const MutationDialog: FC<ProductMutationProps> = ({
   isProductMutation,
   warehouseInventoryId,
   productId,
+  buttonName,
 }) => {
   const { data } = useSession();
   const [isMutation, setIsMutation] = useState<boolean>(false);
@@ -59,6 +63,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
   const handleProductMutationQuantity = (
     newMutation: ProductMutationRequest
   ) => {
+    if (!warehouseInventoryId) return;
     setSubmitIsLoading(true);
     updateQuantityWarehouseInventoryById(warehouseInventoryId, newMutation)
       .then(() => {
@@ -134,8 +139,8 @@ const MutationDialog: FC<ProductMutationProps> = ({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={handelOpenChange}>
-          Change Quantity
+        <Button variant="outline" onClick={handelOpenChange} className="h-full">
+          {buttonName}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">

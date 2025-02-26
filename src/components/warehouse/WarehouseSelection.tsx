@@ -46,7 +46,7 @@ const WarehouseSelection: FC<WarohouseSelectionProps> = ({
           <SelectValue placeholder="Select Warehouse" />
         </SelectTrigger>
         <SelectContent className="max-h-56">
-          <SelectItem value="all">Select Warehouses</SelectItem>
+          <SelectItem value="all">Select Warehouse</SelectItem>
 
           {isLoading ? (
             <SelectItem value="loading" disabled>

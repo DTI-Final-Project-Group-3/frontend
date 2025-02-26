@@ -130,6 +130,7 @@ const InventoryManagementPage = () => {
                       <MutationDialog
                         warehouseInventoryId={inventory.id}
                         productId={inventory.productId}
+                        buttonName="Change quantity"
                       />
                     </div>
                   </div>
