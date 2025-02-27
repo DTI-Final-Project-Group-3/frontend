@@ -9,12 +9,17 @@ import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const InventoryManagementPage = () => {
   const [page, setPage] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>();
-  const { productMutatationRequest } = useProductMutation();
+  const {
+    destinationWarehouseId,
+    submitMutation,
+    setProductId,
+    setWarehouseInventoryId,
+  } = useProductMutation();
 
   const {
     data: inventories,
@@ -25,16 +30,17 @@ const InventoryManagementPage = () => {
       "warehouse-inventories-admin",
       page,
       searchQuery,
-      productMutatationRequest,
+      submitMutation,
+      destinationWarehouseId,
     ],
     queryFn: () =>
       getPaginatedWarehouseInventories({
         page,
         limit: INVENTORY_PER_PAGE,
-        warehouseId: productMutatationRequest?.destinationWarehouseId,
+        warehouseId: destinationWarehouseId,
         searchQuery,
       }),
-    enabled: !!productMutatationRequest?.destinationWarehouseId,
+    enabled: !!destinationWarehouseId,
   });
 
   return (
@@ -42,7 +48,7 @@ const InventoryManagementPage = () => {
       <InventoryManagementHeader />
 
       <div className="mt-4 md:mt-7 px-4 md:px-10">
-        {!productMutatationRequest?.destinationWarehouseId ? (
+        {!destinationWarehouseId ? (
           <div className="text-center py-16 text-red-500">
             Please select warehouse !
           </div>
@@ -128,9 +134,11 @@ const InventoryManagementPage = () => {
                     </div>
                     <div className="flex justify-center space-x-2">
                       <MutationDialog
-                        warehouseInventoryId={inventory.id}
-                        productId={inventory.productId}
                         buttonName="Change quantity"
+                        onClick={() => {
+                          setWarehouseInventoryId(inventory.id);
+                          setProductId(inventory.productId);
+                        }}
                       />
                     </div>
                   </div>

@@ -27,11 +27,11 @@ const QuantityChange: FC<QuantityChangeProps> = ({
         <button
           className={cn(
             "px-4 py-1 text-xl transition-colors",
-            lowerLimit && itemQuantity <= lowerLimit
+            lowerLimit !== undefined && itemQuantity <= lowerLimit
               ? "text-gray-300 cursor-not-allowed"
               : "text-gray-600 hover:bg-gray-50"
           )}
-          disabled={lowerLimit ? itemQuantity <= lowerLimit : false}
+          disabled={lowerLimit !== undefined && itemQuantity <= lowerLimit}
           onClick={(e) => {
             e.preventDefault();
             setItemQuantity(itemQuantity - 1);
@@ -50,11 +50,11 @@ const QuantityChange: FC<QuantityChangeProps> = ({
         <button
           className={cn(
             "px-4 py-1 text-xl transition-colors",
-            higherLimit && itemQuantity >= higherLimit
+            higherLimit !== undefined && itemQuantity >= higherLimit
               ? "text-gray-300 cursor-not-allowed"
               : "text-gray-600 hover:bg-gray-50"
           )}
-          disabled={higherLimit ? itemQuantity >= higherLimit : false}
+          disabled={higherLimit !== undefined && itemQuantity >= higherLimit}
           onClick={(e) => {
             e.preventDefault();
             setItemQuantity(itemQuantity + 1);

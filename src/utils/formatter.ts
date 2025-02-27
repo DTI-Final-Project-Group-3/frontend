@@ -72,6 +72,18 @@ export const formatWeight = (weight: number | undefined): string => {
   return `${formattedWeight} kg`;
 };
 
+export const formatDistance = (meters: number | undefined): string => {
+  if (meters === undefined) {
+    return "0 km";
+  }
+  const distanceInKm = meters / 1000;
+  const formattedDistance = new Intl.NumberFormat("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(distanceInKm);
+  return `${formattedDistance} km`;
+};
+
 export function formatDate(dateString: string) {
   const date = new Date(dateString);
   const day = date.getUTCDate();

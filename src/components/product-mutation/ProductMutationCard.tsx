@@ -4,21 +4,24 @@ import { FC } from "react";
 import ImageComponent from "../common/ImageComponent";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
 import { formatDate } from "@/utils/formatter";
+import { useProductMutation } from "@/store/productMutationStore";
 
 interface ProductMutationCardProps {
   productMutation: ProductMutationDetailResponse;
+  isInbound: boolean;
 }
 
 const STATUS_VARIANTS = {
   approved: "bg-green-200 text-green-700",
   completed: "bg-green-200 text-green-700",
   pending: "bg-yellow-200 text-yellow-700",
-  rejected: "bg-red-200 text-red-700",
+  cancelled: "bg-red-200 text-red-700",
   default: "bg-gray-200 text-gray-700",
 };
 
 const ProductMutationCard: FC<ProductMutationCardProps> = ({
   productMutation,
+  isInbound,
 }) => {
   const getStatusColor = (status: string): string => {
     const key = status.toLowerCase() as keyof typeof STATUS_VARIANTS;
@@ -39,7 +42,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           <div className="flex flex-nowrap flex-col md:flex-row gap-1 md:gap-5">
             <strong className="flex items-center justify-center gap-3">
               <span className="text-lg line-clamp-1">
-                Origin : {productMutation?.originWarehouseName}
+                Request from : {productMutation?.originWarehouseName}
               </span>
             </strong>
           </div>
@@ -56,7 +59,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
         </div>
       )}
 
-      {/* Product Information */}
       <div className="flex flex-col md:flex-row gap-6 md:justify-center items-start md:items-center w-full">
         <div className="w-full md:border-r">
           <div className="flex flex-row gap-8 px-5">
@@ -65,7 +67,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               alt="Product image"
               width={100}
               height={100}
-              className="object-cover"
+              className="object-cover w-auto h-auto"
             />
             <div className="flex flex-col gap-1">
               <strong>{productMutation?.productName}</strong>
@@ -105,7 +107,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           )}
         </div>
 
-        {productMutation.productMutationTypeId <= 2 && (
+        {productMutation.productMutationTypeId <= 2 && !isInbound && (
           <div className="space-x-3">
             <button
               onClick={handleReject}

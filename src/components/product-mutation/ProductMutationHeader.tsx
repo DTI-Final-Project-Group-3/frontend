@@ -2,24 +2,10 @@ import { FC } from "react";
 import MutationDialog from "../inventory-management/MutationDialog";
 import WarehouseSelection from "../warehouse/WarehouseSelection";
 import { useProductMutation } from "@/store/productMutationStore";
-import { ProductMutationRequest } from "@/types/models/productMutation";
 
 const ProductMutationHeader: FC = () => {
-  const { productMutatationRequest, setProductMutationRequest } =
+  const { destinationWarehouseId, setDestinationWarehouseId } =
     useProductMutation();
-
-  const handleWarehouseChange = (warehouseId: number) => {
-    if (productMutatationRequest) {
-      setProductMutationRequest({
-        ...productMutatationRequest,
-        destinationWarehouseId: warehouseId,
-      });
-    } else {
-      setProductMutationRequest({
-        destinationWarehouseId: warehouseId,
-      } as ProductMutationRequest);
-    }
-  };
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 p-7 md:sticky md:top-[0] z-[40] bg-white w-full rounded-xl">
@@ -29,8 +15,8 @@ const ProductMutationHeader: FC = () => {
       <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
         <div className="w-60">
           <WarehouseSelection
-            warehouseId={productMutatationRequest?.destinationWarehouseId}
-            setWarehouseId={handleWarehouseChange}
+            warehouseId={destinationWarehouseId}
+            setWarehouseId={setDestinationWarehouseId}
           />
         </div>
         <div className="relative w-full sm:w-auto">

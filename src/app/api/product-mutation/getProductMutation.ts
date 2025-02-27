@@ -8,7 +8,7 @@ import axios from "axios";
 
 const productMutationUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT_MUTATIONS}`;
 
-export const getPagiantedProductMutation = async ({
+export const getPaginatedProductMutation = async ({
   page,
   limit,
   originWarehouseId,
@@ -28,6 +28,5 @@ export const getPagiantedProductMutation = async ({
       mutationTypeId,
     },
   });
-  console.log(response.data.data);
   return response.data.data;
 };

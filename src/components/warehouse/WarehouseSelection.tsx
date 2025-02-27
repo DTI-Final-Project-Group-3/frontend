@@ -8,33 +8,24 @@ import {
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { getAllWarehouses } from "@/app/api/warehouse/getWarehouses";
-import { Warehouse } from "@/types/models/warehouses";
 
 interface WarohouseSelectionProps {
   warehouseId: number | undefined;
   setWarehouseId: (id: number) => void;
-  excludeFromSelection?: number;
 }
 
 const WarehouseSelection: FC<WarohouseSelectionProps> = ({
   warehouseId,
   setWarehouseId,
-  excludeFromSelection,
 }) => {
-  const [warehouses, setWarehouses] = useState<Warehouse[]>();
-
-  const { data, isLoading, isError } = useQuery({
+  const {
+    data: warehouses,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["warehouses"],
     queryFn: getAllWarehouses,
   });
-
-  useEffect(() => {
-    const filteredWarehouse = data?.data.filter(
-      (warehouse) => warehouse.id !== excludeFromSelection
-    );
-
-    setWarehouses(filteredWarehouse);
-  }, [data, excludeFromSelection]);
 
   return (
     <div className="w-full">
@@ -56,8 +47,12 @@ const WarehouseSelection: FC<WarohouseSelectionProps> = ({
             <SelectItem value="error" disabled>
               Error loading warehouses
             </SelectItem>
+          ) : warehouses?.data && warehouses.data.length === 0 ? (
+            <SelectItem value="no-warehouses" disabled>
+              No warehouses available
+            </SelectItem>
           ) : (
-            warehouses?.map((warehouse) => (
+            warehouses?.data?.map((warehouse) => (
               <SelectItem key={warehouse.id} value={warehouse.id.toString()}>
                 {warehouse.name}
               </SelectItem>

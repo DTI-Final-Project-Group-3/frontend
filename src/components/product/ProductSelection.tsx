@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -13,15 +13,14 @@ import {
 import { getAllProductList } from "@/app/api/product/getProducts";
 
 interface ProductSelectionProps {
-  productId?: number;
-  setProductId: (id: number) => void;
+  productId: number | undefined;
+  setProductId: (val: number) => void;
 }
 
-const ProductSelection: FC<ProductSelectionProps> = ({ productId }) => {
-  const [selectedProductId, setSelectedProductId] = React.useState<
-    number | undefined
-  >(productId);
-
+const ProductSelection: FC<ProductSelectionProps> = ({
+  productId,
+  setProductId,
+}) => {
   const {
     data: products,
     isLoading,
@@ -31,24 +30,20 @@ const ProductSelection: FC<ProductSelectionProps> = ({ productId }) => {
     queryFn: getAllProductList,
   });
 
-  useEffect(() => {
-    if (productId) {
-      setSelectedProductId(productId);
-    }
-  }, [productId]);
-
   return (
     <div className="w-full">
       <Select
-        value={selectedProductId ? selectedProductId.toString() : "all"}
-        onValueChange={(value) => setSelectedProductId(Number(value))}
+        value={productId ? productId.toString() : "all"}
+        onValueChange={(val: string) => setProductId(Number(val))}
       >
         <SelectTrigger className="w-full border border-gray-300 bg-white text-gray-600 rounded-lg shadow-sm hover:border-green-500 focus:ring-2 focus:ring-green-500 transition-all">
-          <SelectValue placeholder="Select Product" />
+          <SelectValue>
+            {products?.find((product) => product.id == productId)?.name ||
+              "Select Product"}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent className="max-h-40 overflow-auto">
           <SelectItem value="all">Select Product</SelectItem>
-
           {isLoading ? (
             <SelectItem value="loading" disabled>
               Loading...
@@ -56,6 +51,10 @@ const ProductSelection: FC<ProductSelectionProps> = ({ productId }) => {
           ) : isError ? (
             <SelectItem value="error" disabled>
               Error loading products
+            </SelectItem>
+          ) : products && products.length === 0 ? (
+            <SelectItem value="no-products" disabled>
+              No product available
             </SelectItem>
           ) : (
             products &&
