@@ -4,7 +4,7 @@ import { FC } from "react";
 import ImageComponent from "../common/ImageComponent";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
 import { formatDate } from "@/utils/formatter";
-import { useProductMutation } from "@/store/productMutationStore";
+import ProductMutationReviewDialog from "./ProductMutationReviewDialog";
 
 interface ProductMutationCardProps {
   productMutation: ProductMutationDetailResponse;
@@ -32,9 +32,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
   const statusColorClass = getStatusColor(
     productMutation?.productMutationStatusName || "",
   );
-
-  const handleAccept = () => console.log("Accept mutation");
-  const handleReject = () => console.log("Reject mutation");
 
   return (
     <div className="flex w-full flex-col gap-4 rounded-xl border border-slate-200 bg-white px-4 py-6 transition-all duration-300 hover:shadow-lg sm:px-6 lg:px-8">
@@ -96,7 +93,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           </div>
         </div>
 
-        {/* Mutation Type */}
         <div className="flex flex-col items-start justify-start gap-2 sm:w-1/3">
           <span className="whitespace-nowrap rounded-md bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700">
             {productMutation?.productMutationTypeName}
@@ -104,7 +100,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
         </div>
       </div>
 
-      {/* Footer - Timestamps & Actions */}
       <div className="mt-2 flex w-full flex-col items-center justify-between gap-4 border-t border-slate-100 pt-4 sm:flex-row">
         <div className="flex w-full flex-col gap-1 sm:w-auto sm:flex-row sm:gap-6">
           <span className="text-xs text-slate-500">
@@ -127,18 +122,14 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           productMutation.productMutationStatusId === 1 &&
           !isInbound && (
             <div className="mt-3 flex w-full justify-center gap-3 sm:mt-0 sm:w-auto sm:justify-end">
-              <button
-                onClick={handleReject}
-                className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
-              >
-                Decline
-              </button>
-              <button
-                onClick={handleAccept}
-                className="rounded-lg bg-warehub-green px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-warehub-green"
-              >
-                Approve
-              </button>
+              <ProductMutationReviewDialog
+                isApprove={false}
+                productMutationId={productMutation.productMutationId}
+              />
+              <ProductMutationReviewDialog
+                isApprove={true}
+                productMutationId={productMutation.productMutationId}
+              />
             </div>
           )}
       </div>

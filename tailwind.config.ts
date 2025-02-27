@@ -12,6 +12,7 @@ export default {
       colors: {
         "warehub-gray-1": "#F4F5FC",
         "warehub-green": "#62AA62",
+        "warehub-green-light": "#72B372",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

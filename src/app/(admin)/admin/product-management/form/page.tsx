@@ -1,6 +1,5 @@
 "use client";
 
-import { deleteAssetBuilderIo } from "@/app/api/builder-io/deleteBuilderIo";
 import { postFileBuilderIo } from "@/app/api/builder-io/postBuilderIo";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
 import ProductFormComponent from "@/components/product/ProductForm";
@@ -30,8 +29,8 @@ const ProductFormPage: FC = () => {
             altText: file.name,
             folder: process.env.NEXT_PUBLIC_BUILDER_IO_PRODUCT_FOLDER_ID,
             file,
-          })
-        )
+          }),
+        ),
       );
       // Map the responses to an array of URLs
       const urls = responses.map((res) => res.url);
@@ -47,10 +46,10 @@ const ProductFormPage: FC = () => {
   }, [imageUrls]);
 
   return (
-    <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
+    <section className="min-h-[calc(100vh-178px)] w-full rounded-2xl bg-white py-4 shadow-sm md:py-7">
       <ProductManagementHeader />
 
-      <div className="mt-4 md:mt-7 w-full overflow-x-auto flex justify-center px-4 md:px-17 text-gray-600">
+      <div className="md:px-17 mt-4 flex w-full justify-center overflow-x-auto px-4 text-gray-600 md:mt-7">
         <ProductFormComponent />
       </div>
 
@@ -63,10 +62,10 @@ const ProductFormPage: FC = () => {
           accept="image/jpeg,image/gif,image/png"
           onChange={handleImageChange}
           multiple
-          className="border p-2 rounded"
+          className="rounded border p-2"
         />
         <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
           type="submit"
         >
           Submit

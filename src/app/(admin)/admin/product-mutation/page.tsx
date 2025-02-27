@@ -10,15 +10,24 @@ import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
 import { FC, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { PaginationProductAdmin } from "@/components/pagination/PaginationProductAdmin";
+import { PaginationProductAdmin } from "@/components/pagination/PaginationAdmin";
+import { ProductMutationDetailResponse } from "@/types/models/productMutation";
+import { ApiResponse } from "@/types/api/apiResponse";
+import { PaginationResponse } from "@/types/api/pagination";
 
 const ProductMutation: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
   const [page, setPage] = useState<number>(0);
-  const { destinationWarehouseId } = useProductMutation();
+  const { destinationWarehouseId, submitMutation } = useProductMutation();
 
   const { data: adjustmentJournals, isLoading: isLoadingJournals } = useQuery({
-    queryKey: ["adjustment-journal", destinationWarehouseId, selectedTab, page],
+    queryKey: [
+      "adjustment-journal",
+      destinationWarehouseId,
+      selectedTab,
+      page,
+      submitMutation,
+    ],
     queryFn: () =>
       getPaginatedProductMutation({
         page,
@@ -30,7 +39,13 @@ const ProductMutation: FC = () => {
   });
 
   const { data: inboundMutation, isLoading: isLoadingInbound } = useQuery({
-    queryKey: ["inbound-mutation", destinationWarehouseId, selectedTab, page],
+    queryKey: [
+      "inbound-mutation",
+      destinationWarehouseId,
+      selectedTab,
+      page,
+      submitMutation,
+    ],
     queryFn: () =>
       getPaginatedProductMutation({
         page,
@@ -42,7 +57,13 @@ const ProductMutation: FC = () => {
   });
 
   const { data: outbondMutation, isLoading: isLoadingOutbound } = useQuery({
-    queryKey: ["outbond-mutation", destinationWarehouseId, selectedTab, page],
+    queryKey: [
+      "outbond-mutation",
+      destinationWarehouseId,
+      selectedTab,
+      page,
+      submitMutation,
+    ],
     queryFn: () =>
       getPaginatedProductMutation({
         page,
@@ -59,7 +80,11 @@ const ProductMutation: FC = () => {
     { id: 3, value: "outbond", label: "Outbound Mutation" },
   ];
 
-  const renderContent = (data: any, isLoading: boolean, isInbound: boolean) => {
+  const renderContent = (
+    data: PaginationResponse<ProductMutationDetailResponse>,
+    isLoading: boolean,
+    isInbound: boolean,
+  ) => {
     if (isLoading) {
       return (
         <div className="flex items-center justify-center py-16">
@@ -83,7 +108,7 @@ const ProductMutation: FC = () => {
     return (
       <div className="flex flex-grow flex-col items-center justify-between gap-10">
         <div className="grid w-[90%] grid-cols-1 gap-4">
-          {data.content.map((item: any) => (
+          {data.content.map((item: ProductMutationDetailResponse) => (
             <ProductMutationCard
               key={item.productMutationId}
               productMutation={item}
@@ -135,15 +160,18 @@ const ProductMutation: FC = () => {
 
           <div className="rounded-xl bg-white shadow-sm">
             <TabsContent value="journal" className="p-4 sm:p-6">
-              {renderContent(adjustmentJournals, isLoadingJournals, false)}
+              {adjustmentJournals &&
+                renderContent(adjustmentJournals, isLoadingJournals, false)}
             </TabsContent>
 
             <TabsContent value="inbound" className="p-4 sm:p-6">
-              {renderContent(inboundMutation, isLoadingInbound, true)}
+              {inboundMutation &&
+                renderContent(inboundMutation, isLoadingInbound, true)}
             </TabsContent>
 
             <TabsContent value="outbond" className="p-4 sm:p-6">
-              {renderContent(outbondMutation, isLoadingOutbound, false)}
+              {outbondMutation &&
+                renderContent(outbondMutation, isLoadingOutbound, false)}
             </TabsContent>
           </div>
         </div>

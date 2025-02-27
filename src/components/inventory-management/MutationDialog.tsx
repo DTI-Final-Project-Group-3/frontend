@@ -23,16 +23,19 @@ import { useProductMutation } from "@/store/productMutationStore";
 import { toast } from "@/hooks/use-toast";
 import { createProductMutationManual } from "@/app/api/product-mutation/postProductMutation";
 import AvailableWarehouseSelection from "../warehouse/AvailableWarehouseSelection";
+import { cn } from "@/lib/utils";
 
 interface ProductMutationProps {
   isProductMutation?: boolean;
   buttonName: string;
+  buttonClassName?: string;
   onClick?: () => void;
 }
 
 const MutationDialog: FC<ProductMutationProps> = ({
   isProductMutation,
   buttonName,
+  buttonClassName,
   onClick,
 }) => {
   const { data } = useSession();
@@ -48,14 +51,9 @@ const MutationDialog: FC<ProductMutationProps> = ({
     originWarehouseId,
     destinationWarehouseId,
     setProductId,
+    setOriginWarehouseId,
     setSubmitMutation,
   } = useProductMutation();
-
-  useEffect(() => {
-    if (isProductMutation) {
-      setIsMutation(isProductMutation);
-    }
-  }, [isProductMutation]);
 
   useEffect(() => {
     setItemQuantity(0);
@@ -127,6 +125,8 @@ const MutationDialog: FC<ProductMutationProps> = ({
     setIsMutation(false);
     setItemQuantity(0);
     setRequesterNotes(undefined);
+    setProductId(undefined);
+    setOriginWarehouseId(undefined);
   };
 
   return (
@@ -136,9 +136,10 @@ const MutationDialog: FC<ProductMutationProps> = ({
           variant="outline"
           onClick={() => {
             handleOpenChange();
+            if (isProductMutation) setIsMutation(isProductMutation);
             if (onClick) onClick();
           }}
-          className="h-full"
+          className={cn(buttonClassName, "h-full")}
         >
           {buttonName}
         </Button>
@@ -161,9 +162,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
           <Checkbox
             id="productMutation"
             checked={isMutation}
-            onCheckedChange={(checked) =>
-              setIsMutation(checked === "indeterminate" ? false : checked)
-            }
+            onClick={() => setIsMutation(!isMutation)}
           />
         </div>
 
@@ -219,7 +218,12 @@ const MutationDialog: FC<ProductMutationProps> = ({
         <DialogFooter>
           <Button
             onClick={handleOnSubmit}
-            disabled={ItemQuantity === 0 || submitIsLoading}
+            disabled={
+              ItemQuantity === 0 ||
+              submitIsLoading ||
+              !originWarehouseId ||
+              !destinationWarehouseId
+            }
           >
             {submitIsLoading ? "Submitting..." : "Submit"}
           </Button>

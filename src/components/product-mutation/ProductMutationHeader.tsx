@@ -8,11 +8,11 @@ const ProductMutationHeader: FC = () => {
     useProductMutation();
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 p-7 md:sticky md:top-[0] z-[40] bg-white w-full rounded-xl">
-      <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
+    <div className="z-[40] flex w-full flex-wrap items-center justify-between gap-2 rounded-xl bg-white p-7 md:sticky md:top-[0]">
+      <h2 className="text-xl font-semibold text-gray-800 md:text-2xl">
         Product Mutation & Journal
       </h2>
-      <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
+      <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
         <div className="w-60">
           <WarehouseSelection
             warehouseId={destinationWarehouseId}
@@ -23,7 +23,7 @@ const ProductMutationHeader: FC = () => {
           <input
             type="text"
             placeholder="Search mutation..."
-            className="w-full sm:w-auto pl-10 pr-4 py-2 rounded-lg border border-gray-300"
+            className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 sm:w-auto"
           />
           <svg
             className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
@@ -40,10 +40,10 @@ const ProductMutationHeader: FC = () => {
             />
           </svg>
         </div>
-
         <MutationDialog
           isProductMutation={true}
           buttonName="New Mutation"
+          buttonClassName="bg-warehub-green text-white hover:bg-warehub-green-light hover:text-gray-100"
         ></MutationDialog>
       </div>
     </div>

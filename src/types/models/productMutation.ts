@@ -34,7 +34,8 @@ export interface ProductMutationParams {
 
 export interface ProductMutationProcessRequest {
   reviewerId: number;
-  reviewerNotes: string;
+  reviewerNotes: string | undefined;
+  productMutationId: number;
 }
 
 export interface ProductMutationDetailResponse {

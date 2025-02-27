@@ -3,6 +3,7 @@ import { PaginationParams, PaginationResponse } from "@/types/api/pagination";
 import { LocationParams } from "@/types/location";
 import {
   PaginatedProductParams,
+  ProductBasic,
   ProductCategory,
   ProductDetail,
   ProductSummary,
@@ -17,7 +18,7 @@ export const getProductCategory = async (): Promise<
 > => {
   console.log(productCategoryUrl);
   const response = await axios.get<ApiResponse<ProductCategory[]>>(
-    `${productCategoryUrl}/all`
+    `${productCategoryUrl}/all`,
   );
   return response.data;
 };
@@ -70,7 +71,7 @@ export const getProductDetailById = async ({
         latitude: latitude,
         radius: radius,
       },
-    }
+    },
   );
   return response.data.data;
 };
@@ -97,14 +98,18 @@ export const getPaginatedProducts = async ({
   return response.data.data;
 };
 
-interface ProductBasic {
-  id: number;
-  name: string;
-}
-
 export const getAllProductList = async (): Promise<ProductBasic[]> => {
   const response = await axios.get<ApiResponse<ProductBasic[]>>(
-    `${productUrl}/all`
+    `${productUrl}/all`,
+  );
+  return response.data.data;
+};
+
+export const getProductByWarehouseId = async (
+  warehouseId: number,
+): Promise<ProductBasic[]> => {
+  const response = await axios.get<ApiResponse<ProductBasic[]>>(
+    `${productUrl}/warehouses/${warehouseId}`,
   );
   return response.data.data;
 };
