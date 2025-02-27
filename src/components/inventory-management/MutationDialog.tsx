@@ -40,7 +40,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
   const [isMutation, setIsMutation] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [ItemQuantity, setItemQuantity] = useState<number>(0);
-  const [notes, setNotes] = useState<string>();
+  const [requesterNotes, setRequesterNotes] = useState<string>();
   const [submitIsLoading, setSubmitIsLoading] = useState<boolean>(false);
   const {
     warehouseInventoryId,
@@ -62,7 +62,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
   }, [isMutation]);
 
   const handleProductMutationQuantity = (
-    newMutation: ProductMutationRequest
+    newMutation: ProductMutationRequest,
   ) => {
     if (!warehouseInventoryId) return;
     setSubmitIsLoading(true);
@@ -109,7 +109,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
     const newProductMutation: ProductMutationRequest = {
       productId: productId,
       quantity: ItemQuantity,
-      notes: notes,
+      requesterNotes: requesterNotes,
       requesterId: requsterId,
       originWarehouseId: originWarehouseId,
       destinationWarehouseId: destinationWarehouseId,
@@ -126,7 +126,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
     setDialogOpen(true);
     setIsMutation(false);
     setItemQuantity(0);
-    setNotes(undefined);
+    setRequesterNotes(undefined);
   };
 
   return (
@@ -151,7 +151,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex item-center justify-center gap-2 mb-4">
+        <div className="item-center mb-4 flex justify-center gap-2">
           <label
             htmlFor="productMutation"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -170,7 +170,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
         {isMutation && (
           <div className="grid gap-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right grid-cols-1">
+              <Label htmlFor="name" className="grid-cols-1 text-right">
                 Product
               </Label>
               <div className="col-span-3">
@@ -182,7 +182,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right grid-cols-1">
+              <Label htmlFor="name" className="grid-cols-1 text-right">
                 Request from
               </Label>
               <div className="col-span-3">
@@ -193,7 +193,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
         )}
 
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="name" className="text-right grid-cols-1">
+          <Label htmlFor="name" className="grid-cols-1 text-right">
             Quantity
           </Label>
           <div className="col-span-3">
@@ -212,7 +212,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
           <Textarea
             placeholder="Type your notes here"
             className="col-span-3 resize-none"
-            onChange={(e) => setNotes(e.target.value)}
+            onChange={(e) => setRequesterNotes(e.target.value)}
             required
           />
         </div>

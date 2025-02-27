@@ -1,7 +1,7 @@
 export interface ProductMutationRequest {
   productId: number;
   quantity: number;
-  notes?: string;
+  requesterNotes?: string;
   requesterId: number;
   originWarehouseId?: number;
   destinationWarehouseId: number;
@@ -11,15 +11,17 @@ export interface ProductMutationManualResponse {
   productMutationId: number;
   productId: number;
   quantity: number;
-  notes: string;
   requesterId: number;
-  approverId: number | null;
+  requesterNotes: string;
+  reviewerId: number | null;
+  reviewerNotes: string;
   originWarehouseId: number;
   destinationWarehouseId: number;
   productMutationTypeId: number;
   productMutationTypeName: string;
   productMutationStatusId: number;
-  acceptedAt: string | null;
+  reviewedAt: string | null;
+  invoiceCode: string;
 }
 
 export interface ProductMutationParams {
@@ -36,19 +38,21 @@ export interface ProductMutationDetailResponse {
   productName: string;
   productThumbnail: string;
   quantity: number;
-  notes: string | null;
   requesterId: number;
   requesterName: string;
-  approverId: number | null;
-  approverName: string | null;
+  requesterNotes: string | null;
+  reviewerId: number | null;
+  reviewerName: string | null;
+  reviewerNotes: string | null;
   originWarehouseId: number | null;
   originWarehouseName: string | null;
-  destinationWarehouseId: number;
-  destinationWarehouseName: string;
+  destinationWarehouseId: number | null;
+  destinationWarehouseName: string | null;
   productMutationTypeId: number;
   productMutationTypeName: string;
   productMutationStatusId: number;
   productMutationStatusName: string;
+  invoiceCode: string | null;
   createdAt: string;
-  acceptedAt: string | null;
+  reviewedAt: string | null;
 }
