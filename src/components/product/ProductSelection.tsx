@@ -12,35 +12,51 @@ import {
 } from "../ui/select";
 import {
   getAllProductList,
-  getProductByWarehouseId,
+  getProductExcludeFilter,
+  getProductIncludeFilter,
 } from "@/app/api/product/getProducts";
 import { useProductMutation } from "@/store/productMutationStore";
 import { ProductBasic } from "@/types/models/products";
 
 interface ProductSelectionProps {
-  showAll?: boolean;
+  filter: string;
   productId: number | undefined;
   setProductId: (val: number) => void;
 }
 
 const ProductSelection: FC<ProductSelectionProps> = ({
-  showAll,
+  filter,
   productId,
   setProductId,
 }) => {
   const { destinationWarehouseId } = useProductMutation();
 
   const {
-    data: warehouseProducts,
-    isLoading: warehouseProductsLoading,
-    isError: warehouseProductsError,
+    data: excludeProducs,
+    isLoading: excludeProductsLoading,
+    isError: excludeProductError,
   } = useQuery({
-    queryKey: ["warehouse-products", destinationWarehouseId],
+    queryKey: ["exclude-filter-products", destinationWarehouseId],
     queryFn: () => {
       if (!destinationWarehouseId) {
         return Promise.resolve([]);
       }
-      return getProductByWarehouseId(destinationWarehouseId);
+      return getProductExcludeFilter(destinationWarehouseId);
+    },
+    enabled: !!destinationWarehouseId,
+  });
+
+  const {
+    data: includeProducts,
+    isLoading: includeProductsLoading,
+    isError: includeProductsError,
+  } = useQuery({
+    queryKey: ["include-filter-products", destinationWarehouseId],
+    queryFn: () => {
+      if (!destinationWarehouseId) {
+        return Promise.resolve([]);
+      }
+      return getProductIncludeFilter(destinationWarehouseId);
     },
     enabled: !!destinationWarehouseId,
   });
@@ -50,7 +66,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
     isLoading: allProductLoading,
     isError: allProductError,
   } = useQuery({
-    queryKey: ["product-list"],
+    queryKey: ["all-products"],
     queryFn: getAllProductList,
   });
 
@@ -101,17 +117,35 @@ const ProductSelection: FC<ProductSelectionProps> = ({
 
   return (
     <div className="w-full">
-      {showAll &&
-        allProducts &&
-        renderContent(allProducts, allProductLoading, allProductError)}
-
-      {!showAll &&
-        warehouseProducts &&
-        renderContent(
-          warehouseProducts,
-          warehouseProductsLoading,
-          warehouseProductsError,
-        )}
+      {(() => {
+        switch (filter) {
+          case "show-all":
+            return (
+              allProducts &&
+              renderContent(allProducts, allProductLoading, allProductError)
+            );
+          case "include":
+            return (
+              includeProducts &&
+              renderContent(
+                includeProducts,
+                includeProductsLoading,
+                includeProductsError,
+              )
+            );
+          case "exclude":
+            return (
+              excludeProducs &&
+              renderContent(
+                excludeProducs,
+                excludeProductsLoading,
+                excludeProductError,
+              )
+            );
+          default:
+            return null;
+        }
+      })()}
     </div>
   );
 };

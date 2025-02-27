@@ -105,11 +105,30 @@ export const getAllProductList = async (): Promise<ProductBasic[]> => {
   return response.data.data;
 };
 
-export const getProductByWarehouseId = async (
+export const getProductIncludeFilter = async (
   warehouseId: number,
 ): Promise<ProductBasic[]> => {
   const response = await axios.get<ApiResponse<ProductBasic[]>>(
-    `${productUrl}/warehouses/${warehouseId}`,
+    `${productUrl}/filter/include`,
+    {
+      params: {
+        warehouseId,
+      },
+    },
+  );
+  return response.data.data;
+};
+
+export const getProductExcludeFilter = async (
+  warehouseId: number,
+): Promise<ProductBasic[]> => {
+  const response = await axios.get<ApiResponse<ProductBasic[]>>(
+    `${productUrl}/filter/exclude`,
+    {
+      params: {
+        warehouseId,
+      },
+    },
   );
   return response.data.data;
 };

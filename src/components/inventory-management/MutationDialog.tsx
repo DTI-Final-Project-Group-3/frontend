@@ -174,6 +174,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
               </Label>
               <div className="col-span-3">
                 <ProductSelection
+                  filter="include"
                   productId={productId}
                   setProductId={setProductId}
                 />
@@ -219,10 +220,11 @@ const MutationDialog: FC<ProductMutationProps> = ({
           <Button
             onClick={handleOnSubmit}
             disabled={
+              !destinationWarehouseId ||
+              !productId ||
               ItemQuantity === 0 ||
-              submitIsLoading ||
-              !originWarehouseId ||
-              !destinationWarehouseId
+              (isMutation && !originWarehouseId) ||
+              submitIsLoading
             }
           >
             {submitIsLoading ? "Submitting..." : "Submit"}

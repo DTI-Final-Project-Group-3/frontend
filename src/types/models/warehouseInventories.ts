@@ -1,11 +1,3 @@
-import {
-  Product,
-  ProductCategory,
-  ProductDetail,
-  ProductSummary,
-} from "./products";
-import { Warehouse } from "./warehouses";
-
 export interface WarehouseInventory {
   id: number;
   productId: number;
@@ -35,5 +27,11 @@ export interface WarehouseInventoryPagination {
   productCategoryId: number;
   productCategoryName: string;
   productThumbnail?: string;
+  quantity: number;
+}
+
+export interface WarehouseInventoryCreateRequest {
+  productId: number;
+  warehouseId: number;
   quantity: number;
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { FC, useState } from "react";
 import WarehouseSelection from "../warehouse/WarehouseSelection";
 import { ProductMutationRequest } from "@/types/models/productMutation";
 import { useProductMutation } from "@/store/productMutationStore";
+import AddInventoryDialog from "./AddInventoryDialog";
 
 const InventoryManagementHeader: FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,11 +47,7 @@ const InventoryManagementHeader: FC = () => {
             />
           </svg>
         </div>
-        <Link href={`/admin/product-management/form`}>
-          <button className="w-full rounded-lg bg-black px-4 py-2 text-white transition duration-200 hover:bg-gray-800 sm:w-auto">
-            Add Inventory
-          </button>
-        </Link>
+        <AddInventoryDialog />
       </div>
     </div>
   );
