@@ -16,6 +16,7 @@ const STATUS_VARIANTS = {
   completed: "bg-emerald-100 text-emerald-700",
   pending: "bg-amber-100 text-amber-700",
   cancelled: "bg-rose-100 text-rose-700",
+  declined: "bg-red-100 text-rose-700",
   default: "bg-slate-100 text-slate-700",
 };
 
@@ -114,7 +115,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           </span>
           {productMutation?.reviewedAt && (
             <span className="text-xs text-slate-500">
-              Approve on {formatDate(productMutation?.reviewedAt)} by{" "}
+              Reviewed on {formatDate(productMutation?.reviewedAt)} by{" "}
               <span className="font-medium">
                 {productMutation?.requesterName}
               </span>

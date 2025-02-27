@@ -32,6 +32,11 @@ export interface ProductMutationParams {
   mutationTypeId: number;
 }
 
+export interface ProductMutationProcessRequest {
+  reviewerId: number;
+  reviewerNotes: string;
+}
+
 export interface ProductMutationDetailResponse {
   productMutationId: number;
   productId: number;
