@@ -7,8 +7,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/Pagination";
 
 interface CustomPaginationProps {
   currentPage: number;
@@ -93,7 +92,7 @@ export const PaginationProductAdmin = ({
                   onClick={() => onPageChange(pageOrEllipsis)}
                   className={`md:h-10 ${
                     pageOrEllipsis === currentPage
-                      ? "bg-black text-white hover:bg-black hover:text-white cursor-not-allowed"
+                      ? "bg-gray-200 text-black cursor-not-allowed"
                       : "text-gray-700 hover:bg-gray-100 cursor-pointer"
                   }`}
                 >

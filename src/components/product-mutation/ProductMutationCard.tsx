@@ -12,11 +12,11 @@ interface ProductMutationCardProps {
 }
 
 const STATUS_VARIANTS = {
-  approved: "bg-green-200 text-green-700",
-  completed: "bg-green-200 text-green-700",
-  pending: "bg-yellow-200 text-yellow-700",
-  cancelled: "bg-red-200 text-red-700",
-  default: "bg-gray-200 text-gray-700",
+  approved: "bg-emerald-100 text-emerald-700",
+  completed: "bg-emerald-100 text-emerald-700",
+  pending: "bg-amber-100 text-amber-700",
+  cancelled: "bg-rose-100 text-rose-700",
+  default: "bg-slate-100 text-slate-700",
 };
 
 const ProductMutationCard: FC<ProductMutationCardProps> = ({
@@ -36,22 +36,22 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
   const handleReject = () => console.log("Reject mutation");
 
   return (
-    <div className="flex flex-col gap-6 px-16 py-8 border rounded-xl w-full hover:shadow-[0_3px_08px_3px_rgba(0,0,0,0.15)] transition-shadow duration-300">
+    <div className="flex flex-col gap-4 px-4 sm:px-6 lg:px-8 py-6 border border-slate-200 rounded-xl w-full hover:shadow-lg transition-all duration-300 bg-white">
       {productMutation.productMutationTypeId <= 2 && (
-        <div className="flex flex-col md:flex-row items-center justify-between gap-5">
-          <div className="flex flex-nowrap flex-col md:flex-row gap-1 md:gap-5">
-            <strong className="flex items-center justify-center gap-3">
-              <span className="text-lg line-clamp-1">
-                Request from : {productMutation?.originWarehouseName}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex flex-nowrap flex-col sm:flex-row gap-1 sm:gap-3 w-full sm:w-auto">
+            <strong className="flex items-center gap-2 text-slate-800">
+              <span className="text-base sm:text-lg line-clamp-1 font-medium">
+                Deliver from: {productMutation?.originWarehouseName}
               </span>
             </strong>
           </div>
-          <div className="flex items-start md:items-center flex-col md:flex-row md:gap-5 gap-2">
-            <span className="text-sm md:text-[16px] font-medium text-gray-800">
-              Destination : {productMutation?.destinationWarehouseName}
+          <div className="flex items-start sm:items-center flex-col sm:flex-row sm:gap-4 gap-2 w-full sm:w-auto">
+            <span className="text-sm font-medium text-slate-600">
+              Destination: {productMutation?.destinationWarehouseName}
             </span>
             <span
-              className={`px-2 py-1 rounded-full ${statusColorClass} font-semibold text-xs whitespace-nowrap`}
+              className={`px-3 py-1 rounded-full ${statusColorClass} font-semibold text-xs whitespace-nowrap`}
             >
               {productMutation?.productMutationStatusName}
             </span>
@@ -59,24 +59,30 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row gap-6 md:justify-center items-start md:items-center w-full">
-        <div className="w-full md:border-r">
-          <div className="flex flex-row gap-8 px-5">
-            <ImageComponent
-              src={productMutation.productThumbnail}
-              alt="Product image"
-              width={100}
-              height={100}
-              className="object-cover w-auto h-auto"
-            />
-            <div className="flex flex-col gap-1">
-              <strong>{productMutation?.productName}</strong>
-              <div className="flex gap-2">
-                <span>{productMutation?.quantity}</span>
-                <span>units</span>
+      <div className="flex flex-col sm:flex-row gap-6 items-start w-full">
+        <div className="w-full sm:w-2/3 sm:pr-6 sm:border-r border-slate-200">
+          <div className="flex flex-row gap-4 items-center">
+            <div className="relative rounded-lg overflow-hidden bg-slate-50 p-2 w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
+              <ImageComponent
+                src={productMutation.productThumbnail}
+                alt={productMutation?.productName || "Product image"}
+                width={100}
+                height={100}
+                className="object-cover w-full h-full rounded"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <strong className="text-slate-800 text-base sm:text-lg">
+                {productMutation?.productName}
+              </strong>
+              <div className="flex gap-2 items-center">
+                <span className="font-medium text-slate-700">
+                  {productMutation?.quantity}
+                </span>
+                <span className="text-slate-600">units</span>
               </div>
               {productMutation?.notes && (
-                <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                <p className="text-sm text-slate-600 mt-1 line-clamp-2 max-w-md">
                   {productMutation.notes}
                 </p>
               )}
@@ -85,39 +91,43 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
         </div>
 
         {/* Mutation Type */}
-        <div className="flex flex-col items-start justify-start gap-2 md:pr-14">
-          <span className="font-semibold text-gray-600 text-sm px-2 py-1 bg-slate-100 whitespace-nowrap">
+        <div className="flex flex-col items-start justify-start gap-2 sm:w-1/3">
+          <span className="font-medium text-slate-700 text-sm px-3 py-1.5 bg-slate-100 rounded-md whitespace-nowrap">
             {productMutation?.productMutationTypeName}
           </span>
         </div>
       </div>
 
       {/* Footer - Timestamps & Actions */}
-      <div className="flex flex-col md:flex-row w-full gap-2 md:gap-4 items-center justify-between">
-        <div className="flex flex-col md:flex-row md:gap-10 gap-2">
-          <span className="text-gray-500 text-xs">
+      <div className="flex flex-col sm:flex-row w-full gap-4 items-center justify-between mt-2 pt-4 border-t border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:gap-6 gap-1 w-full sm:w-auto">
+          <span className="text-slate-500 text-xs">
             Request on {formatDate(productMutation?.createdAt)} by{" "}
-            {productMutation?.requesterName}
+            <span className="font-medium">
+              {productMutation?.requesterName}
+            </span>
           </span>
           {productMutation?.acceptedAt && (
-            <span className="text-gray-500 text-xs">
+            <span className="text-slate-500 text-xs">
               Accept on {formatDate(productMutation?.acceptedAt)} by{" "}
-              {productMutation?.approverName}
+              <span className="font-medium">
+                {productMutation?.approverName}
+              </span>
             </span>
           )}
         </div>
 
         {productMutation.productMutationTypeId <= 2 && !isInbound && (
-          <div className="space-x-3">
+          <div className="flex gap-3 w-full sm:w-auto justify-center sm:justify-end mt-3 sm:mt-0">
             <button
               onClick={handleReject}
-              className="px-4 py-2 rounded-lg bg-white border border-gray-500 text-gray-500 hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors font-medium text-sm"
             >
               Reject
             </button>
             <button
               onClick={handleAccept}
-              className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors"
+              className="px-4 py-2 rounded-lg bg-warehub-green text-white hover:bg-warehub-green transition-colors font-medium text-sm"
             >
               Accept
             </button>

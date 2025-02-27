@@ -52,11 +52,11 @@ const AvailableWarehouseSelection: FC = () => {
           <SelectValue>
             {warehouses?.data.find(
               (warehouse) => warehouse.id === originWarehouseId
-            )?.name || "Select Warehouse"}
+            )?.name || "Select Nearby Available Warehouse"}
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="max-h-56">
-          <SelectItem value="all">Select Warehouse</SelectItem>
+          <SelectItem value="all">Select Nearby Available Warehouse</SelectItem>
 
           {isLoading ? (
             <SelectItem value="loading" disabled>

@@ -11,6 +11,7 @@ export default {
     extend: {
       colors: {
         "warehub-gray-1": "#F4F5FC",
+        "warehub-green": "#62AA62",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
