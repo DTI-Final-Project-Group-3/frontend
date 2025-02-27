@@ -62,7 +62,7 @@ const ProductMutation: FC = () => {
   const renderContent = (data: any, isLoading: boolean, isInbound: boolean) => {
     if (isLoading) {
       return (
-        <div className="flex justify-center items-center py-16">
+        <div className="flex items-center justify-center py-16">
           <Loader2 className="h-8 w-8 animate-spin text-warehub-green" />
           <span className="ml-2 text-slate-600">Loading data...</span>
         </div>
@@ -71,9 +71,9 @@ const ProductMutation: FC = () => {
 
     if (!data || data.content.length === 0) {
       return (
-        <div className="flex flex-col justify-center items-center py-16 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-16 text-slate-500">
           <p>No data available</p>
-          <p className="text-sm mt-2">
+          <p className="mt-2 text-sm">
             Try selecting a different warehouse or tab
           </p>
         </div>
@@ -81,8 +81,8 @@ const ProductMutation: FC = () => {
     }
 
     return (
-      <div className="flex flex-col justify-between flex-grow items-center gap-10">
-        <div className="grid grid-cols-1 gap-4 w-[90%]">
+      <div className="flex flex-grow flex-col items-center justify-between gap-10">
+        <div className="grid w-[90%] grid-cols-1 gap-4">
           {data.content.map((item: any) => (
             <ProductMutationCard
               key={item.productMutationId}
@@ -109,17 +109,17 @@ const ProductMutation: FC = () => {
       <ProductMutationHeader />
 
       <Tabs defaultValue="journal" className="w-full">
-        <div className="px-4 sm:px-6 lg:px-8 mx-auto">
-          <TabsList className="w-full grid grid-cols-3 h-12 sm:h-14 bg-white rounded-lg shadow-sm mb-6 mt-4">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+          <TabsList className="mb-6 mt-4 grid h-12 w-full grid-cols-3 rounded-lg bg-white shadow-sm sm:h-14">
             {tabOptions.map((tab) => (
               <TabsTrigger
                 key={tab.id}
                 value={tab.value}
                 className={cn(
-                  "h-full transition-all font-medium rounded-none",
+                  "h-full rounded-none font-medium transition-all",
                   selectedTab === tab.id
-                    ? "text-emerald-700 border-b-2 border-warehub-green"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    ? "border-b-2 border-warehub-green text-emerald-700"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
                 )}
                 onClick={() => setSelectedTab(tab.id)}
               >
@@ -133,7 +133,7 @@ const ProductMutation: FC = () => {
             ))}
           </TabsList>
 
-          <div className="bg-white rounded-xl shadow-sm">
+          <div className="rounded-xl bg-white shadow-sm">
             <TabsContent value="journal" className="p-4 sm:p-6">
               {renderContent(adjustmentJournals, isLoadingJournals, false)}
             </TabsContent>

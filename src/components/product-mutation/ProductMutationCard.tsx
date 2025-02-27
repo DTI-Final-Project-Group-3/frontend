@@ -39,23 +39,28 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
     <div className="flex flex-col gap-4 px-4 sm:px-6 lg:px-8 py-6 border border-slate-200 rounded-xl w-full hover:shadow-lg transition-all duration-300 bg-white">
       {productMutation.productMutationTypeId <= 2 && (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex flex-nowrap flex-col sm:flex-row gap-1 sm:gap-3 w-full sm:w-auto">
-            <strong className="flex items-center gap-2 text-slate-800">
-              <span className="text-base sm:text-lg line-clamp-1 font-medium">
-                Deliver from: {productMutation?.originWarehouseName}
-              </span>
-            </strong>
-          </div>
-          <div className="flex items-start sm:items-center flex-col sm:flex-row sm:gap-4 gap-2 w-full sm:w-auto">
-            <span className="text-sm font-medium text-slate-600">
-              Destination: {productMutation?.destinationWarehouseName}
-            </span>
-            <span
-              className={`px-3 py-1 rounded-full ${statusColorClass} font-semibold text-xs whitespace-nowrap`}
-            >
-              {productMutation?.productMutationStatusName}
-            </span>
-          </div>
+          {isInbound ? (
+            <div className="flex flex-nowrap flex-col sm:flex-row gap-1 sm:gap-3 w-full sm:w-auto">
+              <strong className="flex items-center gap-2 text-slate-800">
+                <span className="text-base sm:text-lg line-clamp-1 font-medium">
+                  From : {productMutation?.originWarehouseName}
+                </span>
+              </strong>
+            </div>
+          ) : (
+            <div className="flex flex-nowrap flex-col sm:flex-row gap-1 sm:gap-3 w-full sm:w-auto">
+              <strong className="flex items-center gap-2 text-slate-800">
+                <span className="text-base sm:text-lg line-clamp-1 font-medium">
+                  To : {productMutation?.destinationWarehouseName}
+                </span>
+              </strong>
+            </div>
+          )}
+          <span
+            className={`px-3 py-1 rounded-full ${statusColorClass} font-semibold text-xs whitespace-nowrap`}
+          >
+            {productMutation?.productMutationStatusName}
+          </span>
         </div>
       )}
 
@@ -123,13 +128,13 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               onClick={handleReject}
               className="px-4 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors font-medium text-sm"
             >
-              Reject
+              Decline
             </button>
             <button
               onClick={handleAccept}
               className="px-4 py-2 rounded-lg bg-warehub-green text-white hover:bg-warehub-green transition-colors font-medium text-sm"
             >
-              Accept
+              Approve
             </button>
           </div>
         )}
