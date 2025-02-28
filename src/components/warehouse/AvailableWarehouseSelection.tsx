@@ -16,7 +16,9 @@ const AvailableWarehouseSelection: FC = () => {
     destinationWarehouseId,
     productId,
     originWarehouseId,
+    originWarehouseQuantity,
     setOriginWarehouseId,
+    setOriginWarehouseQuantity,
   } = useProductMutation();
 
   const {
@@ -36,6 +38,11 @@ const AvailableWarehouseSelection: FC = () => {
 
   const handleValueChange = (value: string) => {
     setOriginWarehouseId(Number(value));
+
+    setOriginWarehouseQuantity(
+      warehouses?.data.find((warehouse) => warehouse.id === Number(value))
+        ?.totalQuantity,
+    );
   };
 
   return (
@@ -46,12 +53,12 @@ const AvailableWarehouseSelection: FC = () => {
         disabled={!destinationWarehouseId || !productId}
       >
         <SelectTrigger
-          className="w-full border border-gray-300 bg-white text-gray-600 rounded-lg shadow-sm hover:border-green-500 focus:ring-2 focus:ring-green-500 transition-all"
+          className="w-full rounded-lg border border-gray-300 bg-white text-gray-600 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500"
           disabled={!destinationWarehouseId || !productId}
         >
           <SelectValue>
             {warehouses?.data.find(
-              (warehouse) => warehouse.id === originWarehouseId
+              (warehouse) => warehouse.id === originWarehouseId,
             )?.name || "Select Nearby Available Warehouse"}
           </SelectValue>
         </SelectTrigger>
@@ -73,7 +80,7 @@ const AvailableWarehouseSelection: FC = () => {
           ) : (
             warehouses?.data?.map((warehouse) => (
               <SelectItem key={warehouse.id} value={warehouse.id.toString()}>
-                <div className="flex flex-col p-2 border-b border-gray-200">
+                <div className="flex flex-col border-b border-gray-200 p-2">
                   <span className="font-semibold text-gray-800">
                     {warehouse.name}
                   </span>

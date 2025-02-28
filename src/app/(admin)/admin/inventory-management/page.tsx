@@ -82,10 +82,12 @@ const InventoryManagementPage = () => {
         ) : (
           <div className="md:min-h-[calc(100vh-300px)]">
             <div className="hidden md:block">
-              <div className="mb-2 grid grid-cols-[30%_20%_10%_10%_10%_20%] border-b border-gray-200 px-2 pb-7">
+              <div className="mb-2 grid grid-cols-[30%_10%_15%_15%_15%_15%] border-b border-gray-200 px-2 pb-7">
                 <div className="font-medium text-gray-700">Name</div>
                 <div className="font-medium text-gray-700">Category</div>
-                <div className="font-medium text-gray-700">Price</div>
+                <div className="text-center font-medium text-gray-700">
+                  Price
+                </div>
                 <div className="text-center font-medium text-gray-700">
                   Thumbnail
                 </div>
@@ -101,7 +103,7 @@ const InventoryManagementPage = () => {
                 {inventories?.content.map((inventory) => (
                   <div
                     key={inventory.id}
-                    className="grid grid-cols-[30%_20%_10%_10%_10%_20%] items-center rounded-lg border-b border-gray-100 p-2 transition-colors hover:bg-gray-50"
+                    className="grid grid-cols-[30%_10%_15%_15%_15%_15%] items-center rounded-lg border-b border-gray-100 p-2 transition-colors hover:bg-gray-50"
                   >
                     <div className="min-w-0">
                       <div className="truncate font-medium text-gray-800">
@@ -116,7 +118,7 @@ const InventoryManagementPage = () => {
                         {inventory.productCategoryName}
                       </span>
                     </div>
-                    <div className="truncate font-medium text-gray-800">
+                    <div className="flex justify-center font-medium text-gray-800">
                       {formatPrice(String(inventory.productPrice))}
                     </div>
                     <div className="flex justify-center">
@@ -133,7 +135,7 @@ const InventoryManagementPage = () => {
                     <div className="flex justify-center space-x-2">
                       {inventory.quantity}
                     </div>
-                    <div className="flex justify-center space-x-2">
+                    <div className="flex justify-center space-x-2 md:px-10">
                       <MutationDialog
                         buttonName="Change"
                         onClick={() => {

@@ -17,6 +17,7 @@ const STATUS_VARIANTS = {
   pending: "bg-amber-100 text-amber-700",
   cancelled: "bg-rose-100 text-rose-700",
   declined: "bg-red-100 text-rose-700",
+  expired: "bg-red-100 text-rose-700",
   default: "bg-slate-100 text-slate-700",
 };
 

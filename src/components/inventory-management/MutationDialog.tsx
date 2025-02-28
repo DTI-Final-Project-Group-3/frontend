@@ -49,10 +49,12 @@ const MutationDialog: FC<ProductMutationProps> = ({
     warehouseInventoryId,
     productId,
     originWarehouseId,
+    originWarehouseQuantity,
     destinationWarehouseId,
     setProductId,
     setOriginWarehouseId,
     setSubmitMutation,
+    setOriginWarehouseQuantity,
   } = useProductMutation();
 
   useEffect(() => {
@@ -127,6 +129,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
     setRequesterNotes(undefined);
     setProductId(undefined);
     setOriginWarehouseId(undefined);
+    setOriginWarehouseQuantity(undefined);
   };
 
   return (
@@ -201,6 +204,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
               itemQuantity={ItemQuantity}
               lowerLimit={isMutation ? 0 : undefined}
               setItemQuantity={setItemQuantity}
+              higherLimit={isMutation ? originWarehouseQuantity : undefined}
             />
           </div>
         </div>

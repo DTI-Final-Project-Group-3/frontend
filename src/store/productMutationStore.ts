@@ -7,11 +7,15 @@ type ProductMutationState = {
   destinationWarehouseId: number | undefined;
   submitMutation: boolean;
 
+  originWarehouseQuantity: number | undefined;
+
   setWarehouseInventoryId: (val: number | undefined) => void;
   setProductId: (val: number | undefined) => void;
   setOriginWarehouseId: (val: number | undefined) => void;
   setDestinationWarehouseId: (val: number | undefined) => void;
   setSubmitMutation: (val: boolean) => void;
+
+  setOriginWarehouseQuantity: (val: number | undefined) => void;
 };
 export const useProductMutation = create<ProductMutationState>((set) => ({
   warehouseInventoryId: undefined,
@@ -19,6 +23,8 @@ export const useProductMutation = create<ProductMutationState>((set) => ({
   originWarehouseId: undefined,
   destinationWarehouseId: undefined,
   submitMutation: false,
+
+  originWarehouseQuantity: undefined,
 
   setWarehouseInventoryId: (val: number | undefined) => {
     set({ warehouseInventoryId: val });
@@ -38,5 +44,9 @@ export const useProductMutation = create<ProductMutationState>((set) => ({
 
   setSubmitMutation: (val: boolean) => {
     set({ submitMutation: val });
+  },
+
+  setOriginWarehouseQuantity: (val: number | undefined) => {
+    set({ originWarehouseQuantity: val });
   },
 }));

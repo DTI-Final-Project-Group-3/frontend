@@ -40,7 +40,7 @@ export const DeleteInventoryDialog: FC<{ warehouseInventoryId: number }> = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" className="h-full">
+        <Button variant="outline" className="h-full w-full">
           {" "}
           Delete
         </Button>
