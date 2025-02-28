@@ -1,5 +1,5 @@
 import { ApiResponse } from "@/types/api/apiResponse";
-import { PaginationParams, PaginationResponse } from "@/types/api/pagination";
+import { PaginationResponse } from "@/types/api/pagination";
 import { LocationParams } from "@/types/location";
 import {
   PaginatedProductParams,

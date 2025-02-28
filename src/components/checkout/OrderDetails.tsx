@@ -1,5 +1,5 @@
-import React, { FC } from "react";
 import { formatPrice } from "@/utils/formatter";
+import { FC } from "react";
 import { Separator } from "../ui/separator";
 
 type OrderDetailsProps = {
@@ -29,7 +29,7 @@ const OrderDetails: FC<OrderDetailsProps> = ({
       {/* Shipping cost */}
       <div className="flex items-center justify-between w-full">
         <span>Shipping cost</span>
-        <span className="text-lg font-bold">{formatPrice(String(25000))}</span>
+        <span className="text-lg font-bold">{formatPrice(String(shippingCost))}</span>
       </div>
 
       <Separator className="mt-2" />
