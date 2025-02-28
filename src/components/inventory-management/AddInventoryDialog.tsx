@@ -16,40 +16,41 @@ import ProductSelection from "../product/ProductSelection";
 import QuantityChange from "../common/QuantityChange";
 import { useProductMutation } from "@/store/productMutationStore";
 import { createWarehouseInventory } from "@/app/api/warehouse-inventories/postWarehouseInventories";
-import { toast } from "@/hooks/use-toast";
+import { Textarea } from "../ui/textarea";
+import { useSession } from "next-auth/react";
 
 const AddInventoryDialog: FC = () => {
+  const { data } = useSession();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [ItemQuantity, setItemQuantity] = useState<number>(0);
   const [productId, setProductId] = useState<number>();
+  const [requesterNotes, setRequesterNotes] = useState<string>();
   const { destinationWarehouseId, submitMutation, setSubmitMutation } =
     useProductMutation();
 
   const handleOnSubmit = () => {
-    if (!productId || !destinationWarehouseId || !ItemQuantity) return;
+    if (
+      !productId ||
+      !destinationWarehouseId ||
+      !ItemQuantity ||
+      !data?.userDetail?.id
+    )
+      return;
 
     setSubmitMutation(true);
     createWarehouseInventory({
       productId,
-      warehouseId: destinationWarehouseId,
       quantity: ItemQuantity,
+      requesterId: data?.userDetail?.id,
+      requesterNotes,
+      destinationWarehouseId,
     })
       .then(() => {
         setSubmitMutation(false);
         handleDialog();
-        toast({
-          title: "Create Inventory",
-          description: "Create new inventory success!",
-          duration: 2000,
-        });
       })
       .catch(() => {
         setSubmitMutation(false);
-        toast({
-          title: "Error",
-          description: "Failed to create new inventory.",
-          duration: 2000,
-        });
       });
   };
 
@@ -64,7 +65,7 @@ const AddInventoryDialog: FC = () => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="hover:bg-warehub-green-light h-full bg-warehub-green text-white hover:text-gray-50"
+          className="h-full bg-warehub-green text-white hover:bg-warehub-green-light hover:text-gray-50"
           onClick={handleDialog}
         >
           Add Inventory
@@ -103,6 +104,18 @@ const AddInventoryDialog: FC = () => {
                 setItemQuantity={setItemQuantity}
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Notes
+            </Label>
+            <Textarea
+              placeholder="Type your notes here"
+              className="col-span-3 resize-none"
+              onChange={(e) => setRequesterNotes(e.target.value)}
+              required
+            />
           </div>
         </div>
 

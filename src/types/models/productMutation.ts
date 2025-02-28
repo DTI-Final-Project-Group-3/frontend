@@ -29,13 +29,12 @@ export interface ProductMutationParams {
   limit: number;
   originWarehouseId?: number;
   destinationWarehouseId?: number;
-  mutationTypeId: number;
+  productMutationTypeId: number[];
 }
 
 export interface ProductMutationProcessRequest {
-  reviewerId: number;
-  reviewerNotes: string | undefined;
-  productMutationId: number;
+  userId: number;
+  notes: string | undefined;
 }
 
 export interface ProductMutationDetailResponse {

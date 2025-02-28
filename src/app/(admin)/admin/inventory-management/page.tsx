@@ -2,6 +2,7 @@
 
 import { getPaginatedWarehouseInventories } from "@/app/api/warehouse-inventories/getWarehouseInventories";
 import ImageComponent from "@/components/common/ImageComponent";
+import { DeleteInventoryDialog } from "@/components/inventory-management/DeleteInventoryDialog";
 import InventoryManagementHeader from "@/components/inventory-management/InventoryManagementHeader";
 import MutationDialog from "@/components/inventory-management/MutationDialog";
 import { PaginationProductAdmin } from "@/components/pagination/PaginationAdmin";
@@ -134,11 +135,14 @@ const InventoryManagementPage = () => {
                     </div>
                     <div className="flex justify-center space-x-2">
                       <MutationDialog
-                        buttonName="Change quantity"
+                        buttonName="Change"
                         onClick={() => {
                           setWarehouseInventoryId(inventory.id);
                           setProductId(inventory.productId);
                         }}
+                      />
+                      <DeleteInventoryDialog
+                        warehouseInventoryId={inventory.id}
                       />
                     </div>
                   </div>

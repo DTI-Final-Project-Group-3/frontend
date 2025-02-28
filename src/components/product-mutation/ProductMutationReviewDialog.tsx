@@ -41,8 +41,8 @@ const ProductMutationReviewDialog: FC<ProductMutationReviewDialogProps> = ({
     if (isApprove) {
       setSubmitMutation(true);
       approveManualProductMutation({
-        reviewerId,
-        reviewerNotes,
+        userId: reviewerId,
+        notes: reviewerNotes,
         productMutationId,
       })
         .then(() => {
@@ -56,8 +56,8 @@ const ProductMutationReviewDialog: FC<ProductMutationReviewDialogProps> = ({
     } else {
       setSubmitMutation(true);
       declineManualProductMutation({
-        reviewerId,
-        reviewerNotes,
+        userId: reviewerId,
+        notes: reviewerNotes,
         productMutationId,
       })
         .then(() => {
@@ -77,7 +77,7 @@ const ProductMutationReviewDialog: FC<ProductMutationReviewDialogProps> = ({
         <Button
           className={cn(
             isApprove
-              ? "hover:bg-warehub-green-light bg-warehub-green text-white"
+              ? "bg-warehub-green text-white hover:bg-warehub-green-light"
               : "bg-whitetext-slate-700 border-slate-300 text-black hover:bg-slate-50",
             "h-full rounded-lg border px-4 py-2 text-sm font-medium transition-colors",
           )}

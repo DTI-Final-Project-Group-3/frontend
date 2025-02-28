@@ -13,7 +13,6 @@ type ProductMutationState = {
   setDestinationWarehouseId: (val: number | undefined) => void;
   setSubmitMutation: (val: boolean) => void;
 };
-
 export const useProductMutation = create<ProductMutationState>((set) => ({
   warehouseInventoryId: undefined,
   productId: undefined,

@@ -14,6 +14,7 @@ import { PaginationProductAdmin } from "@/components/pagination/PaginationAdmin"
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
 import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
+import { ProductMutationConstant } from "@/constant/productMutationConstant";
 
 const ProductMutation: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
@@ -22,7 +23,7 @@ const ProductMutation: FC = () => {
 
   const { data: adjustmentJournals, isLoading: isLoadingJournals } = useQuery({
     queryKey: [
-      "adjustment-journal",
+      "inventory-journal",
       destinationWarehouseId,
       selectedTab,
       page,
@@ -33,7 +34,11 @@ const ProductMutation: FC = () => {
         page,
         limit: ADMIN_PRODUCT_MUTATION,
         destinationWarehouseId: destinationWarehouseId,
-        mutationTypeId: 3,
+        productMutationTypeId: [
+          ProductMutationConstant.TYPE_CREATE_INVENTORY,
+          ProductMutationConstant.TYPE_UPDATE_INVENTORY,
+          ProductMutationConstant.TYPE_DELETE_INVENTORY,
+        ],
       }),
     enabled: !!destinationWarehouseId,
   });
@@ -51,7 +56,10 @@ const ProductMutation: FC = () => {
         page,
         limit: ADMIN_PRODUCT_MUTATION,
         destinationWarehouseId: destinationWarehouseId,
-        mutationTypeId: 1,
+        productMutationTypeId: [
+          ProductMutationConstant.TYPE_MANUAL_MUTATION,
+          ProductMutationConstant.TYPE_AUTO_MUTATION,
+        ],
       }),
     enabled: !!destinationWarehouseId,
   });
@@ -69,13 +77,16 @@ const ProductMutation: FC = () => {
         page,
         limit: ADMIN_PRODUCT_MUTATION,
         originWarehouseId: destinationWarehouseId,
-        mutationTypeId: 1,
+        productMutationTypeId: [
+          ProductMutationConstant.TYPE_MANUAL_MUTATION,
+          ProductMutationConstant.TYPE_AUTO_MUTATION,
+        ],
       }),
     enabled: !!destinationWarehouseId,
   });
 
   const tabOptions = [
-    { id: 1, value: "journal", label: "Adjustment Journal" },
+    { id: 1, value: "journal", label: "Inventory Journal" },
     { id: 2, value: "inbound", label: "Inbound Mutation" },
     { id: 3, value: "outbond", label: "Outbound Mutation" },
   ];

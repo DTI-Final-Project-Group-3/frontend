@@ -8,16 +8,22 @@ import axios from "axios";
 
 const productMutationUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT_MUTATIONS}`;
 
+const axiosInstance = axios.create({
+  paramsSerializer: {
+    indexes: null,
+  },
+});
+
 export const getPaginatedProductMutation = async ({
   page,
   limit,
   originWarehouseId,
   destinationWarehouseId,
-  mutationTypeId,
+  productMutationTypeId,
 }: ProductMutationParams): Promise<
   PaginationResponse<ProductMutationDetailResponse>
 > => {
-  const response = await axios.get<
+  const response = await axiosInstance.get<
     ApiResponse<PaginationResponse<ProductMutationDetailResponse>>
   >(productMutationUrl, {
     params: {
@@ -25,7 +31,7 @@ export const getPaginatedProductMutation = async ({
       limit,
       originWarehouseId,
       destinationWarehouseId,
-      mutationTypeId,
+      productMutationTypeId,
     },
   });
   return response.data.data;

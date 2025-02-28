@@ -8,19 +8,23 @@ import axios from "axios";
 
 const productMutationUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT_MUTATIONS}`;
 
+interface ProcessMutationRequest extends ProductMutationProcessRequest {
+  productMutationId: number;
+}
+
 export const approveManualProductMutation = async ({
-  reviewerId,
-  reviewerNotes,
+  userId,
+  notes,
   productMutationId,
-}: ProductMutationProcessRequest): Promise<
+}: ProcessMutationRequest): Promise<
   ApiResponse<ProductMutationDetailResponse>
 > => {
   try {
     const response = await axios.put<
       ApiResponse<ProductMutationDetailResponse>
     >(`${productMutationUrl}/manual/approve/${productMutationId}`, {
-      reviewerId,
-      reviewerNotes,
+      userId,
+      notes,
     });
     toast({
       title: "Approve Mutation success",
@@ -35,18 +39,18 @@ export const approveManualProductMutation = async ({
 };
 
 export const declineManualProductMutation = async ({
-  reviewerId,
-  reviewerNotes,
+  userId,
+  notes,
   productMutationId,
-}: ProductMutationProcessRequest): Promise<
+}: ProcessMutationRequest): Promise<
   ApiResponse<ProductMutationDetailResponse>
 > => {
   try {
     const response = await axios.put<
       ApiResponse<ProductMutationDetailResponse>
     >(`${productMutationUrl}/manual/decline/${productMutationId}`, {
-      reviewerId,
-      reviewerNotes,
+      userId,
+      notes,
     });
 
     return response.data;

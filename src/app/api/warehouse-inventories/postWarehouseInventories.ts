@@ -1,39 +1,40 @@
 import { toast } from "@/hooks/use-toast";
 import { ApiResponse } from "@/types/api/apiResponse";
-import {
-  WarehouseInventory,
-  WarehouseInventoryCreateRequest,
-} from "@/types/models/warehouseInventories";
+import { ProductMutationRequest } from "@/types/models/productMutation";
 import axios from "axios";
 
 const warehouseInventoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSE_INVENTORIES}`;
 
-interface WarehouseInventoryBasic {
-  id: number;
-  productId: number;
-  warehouseId: number;
-  quantity: number;
-}
-
 export const createWarehouseInventory = async ({
   productId,
-  warehouseId,
   quantity,
-}: WarehouseInventoryCreateRequest): Promise<
-  ApiResponse<WarehouseInventoryBasic>
-> => {
+  requesterId,
+  requesterNotes,
+  destinationWarehouseId,
+}: ProductMutationRequest): Promise<ApiResponse<ProductMutationRequest>> => {
   try {
-    const response = await axios.post<ApiResponse<WarehouseInventoryBasic>>(
+    const response = await axios.post<ApiResponse<ProductMutationRequest>>(
       warehouseInventoryUrl,
       {
         productId,
-        warehouseId,
         quantity,
+        requesterId,
+        requesterNotes,
+        destinationWarehouseId,
       },
     );
-    console.log(warehouseInventoryUrl);
+    toast({
+      title: "Create Inventory",
+      description: "Create new inventory success!",
+      duration: 2000,
+    });
     return response.data;
   } catch (e) {
+    toast({
+      title: "Error",
+      description: "Failed to create new inventory.",
+      duration: 2000,
+    });
     throw new Error("Error creating warehouse inventory");
   }
 };
