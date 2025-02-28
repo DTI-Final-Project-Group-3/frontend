@@ -4,6 +4,7 @@ import { formatSpringBootError } from '@/types/models/springBootErrorResponse';
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
 export default function ResetPassword() {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -22,17 +23,17 @@ export default function ResetPassword() {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.post('http://localhost:8080/api/v1/auth/reset-password-verify', {
+            const response = await axios.post('http://localhost:8080/api/v1/signup/verify', {
                 token,
                 password
             });
 
-            alert('Password successfully reset');
+            alert('Email successfully verified. Please login with the registered email.');
             router.push('/login');
         } catch (error) {
             if (!error.response) {
                 alert("Unknown error " + error);
-             } else {
+            } else {
                 const response = error.response.data;
                 alert(formatSpringBootError(response));
              }
@@ -45,7 +46,7 @@ export default function ResetPassword() {
     return (
         <div className="flex justify-center items-center h-screen bg-gray-100">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                <h2 className="text-2xl font-bold mb-4">Reset Password</h2>
+                <h2 className="text-2xl font-bold mb-4">Set password to complete email verification</h2>
                 <form onSubmit={handleSubmit}>
                     <input
                         type="password"

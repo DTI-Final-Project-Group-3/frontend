@@ -9,6 +9,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+
+
 function ImagePlaceholder() {
   return (
     <div className="relative w-1/2 h-screen hidden md:flex">
@@ -103,7 +105,7 @@ function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
               <input type="checkbox" className="mr-2" />
               Remember me
             </label>
-            <span className="font-bold cursor-pointer">Forgot Password?</span>
+            <Link href="/forgot-password"><span className="font-bold cursor-pointer">Forgot Password?</span></Link>
           </div>
 
           <Button type="submit" className="w-full mt-6 font-semibold">
@@ -136,6 +138,22 @@ function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
   );
 }
 
+function getFriendlyErrorMessage(errorCode: string): string {
+  const messages: Record<string, string> = {
+    "CredentialsSignin": "Invalid email or password. Please try again.",
+    "OAuthSignin": "Failed to sign in with the provider.",
+    "OAuthCallbackError": "Something went wrong during authentication.",
+    "OAuthCreateAccount": "Could not create an account with this provider.",
+    "OAuthAccountNotLinked": "This email is already linked to another login method.",
+    "EmailCreateAccount": "Could not create an account with this email.",
+    "EmailSignin": "Check your email for the sign-in link.",
+    "CallbackRouteError": "Error occurred while processing sign-in callback.",
+    "Default": "An unknown error occurred. Please try again later."
+  };
+
+  return messages[errorCode] || messages["Default"];
+}
+
 export default function LoginPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -157,11 +175,16 @@ export default function LoginPage() {
       redirect: false,
     });
 
+    console.log("result = " + result);
+    if (result) {
+      console.log("error = " + result.error);
+    }
+
     if (result?.error) {
+      alert(getFriendlyErrorMessage(result.error));
       toast({
         title: "Failed to login",
         description: "Please input correct account",
-        variant: "destructive",
         duration: 2000,
       });
     } else {
