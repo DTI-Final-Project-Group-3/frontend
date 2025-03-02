@@ -26,10 +26,10 @@ const InventoryManagementPage = () => {
   } = useProductMutation();
 
   useEffect(() => {
-    if (data?.userDetail?.warehouseId) {
+    if (data?.userDetail?.warehouseId && data.role !== "ADMIN_SUPER") {
       setDestinationWarehouseId(data?.userDetail?.warehouseId);
     }
-  }, [data, setDestinationWarehouseId]);
+  }, [data]);
 
   const {
     data: inventories,

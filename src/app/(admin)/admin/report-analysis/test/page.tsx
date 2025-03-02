@@ -1,8 +1,7 @@
-// app/page.tsx
 "use client";
 import { useState } from "react";
-import StockReport from "@/components/report/StockReport";
-import SalesReport from "@/components/report/SalesReport";
+import StockReport from "@/components/report-analysis/StockReport";
+import SalesReport from "@/components/report-analysis/SalesReport";
 
 export default function ReportsPage() {
   const [activeReport, setActiveReport] = useState("sales");

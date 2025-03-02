@@ -36,7 +36,7 @@ const WarehouseSelection: FC<WarehouseSelectionProps> = ({
         value={warehouseId ? warehouseId.toString() : "all"}
         onValueChange={(value) => setWarehouseId(Number(value))}
       >
-        <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-600 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
+        <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
           <SelectValue placeholder="Select Warehouse" />
         </SelectTrigger>
         <SelectContent className="max-h-56">

@@ -24,7 +24,7 @@ const ProductMutation: FC = () => {
     useProductMutation();
 
   useEffect(() => {
-    if (data?.userDetail?.warehouseId) {
+    if (data?.userDetail?.warehouseId && data.role !== "ADMIN_SUPER") {
       setDestinationWarehouseId(data?.userDetail?.warehouseId);
     }
   }, [data, setDestinationWarehouseId]);
