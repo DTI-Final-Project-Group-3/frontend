@@ -47,7 +47,7 @@ export const getNearbyProduct = async ({
       },
     });
     return response.data.data;
-  } catch (error) {
+  } catch {
     throw new Error("Failed to fetch nearby products");
   }
 };

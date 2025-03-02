@@ -5,22 +5,31 @@ import ImageComponent from "@/components/common/ImageComponent";
 import { DeleteInventoryDialog } from "@/components/inventory-management/DeleteInventoryDialog";
 import InventoryManagementHeader from "@/components/inventory-management/InventoryManagementHeader";
 import MutationDialog from "@/components/inventory-management/MutationDialog";
-import { PaginationProductAdmin } from "@/components/pagination/PaginationAdmin";
+import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const InventoryManagementPage = () => {
+  const { data } = useSession();
   const [page, setPage] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState<string>();
+  const [searchQuery] = useState<string>();
   const {
     destinationWarehouseId,
     submitMutation,
     setProductId,
     setWarehouseInventoryId,
+    setDestinationWarehouseId,
   } = useProductMutation();
+
+  useEffect(() => {
+    if (data?.userDetail?.warehouseId) {
+      setDestinationWarehouseId(data?.userDetail?.warehouseId);
+    }
+  }, [data, setDestinationWarehouseId]);
 
   const {
     data: inventories,
@@ -193,7 +202,7 @@ const InventoryManagementPage = () => {
 
         {inventories && (
           <div className="mt-6">
-            <PaginationProductAdmin
+            <PaginationAdmin
               currentPage={page}
               totalPages={inventories.totalPages}
               hasNext={inventories.hasNext}

@@ -39,7 +39,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
   onClick,
 }) => {
   const { data } = useSession();
-  const requsterId = data?.userDetail?.id;
+  const requesterId = data?.userDetail?.id;
   const [isMutation, setIsMutation] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [ItemQuantity, setItemQuantity] = useState<number>(0);
@@ -103,14 +103,14 @@ const MutationDialog: FC<ProductMutationProps> = ({
   };
 
   const handleOnSubmit = () => {
-    if (!productId || !ItemQuantity || !requsterId || !destinationWarehouseId)
+    if (!productId || !ItemQuantity || !requesterId || !destinationWarehouseId)
       return;
 
     const newProductMutation: ProductMutationRequest = {
       productId: productId,
       quantity: ItemQuantity,
       requesterNotes: requesterNotes,
-      requesterId: requsterId,
+      requesterId: requesterId,
       originWarehouseId: originWarehouseId,
       destinationWarehouseId: destinationWarehouseId,
     };

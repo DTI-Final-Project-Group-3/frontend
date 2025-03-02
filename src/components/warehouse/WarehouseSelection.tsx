@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import {
   Select,
   SelectTrigger,
@@ -9,12 +9,14 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getAllWarehouses } from "@/app/api/warehouse/getWarehouses";
 
-interface WarohouseSelectionProps {
+interface WarehouseSelectionProps {
+  disable?: boolean;
   warehouseId: number | undefined;
   setWarehouseId: (id: number) => void;
 }
 
-const WarehouseSelection: FC<WarohouseSelectionProps> = ({
+const WarehouseSelection: FC<WarehouseSelectionProps> = ({
+  disable,
   warehouseId,
   setWarehouseId,
 }) => {
@@ -30,10 +32,11 @@ const WarehouseSelection: FC<WarohouseSelectionProps> = ({
   return (
     <div className="w-full">
       <Select
+        disabled={!!disable}
         value={warehouseId ? warehouseId.toString() : "all"}
         onValueChange={(value) => setWarehouseId(Number(value))}
       >
-        <SelectTrigger className="w-full border border-gray-300 bg-white text-gray-600 rounded-lg shadow-sm hover:border-green-500 focus:ring-2 focus:ring-green-500 transition-all">
+        <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-600 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
           <SelectValue placeholder="Select Warehouse" />
         </SelectTrigger>
         <SelectContent className="max-h-56">

@@ -1,9 +1,6 @@
 import { toast } from "@/hooks/use-toast";
 import { ApiResponse } from "@/types/api/apiResponse";
-import {
-  ProductMutationProcessRequest,
-  ProductMutationRequest,
-} from "@/types/models/productMutation";
+import { ProductMutationProcessRequest } from "@/types/models/productMutation";
 import axios from "axios";
 
 const warehouseInventoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSE_INVENTORIES}`;
@@ -17,9 +14,9 @@ export const deleteWarehouseInventoryById = async ({
   userId,
   notes,
   warehouseInventoryId,
-}: DeleteWarehouseInventoryRequest): Promise<ApiResponse<any>> => {
+}: DeleteWarehouseInventoryRequest): Promise<ApiResponse<void>> => {
   try {
-    const response = await axios.delete<ApiResponse<any>>(
+    const response = await axios.delete<ApiResponse<void>>(
       `${warehouseInventoryUrl}/${warehouseInventoryId}`,
       {
         data: {
@@ -36,7 +33,7 @@ export const deleteWarehouseInventoryById = async ({
     });
 
     return response.data;
-  } catch (e) {
+  } catch {
     throw new Error("Error deleting warehouse inventory");
   }
 };

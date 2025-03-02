@@ -29,7 +29,7 @@ export const createWarehouseInventory = async ({
       duration: 2000,
     });
     return response.data;
-  } catch (e) {
+  } catch {
     toast({
       title: "Error",
       description: "Failed to create new inventory.",

@@ -1,4 +1,3 @@
-// CustomPagination.tsx
 import {
   Pagination,
   PaginationContent,
@@ -7,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "../ui/pagination";
 
 interface CustomPaginationProps {
   currentPage: number;
@@ -19,7 +18,7 @@ interface CustomPaginationProps {
   currentPageSize: number;
 }
 
-export const PaginationProductAdmin = ({
+export const PaginationAdmin = ({
   currentPage,
   totalPages,
   hasNext,

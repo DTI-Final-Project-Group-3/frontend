@@ -16,7 +16,6 @@ const AvailableWarehouseSelection: FC = () => {
     destinationWarehouseId,
     productId,
     originWarehouseId,
-    originWarehouseQuantity,
     setOriginWarehouseId,
     setOriginWarehouseQuantity,
   } = useProductMutation();

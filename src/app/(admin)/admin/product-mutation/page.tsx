@@ -8,18 +8,26 @@ import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
 import { cn } from "@/lib/utils";
 import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { PaginationProductAdmin } from "@/components/pagination/PaginationAdmin";
+import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
-import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
 import { ProductMutationConstant } from "@/constant/productMutationConstant";
+import { useSession } from "next-auth/react";
 
 const ProductMutation: FC = () => {
+  const { data } = useSession();
   const [selectedTab, setSelectedTab] = useState<number>(1);
   const [page, setPage] = useState<number>(0);
-  const { destinationWarehouseId, submitMutation } = useProductMutation();
+  const { destinationWarehouseId, submitMutation, setDestinationWarehouseId } =
+    useProductMutation();
+
+  useEffect(() => {
+    if (data?.userDetail?.warehouseId) {
+      setDestinationWarehouseId(data?.userDetail?.warehouseId);
+    }
+  }, [data, setDestinationWarehouseId]);
 
   const { data: adjustmentJournals, isLoading: isLoadingJournals } = useQuery({
     queryKey: [
@@ -88,7 +96,7 @@ const ProductMutation: FC = () => {
   const tabOptions = [
     { id: 1, value: "journal", label: "Inventory Journal" },
     { id: 2, value: "inbound", label: "Inbound Mutation" },
-    { id: 3, value: "outbond", label: "Outbound Mutation" },
+    { id: 3, value: "outbound", label: "Outbound Mutation" },
   ];
 
   const renderContent = (
@@ -127,7 +135,7 @@ const ProductMutation: FC = () => {
             />
           ))}
         </div>
-        <PaginationProductAdmin
+        <PaginationAdmin
           currentPage={page}
           totalPages={data.totalPages}
           hasNext={data.hasNext}

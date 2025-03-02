@@ -2,7 +2,7 @@
 
 import { getPaginatedProducts } from "@/app/api/product/getProducts";
 import ImageComponent from "@/components/common/ImageComponent";
-import { PaginationProductAdmin } from "@/components/pagination/PaginationAdmin";
+import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import ActionButtons from "@/components/product-management/ActionButtons";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
 import { ADMIN_PRODUCT_PER_PAGE } from "@/constant/productConstant";
@@ -153,7 +153,7 @@ const ProductManagementPage = () => {
 
         {products && (
           <div className="mt-6">
-            <PaginationProductAdmin
+            <PaginationAdmin
               currentPage={page}
               totalPages={products.totalPages}
               hasNext={products.hasNext}

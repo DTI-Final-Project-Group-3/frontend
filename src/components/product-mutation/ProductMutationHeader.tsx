@@ -2,8 +2,11 @@ import { FC } from "react";
 import MutationDialog from "../inventory-management/MutationDialog";
 import WarehouseSelection from "../warehouse/WarehouseSelection";
 import { useProductMutation } from "@/store/productMutationStore";
+import { userRoles } from "@/constant/userConstant";
+import { useSession } from "next-auth/react";
 
 const ProductMutationHeader: FC = () => {
+  const { data } = useSession();
   const { destinationWarehouseId, setDestinationWarehouseId } =
     useProductMutation();
 
@@ -15,6 +18,7 @@ const ProductMutationHeader: FC = () => {
       <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
         <div className="w-60">
           <WarehouseSelection
+            disable={data?.role !== userRoles.ADMIN_SUPER}
             warehouseId={destinationWarehouseId}
             setWarehouseId={setDestinationWarehouseId}
           />
