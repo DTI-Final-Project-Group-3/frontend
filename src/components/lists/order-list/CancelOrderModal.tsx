@@ -14,49 +14,47 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useMutation } from "@tanstack/react-query";
-import { confirmOrder } from "@/app/api/transaction/confirmOrder";
+import { cancelOrder } from "@/app/api/transaction/cancelOrder";
 import { Loader2, TriangleAlert } from "lucide-react";
 
-type ConfirmOrderModalProps = {
-  orderStatusId: number;
+type CancelOrderModalProps = {
   orderId: number;
-  accessToken: string | undefined;
+  orderStatusId: number;
 };
 
-const ConfirmOrderModal: FC<ConfirmOrderModalProps> = ({
-  orderStatusId,
+const CancelOrderModal: FC<CancelOrderModalProps> = ({
   orderId,
-  accessToken,
+  orderStatusId,
 }) => {
   const [isChecked, setIsChecked] = useState(false);
 
-  const handleConfirmOrder = useMutation({
-    mutationFn: () => confirmOrder(orderId, accessToken),
-  })
-  
+  const handleCancelOrder = useMutation({
+    mutationFn: () => cancelOrder(orderId),
+  });
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button
           variant={"outline"}
-          className="font-semibold text-md"
-          disabled={orderStatusId !== 4}
+          className="font-semibold text-md text-red-500 border-red-500"
+          disabled={orderStatusId !== 1}
         >
-          Confirm Order
+          Cancel Order
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:min-w-[400px] p-6">
         <DialogHeader className="flex flex-col gap-2 w-full">
           <DialogTitle className="text-3xl font-semibold m-0 p-0 text-red-700 flex items-center gap-2">
             <TriangleAlert className="w-6 h-6 text-red-500 mr-2" />
-            Confirm this order ?
+            Cancel this order ?
           </DialogTitle>
           <Separator />
         </DialogHeader>
         <>
           <p className="text-black font-medium text-[16px] py-4">
             This action cannot be undone. Please make sure you already receive
-            the order and you are ready to confirm this order.
+            the order and you are ready to cancel this order.
           </p>
         </>
         {/* Checkbox Confirmation */}
@@ -85,17 +83,19 @@ const ConfirmOrderModal: FC<ConfirmOrderModalProps> = ({
             </Button>
           </DialogClose>
           <Button
-            variant="green"
-            disabled={!isChecked}
+            variant="destructive"
+            disabled={!isChecked || handleCancelOrder.isPending}
             className="px-6"
-            onClick={() => handleConfirmOrder.mutate()}
+            onClick={() => handleCancelOrder.mutate()}
           >
-            {handleConfirmOrder.isPending  ? (
-              <div className="flex gap-4 items-center">
-                <Loader2 size={36} className="animate-spin"/>
-                Confirming...
+            {handleCancelOrder.isPending ? (
+              <div className="flex items-center gap-4">
+                <Loader2 size={36} className="animate-spin" />
+                <span>Cancelling...</span>
               </div>
-            ) : "Confirm order"}
+            ) : (
+              <span>Cancel order</span>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -103,4 +103,4 @@ const ConfirmOrderModal: FC<ConfirmOrderModalProps> = ({
   );
 };
 
-export default ConfirmOrderModal;
+export default CancelOrderModal;

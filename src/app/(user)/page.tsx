@@ -17,6 +17,7 @@ import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import ProductCard from "@/components/product/ProductCard";
 import { cookies } from "next/headers";
 import { useSession } from "next-auth/react";
+import { toast } from "@/hooks/use-toast";
 
 export default function Home() {
   const { data: session } = useSession();

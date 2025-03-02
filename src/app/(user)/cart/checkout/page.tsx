@@ -1,21 +1,27 @@
 "use client";
 
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { toast } from "@/hooks/use-toast";
+import {
+  getAllAddress,
+  getMainAddress,
+} from "@/app/api/transaction/getUserAddresses";
 import { Address } from "@/types/models/checkout/userAddresses";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
 import { CartItem, useCartStore } from "@/store/cartStore";
 import { createManualTransaction } from "@/app/api/transaction/createManualTransaction";
-import { getAllAddress, getMainAddress } from "@/app/api/transaction/getUserAddresses";
+import { createGatewayTransaction } from "@/app/api/transaction/createGatewayTransaction";
 import CheckoutSummary from "@/components/checkout/CheckoutSummary";
 import ShippingAddress from "@/components/checkout/ShippingAddress";
 import CartItemsList from "@/components/checkout/CartItemsList";
 import Script from "next/script";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
 
 const CheckoutPage: FC = () => {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const cartItems = useCartStore((state) => state.cartItems);
   const setCartItems = useCartStore((state) => state.setCartItems);
@@ -52,55 +58,6 @@ const CheckoutPage: FC = () => {
     [cartItems]
   );
 
-  // Handle payment gateway checkout
-  const handleCheckout = async () => {
-    try {
-      // Set order items
-      const orderItems = cartItems.map((item) => ({
-        productId: 3,
-        quantity: item.cartQuantity,
-        unitPrice: item.product.price,
-      }));
-
-      // Set payload
-      const payload = {
-        orderId: `ORDER-${Date.now()}-${Math.random().toString(10)}`,
-        grossAmount: Math.ceil(totalPrice + 25000),
-        userId: 3,
-        warehouseId: 3,
-        paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
-        shippingCost: 25000,
-        orderStatusId: 1, // Default status for waiting payment
-        orderItems: orderItems,
-      };
-
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + "/api/v1/transactions/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to create transaction");
-
-      const data = await response.json();
-
-      await window.snap.pay(data.data.token);
-    } catch (error) {
-      console.error("Error creating transaction:", error);
-      toast({
-        title: "Payment failed",
-        duration: 2000,
-        variant: "destructive",
-        description: "Please check your order and payment detail.",
-      });
-    }
-  };
-
   useEffect(() => {
     const fetchUserAddress = async () => {
       if (session) {
@@ -115,6 +72,36 @@ const CheckoutPage: FC = () => {
 
     fetchUserAddress();
   }, [session]);
+
+  // Tanstack Query mutations transaction
+  const gatewayTransaction = useMutation({
+    mutationFn: () =>
+      createGatewayTransaction({
+        accessToken: session?.accessToken,
+        latitude: mainAddress?.latitude || 0,
+        longitude: mainAddress?.longitude || 0,
+        shippingCost: 25000,
+        paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
+        totalPrice: totalPrice,
+        cartItems: cartItems as CartItem[],
+      }),
+  });
+
+  const manualTransaction = useMutation({
+    mutationFn: () =>
+      createManualTransaction(
+        {
+          accessToken: session?.accessToken,
+          latitude: mainAddress?.latitude || 0,
+          longitude: mainAddress?.longitude || 0,
+          shippingCost: 25000,
+          paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
+          totalPrice: totalPrice,
+          cartItems: cartItems as CartItem[],
+        },
+        router
+      ),
+  });
 
   return (
     <>
@@ -143,25 +130,20 @@ const CheckoutPage: FC = () => {
             </div>
 
             {/* Checkout Summary */}
-            <div className="flex flex-col w-full md:w-[480px] lg:w-[600px]">
+            <div className="flex flex-col w-full md:w-[480px] lg:w-[600px] relative">
               <CheckoutSummary
                 paymentMethod={paymentMethod}
                 setPaymentMethod={setPaymentMethod}
                 totalQuantity={totalQuantity}
                 totalPrice={totalPrice}
                 shippingCost={25000} // Still waiting the API
-                handleCheckout={handleCheckout}
-                handleManualCheckout={() =>
-                  createManualTransaction({
-                    accessToken: session?.accessToken,
-                    latitude: mainAddress?.latitude || 0,
-                    longitude: mainAddress?.longitude || 0,
-                    shippingCost: 25000,
-                    paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
-                    totalPrice: totalPrice,
-                    paymentProofUrl: "https://google.com",
-                    cartItems: cartItems as CartItem[],
-                  })
+                handleCheckout={gatewayTransaction.mutate}
+                handleManualCheckout={manualTransaction.mutate}
+                isLoading={
+                  gatewayTransaction.isPending || manualTransaction.isPending
+                }
+                isError={
+                  gatewayTransaction.isError || manualTransaction.isError
                 }
                 isDisabled={cartItems.length < 1}
               />

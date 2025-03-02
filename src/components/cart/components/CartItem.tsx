@@ -52,7 +52,7 @@ const CartItem: FC<CartItemProps> = ({
 
           <div className="flex flex-col items-start justify-between">
             {/* Product name */}
-            <h3 className="text-lg font-semibold line-clamp-1">{name}</h3>
+            <h3 className="text-lg font-semibold whitespace-nowrap line-clamp-1">{name}</h3>
 
             {/* product stock */}
             <p className="text-[16px] text-[#6C7275] line-clamp-1">
