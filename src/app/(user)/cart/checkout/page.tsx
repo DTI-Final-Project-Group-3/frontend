@@ -1,8 +1,17 @@
 "use client";
 
+import React, { FC, useEffect, useMemo, useState } from "react";
+import {
+  getAllAddress,
+  getMainAddress,
+} from "@/app/api/transaction/getUserAddresses";
+import { Address } from "@/types/models/checkout/userAddresses";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
+import { CartItem, useCartStore } from "@/store/cartStore";
 import { createManualTransaction } from "@/app/api/transaction/createManualTransaction";
-import { getAllAddress, getMainAddress } from "@/app/api/transaction/getUserAddresses";
-import CartItemsList from "@/components/checkout/CartItemsList";
+import { createGatewayTransaction } from "@/app/api/transaction/createGatewayTransaction";
 import CheckoutSummary from "@/components/checkout/CheckoutSummary";
 import ShippingAddress from "@/components/checkout/ShippingAddress";
 import { toast } from "@/hooks/use-toast";
@@ -12,14 +21,14 @@ import { Address } from "@/types/models/checkout/userAddresses";
 import { ShippingCost } from "@/types/models/shippingCost";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import Script from "next/script";
-import { FC, useEffect, useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 const shipping_cost_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost`;
 const shipping_cost_dummy_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost-dummy`;
 
 const CheckoutPage: FC = () => {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const cartItems = useCartStore((state) => state.cartItems);
   const setCartItems = useCartStore((state) => state.setCartItems);
@@ -57,6 +66,7 @@ const CheckoutPage: FC = () => {
     () => cartItems.reduce((acc, item) => acc + item.cartQuantity, 0),
     [cartItems]
   );
+
 
   // Handle payment gateway checkout
   const handleCheckout = async () => {
@@ -142,6 +152,36 @@ const CheckoutPage: FC = () => {
     fetchUserAddress();
   }, [session]);
 
+  // Tanstack Query mutations transaction
+  const gatewayTransaction = useMutation({
+    mutationFn: () =>
+      createGatewayTransaction({
+        accessToken: session?.accessToken,
+        latitude: mainAddress?.latitude || 0,
+        longitude: mainAddress?.longitude || 0,
+        shippingCost: 25000,
+        paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
+        totalPrice: totalPrice,
+        cartItems: cartItems as CartItem[],
+      }),
+  });
+
+  const manualTransaction = useMutation({
+    mutationFn: () =>
+      createManualTransaction(
+        {
+          accessToken: session?.accessToken,
+          latitude: mainAddress?.latitude || 0,
+          longitude: mainAddress?.longitude || 0,
+          shippingCost: 25000,
+          paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
+          totalPrice: totalPrice,
+          cartItems: cartItems as CartItem[],
+        },
+        router
+      ),
+  });
+
   return (
     <>
       {/* Midtrans snap pop up  */}
@@ -169,25 +209,21 @@ const CheckoutPage: FC = () => {
             </div>
 
             {/* Checkout Summary */}
-            <div className="flex flex-col w-full md:w-[480px] lg:w-[600px]">
+            <div className="flex flex-col w-full md:w-[480px] lg:w-[600px] relative">
               <CheckoutSummary
                 paymentMethod={paymentMethod}
                 setPaymentMethod={setPaymentMethod}
                 totalQuantity={totalQuantity}
                 totalPrice={totalPrice}
+<!--                 shippingCost={25000} // Still waiting the API -->
+                handleCheckout={gatewayTransaction.mutate}
+                handleManualCheckout={manualTransaction.mutate}
+                isLoading={
+                  gatewayTransaction.isPending || manualTransaction.isPending
+                }
+                isError={
+                  gatewayTransaction.isError || manualTransaction.isError
                 shippingCost={shippingCost} // Still waiting the API
-                handleCheckout={handleCheckout}
-                handleManualCheckout={() =>
-                  createManualTransaction({
-                    accessToken: session?.accessToken,
-                    latitude: mainAddress?.latitude || 0,
-                    longitude: mainAddress?.longitude || 0,
-                    shippingCost: {shippingCost},
-                    paymentMethodId: paymentMethod === "gateway" ? 1 : 2,
-                    totalPrice: totalPrice,
-                    paymentProofUrl: "https://google.com",
-                    cartItems: cartItems as CartItem[],
-                  })
                 }
                 isDisabled={cartItems.length < 1}
               />

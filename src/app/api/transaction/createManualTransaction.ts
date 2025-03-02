@@ -1,5 +1,6 @@
 import { toast } from "@/hooks/use-toast";
-import { CartItem } from "@/store/cartStore";
+import { CartItem, useCartStore } from "@/store/cartStore";
+import { useRouter } from "next/navigation";
 
 type ManualTransferPayload = {
   accessToken: string | undefined;
@@ -8,21 +9,22 @@ type ManualTransferPayload = {
   paymentMethodId: number;
   shippingCost: number;
   totalPrice: number;
-  paymentProofUrl?: string;
   cartItems: CartItem[];
 };
 
 // Handle manual transfer payment
-export const createManualTransaction = async ({
-  accessToken,
-  latitude,
-  longitude,
-  shippingCost,
-  paymentMethodId,
-  totalPrice,
-  paymentProofUrl,
-  cartItems,
-}: ManualTransferPayload) => {
+export const createManualTransaction = async (
+  {
+    accessToken,
+    latitude,
+    longitude,
+    shippingCost,
+    paymentMethodId,
+    totalPrice,
+    cartItems,
+  }: ManualTransferPayload,
+  router: ReturnType<typeof useRouter>
+) => {
   try {
     // Set order items
     const orderItems = cartItems.map((item) => ({
@@ -37,8 +39,7 @@ export const createManualTransaction = async ({
       paymentMethodId: paymentMethodId,
       orderStatusId: 1, // Default status for waiting payment
       shippingCost: shippingCost,
-      grossAmount: Math.ceil(totalPrice + 25000),
-      paymentProofUrl: paymentProofUrl,
+      grossAmount: Math.round(totalPrice + 25000),
       orderItems: orderItems,
     };
 
@@ -51,21 +52,36 @@ export const createManualTransaction = async ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization" : `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(payload),
       }
     );
 
-    if (!response.ok) throw new Error("Failed to create manual transaction");
+    if (!response.ok) {
+      toast({
+        title: "Failed to create transaction",
+        description: "Please make sure you're verified and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const data = await response.json();
+    console.log(data);
+    const orderId = data.data.transactionId;
+    console.log(orderId);
+
+    // Reset cart items
+    useCartStore.getState().resetCart();
 
     toast({
-      title: "Manual Payment Initiated",
+      title: "Your order have been set.",
       description: "Please follow the instructions to complete your payment.",
       duration: 3000,
     });
 
-    // Optionally, redirect user to instructions page
+    router.push(`/cart/checkout/manual-payment/${orderId}`);
   } catch (error) {
     toast({
       title: "Payment Error",

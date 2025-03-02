@@ -1,17 +1,20 @@
 "use client";
 
 import React, { FC } from "react";
+import { useOrders } from "@/hooks/useOrders";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
+import { addOneHour } from "@/utils/time";
 import { ShoppingBag } from "lucide-react";
 import { useOrderStore } from "@/store/orderStore";
 import { formatDateTime, formatPrice } from "@/utils/formatter";
 import OrderListLoadingSkeleton from "@/components/skeleton/OrderListLoadingSkeleton";
+import CompletePaymentOrder from "./complete-payment/CompletePaymentOrder";
 import PaginationComponent from "./PaginationComponent";
 import ConfirmOrderModal from "./ConfirmOrderModal";
 import OrderDetailsModal from "./OrderDetailsModal";
+import CancelOrderModal from "./CancelOrderModal";
 import Image from "next/image";
-import { useOrders } from "@/hooks/useOrders";
 
 const OrderLists: FC = () => {
   const { data: session } = useSession();
@@ -29,14 +32,15 @@ const OrderLists: FC = () => {
     endDate
   );
 
+  console.log(session?.userDetail?.role);
   return (
     <div className="w-full min-h-[500px] bg-white rounded-xl md:p-6">
       <div className="p-6 flex flex-col gap-6">
         {/* Handle loading state */}
         {isLoading && (
           <div className="min-h-[500px] flex flex-col items-center justify-center w-full gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-              <OrderListLoadingSkeleton key={num} />
+            {Array.from({ length: 9 }).map((_, index) => (
+              <OrderListLoadingSkeleton key={index} />
             ))}
           </div>
         )}
@@ -133,8 +137,48 @@ const OrderLists: FC = () => {
 
               {/* Button modals */}
               <div className="flex flex-col md:flex-row w-full gap-2 md:gap-4 items-center justify-end md:px-6">
+                {/* Always visible for all roles */}
                 <OrderDetailsModal orderId={order.id} />
-                <ConfirmOrderModal orderStatusId={order.orderStatusId} />
+
+                {/* CUSTOMER_VERIFIED: Show all other buttons */}
+                {session?.userDetail?.role === "CUSTOMER_VERIFIED" && (
+                  <>
+                    {order.orderStatusId === 1 &&
+                      order.paymentProofImageUrl === null && (
+                        <CompletePaymentOrder
+                          createdAt={order.createdAt}
+                          orderId={order.id}
+                          orderStatusId={order.orderStatusId}
+                          paymentMethodId={order.paymentMethodId}
+                        />
+                      )}
+                    {order.orderStatusId === 1 &&
+                      order.paymentProofImageUrl === null &&
+                      new Date() < addOneHour(order.createdAt.toString()) && (
+                        <CancelOrderModal
+                          orderId={order.id}
+                          orderStatusId={order.orderStatusId}
+                        />
+                      )}
+                    {order.orderStatusId === 4 && (
+                      <ConfirmOrderModal
+                        accessToken={session?.accessToken}
+                        orderId={order.id}
+                        orderStatusId={order.orderStatusId}
+                      />
+                    )}
+                  </>
+                )}
+                {/* ADMIN_WAREHOUSE & ADMIN_SUPER: Show "Update Order Status" */}
+                {(session?.userDetail?.role === "ADMIN_WAREHOUSE" ||
+                  session?.userDetail?.role === "ADMIN_SUPER") && (
+                  <button
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                    // onClick={() => handleUpdateOrderStatus(order.id)}
+                  >
+                    Update Order Status
+                  </button>
+                )}
               </div>
             </div>
           ))

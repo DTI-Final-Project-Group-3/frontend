@@ -20,13 +20,13 @@ const NotificationTabs: FC<NotificationTabsProps> = ({ closePopover }) => {
   return (
     <Tabs defaultValue="order-list" className="w-full transition-all">
       {/* Tabs Menu */}
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="grid w-full grid-cols-1">
         <TabsTrigger value="order-list" className="font-semibold">
           Order Lists
         </TabsTrigger>
-        <TabsTrigger value="update" className="font-semibold">
+        {/* <TabsTrigger value="update" className="font-semibold">
           Update
-        </TabsTrigger>
+        </TabsTrigger> */}
       </TabsList>
 
       {/* Order Lists Tab Content */}
@@ -43,7 +43,7 @@ const NotificationTabs: FC<NotificationTabsProps> = ({ closePopover }) => {
         </div>
 
         {/* Show By Filter Status */}
-        <div className="flex flex-row items-center gap-8 w-full overflow-x-auto pb-2 px-5 [&::-webkit-scrollbar]:h-[10px]">
+        <div className="grid grid-cols-2 items-start gap-8 w-full overflow-y-auto pb-2 px-5 [&::-webkit-scrollbar]:h-[10px]">
           {trxStatuses.slice(1).map((status) => (
             <div
               key={status.id}
@@ -65,9 +65,9 @@ const NotificationTabs: FC<NotificationTabsProps> = ({ closePopover }) => {
       </TabsContent>
 
       {/* Update Notifications Tab Content */}
-      <TabsContent value="update" className="p-5 transition-all">
+      {/* <TabsContent value="update" className="p-5 transition-all">
         This is notifications update
-      </TabsContent>
+      </TabsContent> */}
     </Tabs>
   );
 };
