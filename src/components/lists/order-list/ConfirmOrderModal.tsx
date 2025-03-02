@@ -13,19 +13,27 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { TriangleAlert } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { confirmOrder } from "@/app/api/transaction/confirmOrder";
+import { Loader2, TriangleAlert } from "lucide-react";
 
 type ConfirmOrderModalProps = {
   orderStatusId: number;
+  orderId: number;
+  accessToken: string | undefined;
 };
 
-export const confirmOrder = async () => {
-
-}
-
-const ConfirmOrderModal: FC<ConfirmOrderModalProps> = ({ orderStatusId }) => {
+const ConfirmOrderModal: FC<ConfirmOrderModalProps> = ({
+  orderStatusId,
+  orderId,
+  accessToken,
+}) => {
   const [isChecked, setIsChecked] = useState(false);
 
+  const handleConfirmOrder = useMutation({
+    mutationFn: () => confirmOrder(orderId, accessToken),
+  })
+  
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -73,16 +81,21 @@ const ConfirmOrderModal: FC<ConfirmOrderModalProps> = ({ orderStatusId }) => {
               className="mr-2"
               onClick={() => setIsChecked(false)}
             >
-              Cancel
+              close
             </Button>
           </DialogClose>
           <Button
-            type="submit"
-            variant="destructive"
+            variant="green"
             disabled={!isChecked}
             className="px-6"
+            onClick={() => handleConfirmOrder.mutate()}
           >
-            Confirm Order
+            {handleConfirmOrder.isPending  ? (
+              <div className="flex gap-4 items-center">
+                <Loader2 size={36} className="animate-spin"/>
+                Confirming...
+              </div>
+            ) : "Confirm order"}
           </Button>
         </DialogFooter>
       </DialogContent>

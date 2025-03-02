@@ -2,6 +2,11 @@ import { PaginationParams } from "../api/pagination";
 import { LocationParams } from "../location";
 import { Warehouse } from "./warehouses";
 
+export interface ProductBasic {
+  id: number;
+  name: string;
+}
+
 export interface Product {
   id: number;
   name: string;

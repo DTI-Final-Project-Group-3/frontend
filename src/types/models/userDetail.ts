@@ -11,4 +11,6 @@ export interface UserDetail {
     biodata : string,
     profileImageUrl : string,
     createdAt : string,
+    warehouseId : number,
+    userAssignerId : number
  }

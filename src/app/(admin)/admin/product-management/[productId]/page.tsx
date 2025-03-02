@@ -4,7 +4,6 @@ import { getProductDetailById } from "@/app/api/product/getProducts";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
 import ProductCarousel from "@/components/product/ProductCarousel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 import { formatDimension, formatPrice, formatWeight } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -19,14 +18,14 @@ const ProductAdmin: FC = () => {
   });
 
   return (
-    <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
+    <section className="min-h-[calc(100vh-178px)] w-full rounded-2xl bg-white py-4 shadow-sm md:py-7">
       <ProductManagementHeader />
 
       {!productDetail || productDetailLoading ? (
         <Skeleton className="w-10"></Skeleton>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mt-10 px-20">
-          <div className="w-full flex justify-center">
+        <div className="mt-10 grid grid-cols-1 gap-8 px-20 md:grid-cols-2 md:gap-12">
+          <div className="flex w-full justify-center">
             <div className="w-full max-w-md">
               {productDetail && (
                 <ProductCarousel
@@ -38,19 +37,19 @@ const ProductAdmin: FC = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            <h1 className="text-2xl md:text-4xl font-poppins font-semibold">
+            <h1 className="font-poppins text-2xl font-semibold md:text-4xl">
               {productDetail?.name}
             </h1>
-            <p className="text-gray-600 text-base md:text-lg">
+            <p className="text-base text-gray-600 md:text-lg">
               {productDetail?.description}
             </p>
-            <h2 className={"text-2xl md:text-3xl font-poppins font-medium"}>
+            <h2 className={"font-poppins text-2xl font-medium md:text-3xl"}>
               {formatPrice(String(productDetail.price))}
             </h2>
 
             <div className="space-y-4">
               <div>
-                <h2 className="text-gray-700 font-semibold mb-1">Dimensions</h2>
+                <h2 className="mb-1 font-semibold text-gray-700">Dimensions</h2>
                 <div className="flex gap-2">
                   <p>{formatDimension(productDetail.length)} x</p>
                   <p>{formatDimension(productDetail.width)} x</p>
@@ -59,7 +58,7 @@ const ProductAdmin: FC = () => {
               </div>
 
               <div>
-                <h2 className="text-gray-700 font-semibold mb-1">Weight</h2>
+                <h2 className="mb-1 font-semibold text-gray-700">Weight</h2>
                 <p>{formatWeight(productDetail.weight)}</p>
               </div>
             </div>
