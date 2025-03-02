@@ -1,4 +1,3 @@
-// CustomPagination.tsx
 import {
   Pagination,
   PaginationContent,
@@ -7,8 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { cn } from "@/lib/utils";
+} from "../ui/pagination";
 
 interface CustomPaginationProps {
   currentPage: number;
@@ -20,7 +18,7 @@ interface CustomPaginationProps {
   currentPageSize: number;
 }
 
-export const PaginationProductAdmin = ({
+export const PaginationAdmin = ({
   currentPage,
   totalPages,
   hasNext,
@@ -65,8 +63,8 @@ export const PaginationProductAdmin = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center w-full gap-2 md:gap-0">
-      <p className="text-sm text-gray-600 text-nowrap">
+    <div className="flex w-full flex-col items-center justify-between gap-2 md:flex-row md:gap-0">
+      <p className="text-nowrap text-sm text-gray-600">
         Showing {currentPageSize} out of {totalElements} products
       </p>
       <Pagination className="md:justify-end">
@@ -93,8 +91,8 @@ export const PaginationProductAdmin = ({
                   onClick={() => onPageChange(pageOrEllipsis)}
                   className={`md:h-10 ${
                     pageOrEllipsis === currentPage
-                      ? "bg-black text-white hover:bg-black hover:text-white cursor-not-allowed"
-                      : "text-gray-700 hover:bg-gray-100 cursor-pointer"
+                      ? "cursor-not-allowed bg-gray-200 text-black"
+                      : "cursor-pointer text-gray-700 hover:bg-gray-100"
                   }`}
                 >
                   {pageOrEllipsis + 1}

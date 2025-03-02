@@ -64,13 +64,13 @@ export default function FilterLocation() {
             description: "Getting address details...",
           });
         },
-        (error) => {
+        () => {
           toast({
             title: "Error",
             description: "Unable to get your location. Please try again.",
             variant: "destructive",
           });
-        }
+        },
       );
     } else {
       toast({
@@ -88,7 +88,7 @@ export default function FilterLocation() {
       getCurrentLocation();
     } else {
       const selectedAddress = userAddresses?.data.find(
-        (address) => address.detailAddress === value
+        (address) => address.detailAddress === value,
       );
       if (selectedAddress) {
         setUserAddress(selectedAddress);
@@ -104,13 +104,13 @@ export default function FilterLocation() {
     <div className="font-inter">
       <label
         htmlFor="address-select"
-        className="text-lg font-semibold mb-2 block"
+        className="mb-2 block text-lg font-semibold"
       >
         Delivery Address
       </label>
       <select
         id="address-select"
-        className="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+        className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100"
         onChange={handleAddressChange}
         disabled={addressesLoading}
       >

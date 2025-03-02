@@ -9,3 +9,10 @@ export interface WarehouseDetail extends Warehouse {
   longitude: number;
   latitude: number;
 }
+
+export interface NearbyWarehouseQuantityResponse {
+  id: number;
+  name: string;
+  distanceInMeters: number;
+  totalQuantity: number;
+}

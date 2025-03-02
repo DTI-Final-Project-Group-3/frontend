@@ -7,12 +7,19 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { useOrderStore } from "@/store/orderStore";
 import { getAllWarehouses } from "@/app/api/warehouse/getWarehouses";
 
-const SelectWarehouse: FC = () => {
-  const { warehouseId, setFilters } = useOrderStore();
+interface WarehouseSelectionProps {
+  disable?: boolean;
+  warehouseId: number | undefined;
+  setWarehouseId: (id: number) => void;
+}
 
+const WarehouseSelection: FC<WarehouseSelectionProps> = ({
+  disable,
+  warehouseId,
+  setWarehouseId,
+}) => {
   const {
     data: warehouses,
     isLoading,
@@ -20,29 +27,21 @@ const SelectWarehouse: FC = () => {
   } = useQuery({
     queryKey: ["warehouses"],
     queryFn: getAllWarehouses,
-    staleTime: 1000 * 60 * 2, // Cache results for 5 minutes
   });
 
   return (
-    <div>
+    <div className="w-full">
       <Select
+        disabled={!!disable}
         value={warehouseId ? warehouseId.toString() : "all"}
-        onValueChange={(value) =>
-          setFilters({
-            warehouseId: value !== "all" ? Number(value) : undefined,
-            page: 0,
-            limit: 10,
-          })
-        }
+        onValueChange={(value) => setWarehouseId(Number(value))}
       >
-        <SelectTrigger className="w-full border border-gray-300 bg-white text-lg text-gray-600 px-3 py-[26px] rounded-lg shadow-sm hover:border-green-500 focus:ring-2 focus:ring-green-500 transition-all">
+        <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-600 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
           <SelectValue placeholder="Select Warehouse" />
         </SelectTrigger>
-        <SelectContent>
-          {/* Provide a clear option */}
-          <SelectItem value="all">All Warehouses</SelectItem>
+        <SelectContent className="max-h-56">
+          <SelectItem value="all">Select Warehouse</SelectItem>
 
-          {/* Ensure all warehouse IDs are strings */}
           {isLoading ? (
             <SelectItem value="loading" disabled>
               Loading...
@@ -51,8 +50,12 @@ const SelectWarehouse: FC = () => {
             <SelectItem value="error" disabled>
               Error loading warehouses
             </SelectItem>
+          ) : warehouses?.data && warehouses.data.length === 0 ? (
+            <SelectItem value="no-warehouses" disabled>
+              No warehouses available
+            </SelectItem>
           ) : (
-            warehouses?.data.map((warehouse) => (
+            warehouses?.data?.map((warehouse) => (
               <SelectItem key={warehouse.id} value={warehouse.id.toString()}>
                 {warehouse.name}
               </SelectItem>
@@ -64,4 +67,4 @@ const SelectWarehouse: FC = () => {
   );
 };
 
-export default SelectWarehouse;
+export default WarehouseSelection;

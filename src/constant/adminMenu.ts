@@ -30,6 +30,11 @@ export const menuItems = [
     icon: "/icons/admin/truck.svg",
   },
   {
+    title: "Product Mutation & Journal",
+    route: "/admin/product-mutation",
+    icon: "/icons/admin/truck.svg",
+  },
+  {
     title: "Order Management",
     route: "/admin/order-management",
     icon: "/icons/admin/shopping-cart.svg",

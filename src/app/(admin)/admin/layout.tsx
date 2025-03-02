@@ -23,9 +23,9 @@ export const metadata: Metadata = {
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <main className="flex w-full min-h-screen">
+    <main className="flex min-h-screen w-full">
       <Sidebar />
-      <div className="w-full flex flex-col gap-6 p-6 bg-slate-100">
+      <div className="flex w-full flex-col gap-6 bg-slate-100 p-6">
         <Header />
         {children}
       </div>
