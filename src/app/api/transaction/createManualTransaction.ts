@@ -39,7 +39,7 @@ export const createManualTransaction = async (
       paymentMethodId: paymentMethodId,
       orderStatusId: 1, // Default status for waiting payment
       shippingCost: shippingCost,
-      grossAmount: Math.round(totalPrice + 25000),
+      grossAmount: totalPrice + shippingCost,
       orderItems: orderItems,
     };
 

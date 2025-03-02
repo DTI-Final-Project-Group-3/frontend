@@ -74,7 +74,7 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
       {/* Buy Now Button */}
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="font-semibold text-md" disabled={isDisabled}>
+          <Button className="font-semibold text-md" disabled={isDisabled || isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="animate-spin w-4 h-4" />
@@ -120,7 +120,7 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
               type="submit"
               variant="green"
               className="px-6"
-              disabled={isDisabled}
+              disabled={isDisabled || isLoading}
               onClick={
                 paymentMethod === "gateway"
                   ? handleCheckout

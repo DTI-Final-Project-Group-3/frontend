@@ -40,7 +40,7 @@ export const createGatewayTransaction = async ({
 
     // Set payload
     const payload = {
-      grossAmount: Math.round(totalPrice + shippingCost),
+      grossAmount: totalPrice + shippingCost,
       latitude: latitude,
       longitude: longitude,
       paymentMethodId: paymentMethodId,
