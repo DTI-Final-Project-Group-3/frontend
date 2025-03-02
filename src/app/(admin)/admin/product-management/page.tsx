@@ -2,7 +2,7 @@
 
 import { getPaginatedProducts } from "@/app/api/product/getProducts";
 import ImageComponent from "@/components/common/ImageComponent";
-import { PaginationProductAdmin } from "@/components/pagination/PaginationProductAdmin";
+import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import ActionButtons from "@/components/product-management/ActionButtons";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
 import { ADMIN_PRODUCT_PER_PAGE } from "@/constant/productConstant";
@@ -27,16 +27,16 @@ const ProductManagementPage = () => {
   });
 
   return (
-    <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
+    <section className="min-h-[calc(100vh-178px)] w-full rounded-2xl bg-white py-4 shadow-sm md:py-7">
       <ProductManagementHeader />
 
-      <div className="mt-4 md:mt-7 px-4 md:px-10">
+      <div className="mt-4 px-4 md:mt-7 md:px-10">
         {productsLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+          <div className="flex h-64 items-center justify-center">
+            <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-black"></div>
           </div>
         ) : products?.content.length === 0 ? (
-          <div className="text-center py-16 text-gray-500">
+          <div className="py-16 text-center text-gray-500">
             <svg
               className="mx-auto h-12 w-12 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -59,14 +59,14 @@ const ProductManagementPage = () => {
         ) : (
           <div className="md:min-h-[calc(100vh-300px)]">
             <div className="hidden md:block">
-              <div className="grid grid-cols-[40%_20%_10%_15%_15%] mb-2 px-2 border-b border-gray-200 pb-2">
-                <div className="text-gray-700 font-medium">Name</div>
-                <div className="text-gray-700 font-medium">Category</div>
-                <div className="text-gray-700 font-medium">Price</div>
-                <div className="text-gray-700 font-medium text-center">
+              <div className="mb-2 grid grid-cols-[40%_20%_10%_15%_15%] border-b border-gray-200 px-2 pb-2">
+                <div className="font-medium text-gray-700">Name</div>
+                <div className="font-medium text-gray-700">Category</div>
+                <div className="font-medium text-gray-700">Price</div>
+                <div className="text-center font-medium text-gray-700">
                   Thumbnail
                 </div>
-                <div className="text-gray-700 font-medium text-center">
+                <div className="text-center font-medium text-gray-700">
                   Actions
                 </div>
               </div>
@@ -74,26 +74,26 @@ const ProductManagementPage = () => {
                 {products?.content.map((product) => (
                   <div
                     key={product.id}
-                    className="grid grid-cols-[40%_20%_10%_15%_15%] items-center p-2 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-100"
+                    className="grid grid-cols-[40%_20%_10%_15%_15%] items-center rounded-lg border-b border-gray-100 p-2 transition-colors hover:bg-gray-50"
                   >
                     <div className="min-w-0">
-                      <div className="font-medium text-gray-800 truncate">
+                      <div className="truncate font-medium text-gray-800">
                         {product.name}
                       </div>
-                      <div className="text-xs text-gray-500 truncate">
+                      <div className="truncate text-xs text-gray-500">
                         ID: {product.id}
                       </div>
                     </div>
                     <div className="min-w-0">
-                      <span className="px-3 py-1 text-sm rounded-full bg-gray-200 truncate inline-block max-w-full">
+                      <span className="inline-block max-w-full truncate rounded-full bg-gray-200 px-3 py-1 text-sm">
                         {product.categoryName}
                       </span>
                     </div>
-                    <div className="font-medium text-gray-800 truncate">
+                    <div className="truncate font-medium text-gray-800">
                       {formatPrice(String(product.price))}
                     </div>
                     <div className="flex justify-center">
-                      <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100">
+                      <div className="relative h-16 w-16 overflow-hidden rounded-md bg-gray-100">
                         <ImageComponent
                           src={product.thumbnail}
                           fill={true}
@@ -111,14 +111,14 @@ const ProductManagementPage = () => {
               </div>
             </div>
 
-            <div className="md:hidden space-y-4">
+            <div className="space-y-4 md:hidden">
               {products?.content.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white rounded-lg border border-gray-200 p-4 space-y-3"
+                  className="space-y-3 rounded-lg border border-gray-200 bg-white p-4"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+                    <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
                       <ImageComponent
                         src={product.thumbnail}
                         className="object-cover"
@@ -127,17 +127,17 @@ const ProductManagementPage = () => {
                         sizes="50px, 50px"
                       />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-800 truncate">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="truncate font-medium text-gray-800">
                         {product.name}
                       </h3>
                       <p className="text-xs text-gray-500">ID: {product.id}</p>
-                      <span className="inline-block px-3 py-1 text-sm rounded-full bg-gray-200 mt-1 truncate">
+                      <span className="mt-1 inline-block truncate rounded-full bg-gray-200 px-3 py-1 text-sm">
                         {product.categoryName}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                  <div className="flex items-center justify-between border-t border-gray-100 pt-2">
                     <span className="font-medium text-gray-800">
                       {formatPrice(String(product.price))}
                     </span>
@@ -153,7 +153,7 @@ const ProductManagementPage = () => {
 
         {products && (
           <div className="mt-6">
-            <PaginationProductAdmin
+            <PaginationAdmin
               currentPage={page}
               totalPages={products.totalPages}
               hasNext={products.hasNext}

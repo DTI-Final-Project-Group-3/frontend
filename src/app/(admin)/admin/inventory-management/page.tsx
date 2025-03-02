@@ -2,48 +2,76 @@
 
 import { getPaginatedWarehouseInventories } from "@/app/api/warehouse-inventories/getWarehouseInventories";
 import ImageComponent from "@/components/common/ImageComponent";
+import { DeleteInventoryDialog } from "@/components/inventory-management/DeleteInventoryDialog";
 import InventoryManagementHeader from "@/components/inventory-management/InventoryManagementHeader";
-import { PaginationProductAdmin } from "@/components/pagination/PaginationProductAdmin";
+import MutationDialog from "@/components/inventory-management/MutationDialog";
+import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
+import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const InventoryManagementPage = () => {
+  const { data } = useSession();
   const [page, setPage] = useState<number>(0);
-  const [warehouseId, setWarehouseId] = useState<number>(1);
-  const [searchQuery, setSearchQuery] = useState<string>();
+  const [searchQuery] = useState<string>();
+  const {
+    destinationWarehouseId,
+    submitMutation,
+    setProductId,
+    setWarehouseInventoryId,
+    setDestinationWarehouseId,
+  } = useProductMutation();
+
+  useEffect(() => {
+    if (data?.userDetail?.warehouseId) {
+      setDestinationWarehouseId(data?.userDetail?.warehouseId);
+    }
+  }, [data, setDestinationWarehouseId]);
 
   const {
     data: inventories,
     isLoading: inventoriesLoading,
     error: inventoriesError,
   } = useQuery({
-    queryKey: ["warehouse-inventories-admin", page, warehouseId, searchQuery],
+    queryKey: [
+      "warehouse-inventories-admin",
+      page,
+      searchQuery,
+      submitMutation,
+      destinationWarehouseId,
+    ],
     queryFn: () =>
       getPaginatedWarehouseInventories({
         page,
         limit: INVENTORY_PER_PAGE,
-        warehouseId,
+        warehouseId: destinationWarehouseId,
         searchQuery,
       }),
+    enabled: !!destinationWarehouseId,
   });
 
   return (
-    <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
+    <section className="min-h-[calc(100vh-178px)] w-full rounded-2xl bg-white py-4 shadow-sm md:py-7">
       <InventoryManagementHeader />
 
-      <div className="mt-4 md:mt-7 px-4 md:px-10">
-        {inventoriesLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+      <div className="mt-4 px-4 md:mt-7 md:px-10">
+        {!destinationWarehouseId ? (
+          <div className="py-16 text-center text-red-500">
+            Please select warehouse !
+          </div>
+        ) : inventoriesLoading ? (
+          <div className="flex h-64 items-center justify-center">
+            <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-black"></div>
           </div>
         ) : inventoriesError ? (
-          <div className="text-center py-16 text-red-500">
+          <div className="py-16 text-center text-red-500">
             Failed to load inventories. Please try again.
           </div>
         ) : inventories?.content?.length === 0 ? (
-          <div className="text-center py-16 text-gray-500">
+          <div className="py-16 text-center text-gray-500">
             <svg
               className="mx-auto h-12 w-12 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -63,17 +91,19 @@ const InventoryManagementPage = () => {
         ) : (
           <div className="md:min-h-[calc(100vh-300px)]">
             <div className="hidden md:block">
-              <div className="grid grid-cols-[30%_20%_10%_10%_10%_20%] mb-2 px-2 border-b border-gray-200 pb-7">
-                <div className="text-gray-700 font-medium">Name</div>
-                <div className="text-gray-700 font-medium">Category</div>
-                <div className="text-gray-700 font-medium">Price</div>
-                <div className="text-gray-700 font-medium text-center">
+              <div className="mb-2 grid grid-cols-[30%_10%_15%_15%_15%_15%] border-b border-gray-200 px-2 pb-7">
+                <div className="font-medium text-gray-700">Name</div>
+                <div className="font-medium text-gray-700">Category</div>
+                <div className="text-center font-medium text-gray-700">
+                  Price
+                </div>
+                <div className="text-center font-medium text-gray-700">
                   Thumbnail
                 </div>
-                <div className="text-gray-700 font-medium text-center">
+                <div className="text-center font-medium text-gray-700">
                   Quantity
                 </div>
-                <div className="text-gray-700 font-medium text-center">
+                <div className="text-center font-medium text-gray-700">
                   Actions
                 </div>
               </div>
@@ -82,26 +112,26 @@ const InventoryManagementPage = () => {
                 {inventories?.content.map((inventory) => (
                   <div
                     key={inventory.id}
-                    className="grid grid-cols-[30%_20%_10%_10%_10%_20%] items-center p-2 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-100"
+                    className="grid grid-cols-[30%_10%_15%_15%_15%_15%] items-center rounded-lg border-b border-gray-100 p-2 transition-colors hover:bg-gray-50"
                   >
                     <div className="min-w-0">
-                      <div className="font-medium text-gray-800 truncate">
+                      <div className="truncate font-medium text-gray-800">
                         {inventory.productName}
                       </div>
-                      <div className="text-xs text-gray-500 truncate">
+                      <div className="truncate text-xs text-gray-500">
                         ID: {inventory.id}
                       </div>
                     </div>
                     <div className="min-w-0">
-                      <span className="px-3 py-1 text-sm rounded-full bg-gray-200 truncate inline-block max-w-full">
+                      <span className="inline-block max-w-full truncate rounded-full bg-gray-200 px-3 py-1 text-sm">
                         {inventory.productCategoryName}
                       </span>
                     </div>
-                    <div className="font-medium text-gray-800 truncate">
+                    <div className="flex justify-center font-medium text-gray-800">
                       {formatPrice(String(inventory.productPrice))}
                     </div>
                     <div className="flex justify-center">
-                      <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100">
+                      <div className="relative h-16 w-16 overflow-hidden rounded-md bg-gray-100">
                         <ImageComponent
                           src={inventory.productThumbnail}
                           fill={true}
@@ -114,22 +144,31 @@ const InventoryManagementPage = () => {
                     <div className="flex justify-center space-x-2">
                       {inventory.quantity}
                     </div>
-                    <div className="flex justify-center space-x-2">
-                      Request mutation
+                    <div className="flex justify-center space-x-2 md:px-10">
+                      <MutationDialog
+                        buttonName="Change"
+                        onClick={() => {
+                          setWarehouseInventoryId(inventory.id);
+                          setProductId(inventory.productId);
+                        }}
+                      />
+                      <DeleteInventoryDialog
+                        warehouseInventoryId={inventory.id}
+                      />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="md:hidden space-y-4">
+            <div className="space-y-4 md:hidden">
               {inventories?.content.map((inventory) => (
                 <div
                   key={inventory.id}
-                  className="bg-white rounded-lg border border-gray-200 p-4 space-y-3"
+                  className="space-y-3 rounded-lg border border-gray-200 bg-white p-4"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+                    <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
                       <ImageComponent
                         src={inventory.productThumbnail}
                         fill={true}
@@ -138,19 +177,19 @@ const InventoryManagementPage = () => {
                         sizes="50px, 50px"
                       />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-800 truncate">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="truncate font-medium text-gray-800">
                         {inventory.productName}
                       </h3>
                       <p className="text-xs text-gray-500">
                         ID: {inventory.id}
                       </p>
-                      <span className="inline-block px-3 py-1 text-sm rounded-full bg-gray-200 mt-1 truncate">
+                      <span className="mt-1 inline-block truncate rounded-full bg-gray-200 px-3 py-1 text-sm">
                         {inventory.productCategoryName}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                  <div className="flex items-center justify-between border-t border-gray-100 pt-2">
                     <span className="font-medium text-gray-800">
                       {formatPrice(String(inventory.productPrice))}
                     </span>
@@ -163,7 +202,7 @@ const InventoryManagementPage = () => {
 
         {inventories && (
           <div className="mt-6">
-            <PaginationProductAdmin
+            <PaginationAdmin
               currentPage={page}
               totalPages={inventories.totalPages}
               hasNext={inventories.hasNext}

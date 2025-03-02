@@ -33,7 +33,9 @@ export default function ProfileTest() {
                     { label: "Email", value: userData.email },
                     { label: "Phone Number", value: userData.phoneNumber },
                     { label: "Role", value: userData.role },
-                    { label: "Email Verified", value: userData.isEmailVerified ? "Yes" : "No" }
+                    { label: "Email Verified", value: userData.isEmailVerified ? "Yes" : "No" },
+                    { label: "Warehouse ID", value: userData.warehouseId },
+                    { label: "User Assigner ID ", value: userData.userAssignerId }
                 ].map((item, index) => (
                     <div key={index} className="flex justify-between border-b pb-1">
                         <span className="font-medium">{item.label}:</span>
