@@ -19,7 +19,7 @@ import Image from "next/image";
 const OrderLists: FC = () => {
   const { data: session } = useSession();
 
-  const { page, limit, search, statusId, startDate, endDate, setFilters } =
+  const { page, limit, search, statusId, startDate, endDate, warehouseId, setFilters } =
     useOrderStore();
 
   const { data, isLoading, isError } = useOrders(
@@ -29,7 +29,8 @@ const OrderLists: FC = () => {
     statusId ? Number(statusId) : undefined,
     search,
     startDate,
-    endDate
+    endDate,
+    warehouseId ? Number(warehouseId) : undefined,
   );
 
   console.log(session?.userDetail?.role);
