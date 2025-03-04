@@ -3,8 +3,7 @@
 import { Icon } from 'leaflet';
 import "leaflet/dist/leaflet.css";
 import { useSession } from "next-auth/react";
-import Link from 'next/link';
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
@@ -17,16 +16,19 @@ interface Position {
 
 export default function CreateAddress() {
     const { data: session, status } = useSession();
-    const router = useRouter();
     
     const [name, setName] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
     const [position, setPosition] = useState<Position | null>(null);
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const origin = searchParams.get("origin") || "/profile"; // Default to home if no origin
     
     useEffect(() => {
         if (status === "unauthenticated") {
             alert("You are not logged in.");
-            router.push("/login");
+            router.push(origin);
         }
         
         if (navigator.geolocation) {
@@ -39,7 +41,7 @@ export default function CreateAddress() {
                 }
             );
         }
-    }, [status, router]);
+    }, [status, router, origin]);
     
     function LocationMarker() {
         useMapEvents({
@@ -78,7 +80,7 @@ export default function CreateAddress() {
         });
         
         if (response.ok) {
-            router.push("/profile");
+            router.push(origin);
         } else {
             alert("Failed to create address. Please try again.");
         }
@@ -88,11 +90,10 @@ export default function CreateAddress() {
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                 <h1 className="text-xl font-bold mb-4">Create a New Address</h1>
-                <Link href="/profile">
-                    <button className='w-full bg-gray-700 text-white p-2 rounded mb-4 hover:bg-gray-800'>
-                        Back to Profile
+                    <button className='w-full bg-gray-700 text-white p-2 rounded mb-4 hover:bg-gray-800'
+                        onClick={() => router.push(origin)}>
+                        Return
                     </button>
-                </Link>
                 
                 <input
                     type="text"
