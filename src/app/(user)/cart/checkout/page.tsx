@@ -1,28 +1,28 @@
 "use client";
 
-import React, { FC, useEffect, useMemo, useState } from "react";
+import { createGatewayTransaction } from "@/app/api/transaction/createGatewayTransaction";
+import { createManualTransaction } from "@/app/api/transaction/createManualTransaction";
 import {
   getAllAddress,
   getMainAddress,
 } from "@/app/api/transaction/getUserAddresses";
-import { Address } from "@/types/models/checkout/userAddresses";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
-import { CartItem, useCartStore } from "@/store/cartStore";
-import { createManualTransaction } from "@/app/api/transaction/createManualTransaction";
-import { createGatewayTransaction } from "@/app/api/transaction/createGatewayTransaction";
+import CartItemsList from "@/components/checkout/CartItemsList";
 import CheckoutSummary from "@/components/checkout/CheckoutSummary";
 import ShippingAddress from "@/components/checkout/ShippingAddress";
 import { toast } from "@/hooks/use-toast";
-import { ShippingCost } from "@/types/models/shippingCost";
-import Link from "next/link";
+import { CartItem, useCartStore } from "@/store/cartStore";
+import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
+import { Address } from "@/types/models/checkout/userAddresses";
+import { ShippingDetail, ShippingList } from "@/types/models/shippingList";
 import { useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Script from "next/script";
-import CartItemsList from "@/components/checkout/CartItemsList";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
-const shipping_cost_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost`;
-const shipping_cost_dummy_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost-dummy`;
+//const shipping_cost_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost`;
+const shipping_cost_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost-dummy`;
 
 const CheckoutPage: FC = () => {
   const { data: session } = useSession();
@@ -34,7 +34,8 @@ const CheckoutPage: FC = () => {
   const [userAddress, setUserAddress] = useState<Address[]>([]);
   const [mainAddress, setMainAddress] = useState<Address | null>(null);
   const [shippingCost, setShippingCost] = useState(0);
-  const [shippingCostResponse, setShippingCostResponse] = useState<ShippingCost | null>(null);
+  const [shippingList, setShippingList] = useState<ShippingList | null>(null);
+  const [shippingMethodSelected, setShippingMethodSelected] = useState(false);
 
   // Load cart data from local storage if there is any data on mount
   useEffect(() => {
@@ -59,11 +60,55 @@ const CheckoutPage: FC = () => {
     [cartItems]
   );
 
+  const setShippingMethod = (method: ShippingDetail | null) => {
+    if (method) {
+      setShippingCost(method.cost);
+      setShippingMethodSelected(true);
+    } else {
+      setShippingMethodSelected(false);
+    }
+  }
+
   // Calculate total quantity
   const totalQuantity = useMemo(
     () => cartItems.reduce((acc, item) => acc + item.cartQuantity, 0),
     [cartItems]
   );
+
+  const fetchShippingAddress = useCallback(async (address : Address | null) => {
+    if (!session) return;
+    if (!address) return;
+  
+    const res = await fetch(shipping_cost_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      body: JSON.stringify({
+        warehouseId: 1,
+        userAddressId: address?.id,
+        courier: "jne:tiki:wahana:sicepat:anteraja:pos",
+        weight: 100, // gram
+      }),
+    });
+  
+    const response = await res.json();
+    if (response.success) {
+      setShippingList(response.data);
+    } else {
+      toast({
+        title: "Failed to get shipping cost",
+        description: `${response.message}`,
+      });
+    }
+  }, [session]);
+
+  const setSelectedShippingAddress = useCallback((selectedShippingAddress: Address) => {
+    setShippingMethodSelected(false);
+    setShippingList(null);
+    fetchShippingAddress(selectedShippingAddress);
+  }, [fetchShippingAddress]);
 
   useEffect(() => {
     const fetchUserAddress = async () => {
@@ -73,30 +118,6 @@ const CheckoutPage: FC = () => {
         setUserAddress(userAddress);
         setMainAddress(mainAddress);
         console.log(mainAddress);
-        
-        const res = await fetch(shipping_cost_dummy_url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.accessToken}`,
-          },
-          body: JSON.stringify({
-            warehouseId: 1,
-            userAddressId: mainAddress?.id,
-            courier: "jne",
-            weight: 100, // gram
-          }),
-        });
-        const response = await res.json();
-        if (response.success) {
-          setShippingCostResponse(response.data);
-          setShippingCost(response.data.costs[0].cost);  // mengambil harga pertama yang juga lowest price
-        } else {
-          toast({
-            title: "Failed to get shipping cost",
-            description: `${response.message}`
-          })
-        }
       }
     };
 
@@ -155,7 +176,7 @@ const CheckoutPage: FC = () => {
           <div className="mt-[40px] flex flex-col-reverse lg:flex-row gap-8 w-full">
             {/* Checkout details & shipping address */}
             <div className="flex flex-col gap-6 w-full">
-              <ShippingAddress userAddress={userAddress} />
+              <ShippingAddress userAddress={userAddress} setSelectedShippingAddress={setSelectedShippingAddress}/>
               <CartItemsList cartItems={cartItems} />
             </div>
 
@@ -175,6 +196,9 @@ const CheckoutPage: FC = () => {
                   gatewayTransaction.isError || manualTransaction.isError
                 }
                 shippingCost={shippingCost}
+                shippingList={shippingList}
+                shippingMethodSelected={shippingMethodSelected}
+                setShippingMethod={setShippingMethod}
                 isDisabled={cartItems.length < 1}
               />
             </div>

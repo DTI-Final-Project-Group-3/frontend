@@ -1,4 +1,9 @@
-import React, { FC } from "react";
+import { paymentOptions } from "@/constant/paymentOptionConstant";
+import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
+import { ShippingDetail, ShippingList } from "@/types/models/shippingList";
+import { Loader2, ShoppingCart, VerifiedIcon } from "lucide-react";
+import { FC } from "react";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogClose,
@@ -8,13 +13,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
-import { paymentOptions } from "@/constant/paymentOptionConstant";
-import { Loader2, ShoppingCart, VerifiedIcon } from "lucide-react";
-import PaymentOption from "./PaymentOption";
 import OrderDetails from "./OrderDetails";
+import PaymentOption from "./PaymentOption";
 
 type CheckoutSummaryProps = {
   paymentMethod: PaymentMethods;
@@ -27,6 +28,9 @@ type CheckoutSummaryProps = {
   isDisabled: boolean;
   isLoading: boolean;
   isError: boolean;
+  shippingList : ShippingList | null;
+  setShippingMethod : (method: ShippingDetail | null) => void;
+  shippingMethodSelected : boolean;
 };
 
 const CheckoutSummary: FC<CheckoutSummaryProps> = ({
@@ -40,6 +44,9 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
   isLoading,
   isError,
   isDisabled,
+  shippingList,
+  setShippingMethod,
+  shippingMethodSelected,
 }) => {
   console.log(paymentMethod);
 
@@ -69,12 +76,15 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
         totalQuantity={totalQuantity}
         totalPrice={totalPrice}
         shippingCost={shippingCost}
+        shippingMethodSelected={shippingMethodSelected}
+        shippingList={shippingList}
+        setShippingMethod={setShippingMethod}
       />
 
       {/* Buy Now Button */}
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="font-semibold text-md" disabled={isDisabled || isLoading}>
+          <Button className="font-semibold text-md" disabled={!shippingMethodSelected || isDisabled || isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="animate-spin w-4 h-4" />
