@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "@/hooks/use-toast";
 import { Icon } from 'leaflet';
 import "leaflet/dist/leaflet.css";
 import { useSession } from "next-auth/react";
@@ -23,7 +24,7 @@ export default function CreateAddress() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
-    const origin = searchParams.get("origin") || "/profile"; // Default to home if no origin
+    const origin = searchParams.get("origin") || "/profile/address"; 
     
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -80,6 +81,7 @@ export default function CreateAddress() {
         });
         
         if (response.ok) {
+            toast({title: "Success", description: "Create address success", duration: 2000,});
             router.push(origin);
         } else {
             alert("Failed to create address. Please try again.");

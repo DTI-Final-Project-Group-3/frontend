@@ -1,8 +1,9 @@
+import { toast } from "@/hooks/use-toast";
 import { UserAddress } from "@/types/models/users";
-import { Link } from "lucide-react";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 const user_address_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS}`;
 const user_address_id_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS_ID}`;
@@ -14,7 +15,7 @@ interface AddressComponentProps {
   latitude : number,
   longitude : number,
   primary? : boolean,
-  onDelete :  () => void,
+  refresh :  () => void,
   session : Session | null
   }
 
@@ -25,7 +26,7 @@ function AddressComponent({
   latitude,
   longitude,
   primary,
-  onDelete,
+  refresh,
   session,
 } : AddressComponentProps) {
   const handleDelete = async () => {
@@ -38,16 +39,46 @@ function AddressComponent({
           },
         });
         if (res.ok) {
-          onDelete();
+            toast({title: "Success", description: "Success deleting address", duration: 2000,});
+            refresh();
         } else {
-          alert("Failed to delete address");
+          toast({title: "Failed", description: "Failed to delete address", duration: 2000,});
         }
       } catch (err) {
         console.error("Error deleting address:", err);
-        alert("Error deleting address");
+        toast({title: "Error", description: "Error deleting address", duration: 2000,});
       }
   };
 
+  const handleSetAsPrimary = async () => {
+    if (session)
+        try {
+          const res = await fetch(`${user_address_id_url}/${id}`, {
+                method: "PUT",
+                headers: { 
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${session.accessToken}`
+                 },
+                body: JSON.stringify({
+                    isPrimary : true
+                }),
+            });
+
+          if (res.ok) {
+              toast({title: "Success", description: "Success set as primary", duration: 2000,});
+              refresh();
+          } else {
+            toast({title: "Failed", description: "Failed to set as primary", duration: 2000,});
+          }
+        } catch (err) {
+          console.error("Error set as primary:", err);
+          toast({title: "Error", description: "Error set as primary", duration: 2000,});
+        }
+  }
+
+  
+
+  
   return (
     <div
       key={id}
@@ -56,18 +87,35 @@ function AddressComponent({
       <h3 className="text-lg font-bold">{name}</h3>
       <p className="text-gray-600">{detailAddress}</p>
       <p className="text-sm text-gray-500">
-        Latitude: {latitude}, Longitude: {longitude}
+        Latitude: {latitude} <br></br> Longitude: {longitude}
       </p>
-      <div className="flex justify-between items-center w-full mt-4">
+      <div className="flex flex-col  md:flex-row  justify-between items-center w-full mt-4 flex">
         {primary && (
           <span className="text-green-500 font-bold">Main address</span>
         )}
-        <button
-          onClick={handleDelete}
-          className="mt-2 bg-red-500 text-white p-2 rounded"
-        >
-          Delete
-        </button>
+        {
+          !primary && (
+            <button
+                onClick={handleSetAsPrimary}
+                className="m-2 bg-gray-500 text-white p-2 rounded"
+                 >
+                 Set as primary
+            </button>
+          )
+        }
+        <div className="flex">
+            <button
+              onClick={handleDelete}
+              className="m-2 bg-blue-500 text-white p-2 rounded w-16">
+              Edit
+            </button>
+
+            <button
+              onClick={handleDelete}
+              className="m-2 bg-red-500 text-white p-2 rounded w-16">
+              Delete
+            </button>
+        </div>
       </div>
     </div>
   );
@@ -79,7 +127,7 @@ export default function Address() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     if (session) {
       try {
         const res = await fetch(user_address_url, {
@@ -87,7 +135,9 @@ export default function Address() {
         });
         const data = await res.json();
         if (data.success) {
-          setAddresses(data.data);
+          const tempAddresses = data.data as UserAddress[];
+          tempAddresses.sort((a, b) => Number(b.primary) - Number(a.primary));
+          setAddresses(tempAddresses);
         } else {
           setError("Failed to fetch addresses");
         }
@@ -98,11 +148,11 @@ export default function Address() {
         setLoading(false);
       }
     }
-  };
+  }, [session]);
 
   useEffect(() => {
     fetchAddresses();
-  }, [session]);
+  }, [session, fetchAddresses]);
 
   if (loading)
     return (
@@ -117,7 +167,7 @@ export default function Address() {
       <div className="w-full flex gap-4 flex-col md:flex-row md:justify-between md:items-center">
         <h2 className="text-2xl font-semibold">My Address</h2>
         <Link href="/profile/create-address">
-          <div className="bg-black text-white px-4 py-2 text-center cursor-pointer rounded-lg">
+          <div className="bg-blue-600 text-white px-4 py-2 text-center cursor-pointer rounded-lg">
             Create A New Address
           </div>
         </Link>
@@ -127,7 +177,7 @@ export default function Address() {
           <AddressComponent
             key={address.id}
             {...address}
-            onDelete={fetchAddresses}
+            refresh={fetchAddresses}
             session={session}
           />
         ))}
