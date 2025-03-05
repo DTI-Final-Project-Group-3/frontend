@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import ProductMutationHistoryTable from "@/components/report-analysis/ProductMutationHistoryTable";
 import ProductMutationTotal from "@/components/report-analysis/ProductMutationTotal";
 import ProductMutationGraph from "@/components/report-analysis/ProductMutationGraph";
+import ProductMutationFilter from "@/components/product-mutation/ProductMutationFilter";
 
 const ReportAnalysisPage = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
@@ -45,6 +46,7 @@ const ReportAnalysisPage = () => {
           </TabsList>
 
           <div className="rounded-xl bg-white shadow-sm">
+            <ProductMutationFilter />
             <TabsContent value="sales" className="p-4 sm:p-6">
               {/*<SalesReport />*/}
             </TabsContent>

@@ -3,14 +3,10 @@
 import { FC } from "react";
 import WarehouseSelection from "@/components/warehouse/WarehouseSelection";
 import { useProductMutation } from "@/store/productMutationStore";
-import ProductSelection from "@/components/product/ProductSelection";
-import { useReport } from "@/store/reportStore";
-import DatePickerRange from "@/components/common/DatePickerRange";
 
 const ReportAnalysisHeader: FC = () => {
   const { destinationWarehouseId, setDestinationWarehouseId } =
     useProductMutation();
-  const { productId, dateRange, setProductId, setDateRange } = useReport();
 
   return (
     <div className="z-[40] flex w-full flex-wrap items-center justify-between gap-2 rounded-xl bg-white p-7 md:sticky md:top-[0]">
@@ -18,15 +14,7 @@ const ReportAnalysisHeader: FC = () => {
         Report and Analysis
       </h2>
 
-      <div className="grid w-full grid-cols-3 gap-3 sm:w-auto sm:flex-row">
-        <DatePickerRange dateRange={dateRange} setDateRange={setDateRange} />
-
-        <ProductSelection
-          captionNoSelection="All Products"
-          filter={"show-all"}
-          productId={productId}
-          setProductId={setProductId}
-        />
+      <div className="w-80">
         <WarehouseSelection
           captionNoSelection="All Warehouse"
           warehouseId={destinationWarehouseId}
