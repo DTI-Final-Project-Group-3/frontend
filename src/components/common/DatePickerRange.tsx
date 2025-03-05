@@ -49,7 +49,7 @@ const DatePickerRange: FC<DatePickerRangeProps> = ({
             id="date"
             variant={"outline"}
             className={cn(
-              "h-full w-[280px] justify-start text-left text-sm font-normal text-gray-700",
+              "h-full w-full justify-start text-left text-sm font-normal text-gray-700",
               !dateRange && "text-muted-foreground",
             )}
           >

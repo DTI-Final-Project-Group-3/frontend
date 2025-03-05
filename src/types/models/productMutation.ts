@@ -65,13 +65,15 @@ export interface ProductMutationDetailResponse {
 }
 
 export interface ProductMutationHistoryParams {
+  page?: number;
+  limit?: number;
   startedAt: string;
   endedAt: string;
   productId?: number;
   productCategoryId?: number;
   productMutationTypeId?: number;
   productMutationStatusId?: number;
-  warehouseId?: number;
+  destinationWarehouseId?: number;
 }
 
 export interface ProductMutationReportDailySummaryResponse {

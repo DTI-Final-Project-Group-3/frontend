@@ -63,7 +63,7 @@ const ProductMutationGraph: FC = () => {
         productCategoryId,
         productMutationTypeId,
         productMutationStatusId,
-        warehouseId: destinationWarehouseId,
+        destinationWarehouseId,
       });
     },
     enabled: !!dateRange.from && !!dateRange.to,

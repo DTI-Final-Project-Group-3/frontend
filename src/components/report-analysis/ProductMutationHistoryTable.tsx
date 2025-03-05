@@ -12,8 +12,14 @@ import { useReport } from "@/store/reportStore";
 import { useProductMutation } from "@/store/productMutationStore";
 import { formatDateHyphen, formatDateString } from "@/utils/formatter";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
+import { useState } from "react";
+import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
+import { ProductMutationReportResponse } from "@/types/models/productMutation";
+import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
 
 export default function ProductMutationHistoryTable() {
+  const [page, setPage] = useState<number>(0);
   const {
     dateRange,
     productMutationTypeId,
@@ -30,6 +36,7 @@ export default function ProductMutationHistoryTable() {
   } = useQuery({
     queryKey: [
       "mutation-history",
+      page,
       dateRange,
       destinationWarehouseId,
       productId,
@@ -37,18 +44,26 @@ export default function ProductMutationHistoryTable() {
       productMutationTypeId,
       productMutationStatusId,
     ],
-    queryFn: () => {
+    queryFn: async () => {
       if (!dateRange.from || !dateRange.to) {
-        return Promise.resolve([]);
+        return {
+          content: [],
+          totalElements: 0,
+          totalPages: 0,
+          hasNext: false,
+          hasPrev: false,
+        };
       }
-      return getProductMutationHistory({
+      return await getProductMutationHistory({
+        page,
+        limit: ADMIN_PRODUCT_MUTATION,
         startedAt: formatDateHyphen(dateRange.from),
         endedAt: formatDateHyphen(dateRange.to),
         productId,
         productCategoryId,
         productMutationTypeId,
         productMutationStatusId,
-        warehouseId: destinationWarehouseId,
+        destinationWarehouseId,
       });
     },
     enabled: !!dateRange.from && !!dateRange.to,
@@ -75,31 +90,49 @@ export default function ProductMutationHistoryTable() {
       ) : mutationHistoryIsError ? (
         <div>Error loading mutation history</div>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Mutation Type</TableHead>
-              <TableHead>Mutation Status</TableHead>
-              <TableHead>Quantity</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {mutationHistory &&
-              mutationHistory?.map((history) => (
-                <TableRow key={history.id}>
-                  <TableCell>{formatDateString(history.createdAt)}</TableCell>
-                  <TableCell>{history.product.name}</TableCell>
-                  <TableCell>{history.productCategory.name}</TableCell>
-                  <TableCell>{history.productMutationType.name}</TableCell>
-                  <TableCell>{history.productMutationStatus.name}</TableCell>
-                  <TableCell>{history.quantity}</TableCell>
+        mutationHistory && (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Product</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Mutation Type</TableHead>
+                  <TableHead>Mutation Status</TableHead>
+                  <TableHead>Quantity</TableHead>
                 </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+              </TableHeader>
+              <TableBody>
+                {mutationHistory?.content.map(
+                  (history: ProductMutationReportResponse) => (
+                    <TableRow key={history.id}>
+                      <TableCell>
+                        {formatDateString(history.createdAt)}
+                      </TableCell>
+                      <TableCell>{history.product.name}</TableCell>
+                      <TableCell>{history.productCategory.name}</TableCell>
+                      <TableCell>{history.productMutationType.name}</TableCell>
+                      <TableCell>
+                        {history.productMutationStatus.name}
+                      </TableCell>
+                      <TableCell>{history.quantity}</TableCell>
+                    </TableRow>
+                  ),
+                )}
+              </TableBody>
+            </Table>
+
+            <PaginationAdmin
+              desc="History"
+              page={page}
+              setPage={setPage}
+              totalPages={mutationHistory.totalPages}
+              totalElements={mutationHistory.totalElements}
+              currentPageSize={mutationHistory.content.length}
+            />
+          </>
+        )
       )}
     </div>
   );

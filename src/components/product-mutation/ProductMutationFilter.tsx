@@ -20,7 +20,7 @@ const ProductMutationFilter: FC = () => {
     setProductMutationStatusId,
   } = useReport();
   return (
-    <div className="grid w-full grid-cols-5 gap-3 rounded-xl bg-white p-7">
+    <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white p-7 md:grid-cols-5">
       <DatePickerRange dateRange={dateRange} setDateRange={setDateRange} />
       <ProductSelection
         captionNoSelection="All Products"

@@ -42,25 +42,31 @@ export const getPaginatedProductMutation = async ({
 };
 
 export const getProductMutationHistory = async ({
+  page,
+  limit,
   startedAt,
   endedAt,
   productId,
   productCategoryId,
   productMutationTypeId,
   productMutationStatusId,
-  warehouseId,
-}: ProductMutationHistoryParams): Promise<ProductMutationReportResponse[]> => {
+  destinationWarehouseId,
+}: ProductMutationHistoryParams): Promise<
+  PaginationResponse<ProductMutationReportResponse>
+> => {
   const response = await axios.get<
-    ApiResponse<ProductMutationReportResponse[]>
+    ApiResponse<PaginationResponse<ProductMutationReportResponse>>
   >(`${productMutationUrl}/history`, {
     params: {
+      page,
+      limit,
       startedAt,
       endedAt,
       productId,
       productCategoryId,
       productMutationTypeId,
       productMutationStatusId,
-      warehouseId,
+      destinationWarehouseId,
     },
   });
   return response.data.data;
@@ -73,7 +79,7 @@ export const getProductMutationReportTotal = async ({
   productCategoryId,
   productMutationTypeId,
   productMutationStatusId,
-  warehouseId,
+  destinationWarehouseId,
 }: ProductMutationHistoryParams): Promise<
   ApiResponse<ProductMutationReportTotalResponse>
 > => {
@@ -87,7 +93,7 @@ export const getProductMutationReportTotal = async ({
       productCategoryId,
       productMutationTypeId,
       productMutationStatusId,
-      warehouseId,
+      destinationWarehouseId: destinationWarehouseId,
     },
   });
   return response.data;
@@ -100,7 +106,7 @@ export const getProductMutationReportDailySummary = async ({
   productCategoryId,
   productMutationTypeId,
   productMutationStatusId,
-  warehouseId,
+  destinationWarehouseId,
 }: ProductMutationHistoryParams): Promise<
   ProductMutationReportDailySummaryResponse[]
 > => {
@@ -114,7 +120,7 @@ export const getProductMutationReportDailySummary = async ({
       productCategoryId,
       productMutationTypeId,
       productMutationStatusId,
-      warehouseId,
+      destinationWarehouseId,
     },
   });
 

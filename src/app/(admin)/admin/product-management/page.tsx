@@ -154,11 +154,10 @@ const ProductManagementPage = () => {
         {products && (
           <div className="mt-6">
             <PaginationAdmin
-              currentPage={page}
+              desc="Products"
+              page={page}
+              setPage={setPage}
               totalPages={products.totalPages}
-              hasNext={products.hasNext}
-              hasPrev={products.hasPrev}
-              onPageChange={setPage}
               totalElements={products.totalElements}
               currentPageSize={products.content.length}
             />

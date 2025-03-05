@@ -127,11 +127,10 @@ const ProductMutation: FC = () => {
           ))}
         </div>
         <PaginationAdmin
-          currentPage={page}
+          desc="mutation"
+          page={page}
+          setPage={setPage}
           totalPages={data.totalPages}
-          hasNext={data.hasNext}
-          hasPrev={data.hasPrev}
-          onPageChange={setPage}
           totalElements={data.totalElements}
           currentPageSize={data.content.length}
         />
