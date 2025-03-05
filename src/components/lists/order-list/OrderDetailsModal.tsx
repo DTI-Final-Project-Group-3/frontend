@@ -111,6 +111,14 @@ const OrderDetailsModal: FC<OrderDetailsModalProps> = ({ orderId }) => {
                       {formatDateTime(data.data.createdAt).formattedDateTime}
                     </span>
                   </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[16px] text-gray-500 font-medium">
+                      Order sent date
+                    </p>
+                    <span className="text-[16px] font-semibold text-gray-600">
+                      {data.data.sentAt ? (formatDateTime(data.data.sentAt).formattedDateTime) : "-"}
+                    </span>
+                  </div>
                 </div>
 
                 <Separator className="my-4" />

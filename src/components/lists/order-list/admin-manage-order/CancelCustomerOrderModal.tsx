@@ -10,30 +10,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
-import { useMutation } from "@tanstack/react-query";
 import { cancelOrder } from "@/app/api/transaction/cancelOrder";
+import { useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { Loader2, TriangleAlert } from "lucide-react";
+import { Separator } from "@radix-ui/react-separator";
+import { Checkbox } from "@/components/ui/checkbox";
 
-type CancelOrderModalProps = {
+type CancelCustomerOrderModalProps = {
   orderId: number;
   orderStatusId: number;
 };
 
-const CancelOrderModal: FC<CancelOrderModalProps> = ({
+const CancelCustomerOrderModal: FC<CancelCustomerOrderModalProps> = ({
   orderId,
   orderStatusId,
 }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleCancelOrder = useMutation({
+  const handleCancleCustomerOrder = useMutation({
     mutationFn: () => cancelOrder(orderId),
     onSuccess: () => {
       setIsOpen(false);
-      // window.location.reload();
+      window.location.reload();
     },
   });
 
@@ -43,17 +43,21 @@ const CancelOrderModal: FC<CancelOrderModalProps> = ({
         <Button
           variant={"outline"}
           className="text-md border-red-500 font-semibold text-red-500"
-          disabled={orderStatusId !== 1}
+          disabled={
+            Number(orderStatusId) === 4 ||
+            Number(orderStatusId) === 5 ||
+            Number(orderStatusId) === 6
+          }
           onClick={() => setIsOpen(true)}
         >
           Cancel Order
         </Button>
       </DialogTrigger>
-      <DialogContent className="p-6 sm:min-w-[400px]">
+      <DialogContent className="p-6 sm:min-w-[400px] md:min-w-[600px]">
         <DialogHeader className="flex w-full flex-col gap-2">
           <DialogTitle className="m-0 flex items-center gap-2 p-0 text-3xl font-semibold text-red-700">
             <TriangleAlert className="mr-2 h-6 w-6 text-red-500" />
-            Cancel this order ?
+            Cancel this customer order ?
           </DialogTitle>
           <Separator />
         </DialogHeader>
@@ -93,17 +97,17 @@ const CancelOrderModal: FC<CancelOrderModalProps> = ({
           </DialogClose>
           <Button
             variant="destructive"
-            disabled={!isChecked || handleCancelOrder.isPending}
+            disabled={!isChecked || handleCancleCustomerOrder.isPending}
             className="px-6"
-            onClick={() => handleCancelOrder.mutate()}
+            onClick={() => handleCancleCustomerOrder.mutate()}
           >
-            {handleCancelOrder.isPending ? (
+            {handleCancleCustomerOrder.isPending ? (
               <div className="flex items-center gap-4">
                 <Loader2 size={36} className="animate-spin" />
                 <span>Cancelling...</span>
               </div>
             ) : (
-              <span>Cancel order</span>
+              <span>Cancel this order</span>
             )}
           </Button>
         </DialogFooter>
@@ -112,4 +116,4 @@ const CancelOrderModal: FC<CancelOrderModalProps> = ({
   );
 };
 
-export default CancelOrderModal;
+export default CancelCustomerOrderModal;

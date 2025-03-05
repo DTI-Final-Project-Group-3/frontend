@@ -8,6 +8,7 @@ type CompletePaymentOrderProps = {
   orderId: number;
   orderStatusId: number;
   paymentMethodId: number;
+  midtransToken?: string;
 };
 
 const CompletePaymentOrder: FC<CompletePaymentOrderProps> = ({
@@ -15,19 +16,39 @@ const CompletePaymentOrder: FC<CompletePaymentOrderProps> = ({
   orderStatusId,
   orderId,
   paymentMethodId,
+  midtransToken,
 }) => {
   const { timeLeft, formattedTime } = useCountdownTimer(createdAt.toString());
 
   return (
     <div>
-      {timeLeft > 0 && orderStatusId == 1 && paymentMethodId === 2 ? (
+      {timeLeft > 0 &&
+      orderStatusId === 1 &&
+      (paymentMethodId === 2 || paymentMethodId === 1) ? (
         <>
-          <Button variant={"outline"} className="border-green-600" asChild>
-            <Link href={`cart/checkout/manual-payment/${orderId}`}>
-              Pay before -
-              <span className="font-bold text-green-600">{formattedTime}</span>
-            </Link>
-          </Button>
+          {paymentMethodId === 2 ? (
+            <Button variant="outline" className="border-green-600" asChild>
+              <Link href={`cart/checkout/manual-payment/${orderId}`}>
+                Pay before -{" "}
+                <span className="font-bold text-green-600">
+                  {formattedTime}
+                </span>
+              </Link>
+            </Button>
+          ) : paymentMethodId === 1 ? (
+            <Button variant="outline" className="border-blue-600" asChild>
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://app.sandbox.midtrans.com/snap/v4/redirection/${midtransToken}`}
+              >
+                Pay before -{" "}
+                <span className="font-bold text-green-600">
+                  {formattedTime}
+                </span>
+              </Link>
+            </Button>
+          ) : null}
         </>
       ) : (
         <span className="text-red-500">Order canceled, payment expired</span>
