@@ -8,26 +8,17 @@ import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
 import { cn } from "@/lib/utils";
 import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
 import { PaginationResponse } from "@/types/api/pagination";
 import { ProductMutationConstant } from "@/constant/productMutationConstant";
-import { useSession } from "next-auth/react";
 
 const ProductMutation: FC = () => {
-  const { data } = useSession();
   const [selectedTab, setSelectedTab] = useState<number>(1);
   const [page, setPage] = useState<number>(0);
-  const { destinationWarehouseId, submitMutation, setDestinationWarehouseId } =
-    useProductMutation();
-
-  useEffect(() => {
-    if (data?.userDetail?.warehouseId && data.role !== "ADMIN_SUPER") {
-      setDestinationWarehouseId(data?.userDetail?.warehouseId);
-    }
-  }, [data, setDestinationWarehouseId]);
+  const { destinationWarehouseId, submitMutation } = useProductMutation();
 
   const { data: adjustmentJournals, isLoading: isLoadingJournals } = useQuery({
     queryKey: [
@@ -72,7 +63,7 @@ const ProductMutation: FC = () => {
     enabled: !!destinationWarehouseId,
   });
 
-  const { data: outbondMutation, isLoading: isLoadingOutbound } = useQuery({
+  const { data: outboundMutation, isLoading: isLoadingOutbound } = useQuery({
     queryKey: [
       "outbond-mutation",
       destinationWarehouseId,
@@ -188,9 +179,9 @@ const ProductMutation: FC = () => {
                 renderContent(inboundMutation, isLoadingInbound, true)}
             </TabsContent>
 
-            <TabsContent value="outbond" className="p-4 sm:p-6">
-              {outbondMutation &&
-                renderContent(outbondMutation, isLoadingOutbound, false)}
+            <TabsContent value="outbound" className="p-4 sm:p-6">
+              {outboundMutation &&
+                renderContent(outboundMutation, isLoadingOutbound, false)}
             </TabsContent>
           </div>
         </div>

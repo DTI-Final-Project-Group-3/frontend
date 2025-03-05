@@ -3,7 +3,7 @@
 import { FC } from "react";
 import ImageComponent from "../common/ImageComponent";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
-import { formatDate } from "@/utils/formatter";
+import { formatDateString } from "@/utils/formatter";
 import ProductMutationReviewDialog from "./ProductMutationReviewDialog";
 
 interface ProductMutationCardProps {
@@ -104,14 +104,14 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
       <div className="mt-2 flex w-full flex-col items-center justify-between gap-4 border-t border-slate-100 pt-4 sm:flex-row">
         <div className="flex w-full flex-col gap-1 sm:w-auto sm:flex-row sm:gap-6">
           <span className="text-xs text-slate-500">
-            Request on {formatDate(productMutation?.createdAt)} by{" "}
+            Request on {formatDateString(productMutation?.createdAt)} by{" "}
             <span className="font-medium">
               {productMutation?.requesterName}
             </span>
           </span>
           {productMutation?.reviewedAt && (
             <span className="text-xs text-slate-500">
-              Reviewed on {formatDate(productMutation?.reviewedAt)} by{" "}
+              Reviewed on {formatDateString(productMutation?.reviewedAt)} by{" "}
               <span className="font-medium">
                 {productMutation?.requesterName}
               </span>

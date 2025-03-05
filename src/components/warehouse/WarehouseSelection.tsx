@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import {
   Select,
   SelectTrigger,
@@ -8,18 +8,24 @@ import {
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { getAllWarehouses } from "@/app/api/warehouse/getWarehouses";
+import { useSession } from "next-auth/react";
+import { useProductMutation } from "@/store/productMutationStore";
+import { userRoles } from "@/constant/userConstant";
 
 interface WarehouseSelectionProps {
-  disable?: boolean;
+  captionNoSelection?: string;
   warehouseId: number | undefined;
   setWarehouseId: (id: number) => void;
 }
 
 const WarehouseSelection: FC<WarehouseSelectionProps> = ({
-  disable,
+  captionNoSelection = "Select Warehouse",
   warehouseId,
   setWarehouseId,
 }) => {
+  const { data } = useSession();
+  const { setDestinationWarehouseId } = useProductMutation();
+
   const {
     data: warehouses,
     isLoading,
@@ -29,18 +35,24 @@ const WarehouseSelection: FC<WarehouseSelectionProps> = ({
     queryFn: getAllWarehouses,
   });
 
+  useEffect(() => {
+    if (data?.userDetail?.warehouseId && data.role !== "ADMIN_SUPER") {
+      setDestinationWarehouseId(data?.userDetail?.warehouseId);
+    }
+  }, [data, setDestinationWarehouseId]);
+
   return (
     <div className="w-full">
       <Select
-        disabled={!!disable}
+        disabled={data?.role !== userRoles.ADMIN_SUPER}
         value={warehouseId ? warehouseId.toString() : "all"}
         onValueChange={(value) => setWarehouseId(Number(value))}
       >
-        <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
+        <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-500 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
           <SelectValue placeholder="Select Warehouse" />
         </SelectTrigger>
         <SelectContent className="max-h-56">
-          <SelectItem value="all">Select Warehouse</SelectItem>
+          <SelectItem value="all">{captionNoSelection}</SelectItem>
 
           {isLoading ? (
             <SelectItem value="loading" disabled>

@@ -10,11 +10,9 @@ import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import React, { useState } from "react";
 
 const InventoryManagementPage = () => {
-  const { data } = useSession();
   const [page, setPage] = useState<number>(0);
   const [searchQuery] = useState<string>();
   const {
@@ -22,14 +20,7 @@ const InventoryManagementPage = () => {
     submitMutation,
     setProductId,
     setWarehouseInventoryId,
-    setDestinationWarehouseId,
   } = useProductMutation();
-
-  useEffect(() => {
-    if (data?.userDetail?.warehouseId && data.role !== "ADMIN_SUPER") {
-      setDestinationWarehouseId(data?.userDetail?.warehouseId);
-    }
-  }, [data]);
 
   const {
     data: inventories,

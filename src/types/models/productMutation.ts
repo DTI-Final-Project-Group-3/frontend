@@ -1,3 +1,5 @@
+import { ProductBasic, ProductCategory } from "@/types/models/products";
+
 export interface ProductMutationRequest {
   productId: number;
   quantity: number;
@@ -60,4 +62,46 @@ export interface ProductMutationDetailResponse {
   invoiceCode: string | null;
   createdAt: string;
   reviewedAt: string | null;
+}
+
+export interface ProductMutationHistoryParams {
+  startedAt: string;
+  endedAt: string;
+  productId?: number;
+  productCategoryId?: number;
+  productMutationTypeId?: number;
+  productMutationStatusId?: number;
+  warehouseId: number;
+}
+
+export interface ProductMutationReportDailySummaryResponse {
+  date: string;
+  added: number;
+  reduced: number;
+}
+
+export interface ProductMutationReportTotalResponse {
+  started: number;
+  added: number;
+  reduced: number;
+  netChange: number;
+  ending: number;
+}
+
+export interface ProductMutationType {
+  id: number;
+  name: string;
+}
+export interface ProductMutationStatus {
+  id: number;
+  name: string;
+}
+export interface ProductMutationReportResponse {
+  id: number;
+  createdAt: string;
+  quantity: number;
+  product: ProductBasic;
+  productCategory: ProductCategory;
+  productMutationType: ProductMutationType;
+  productMutationStatus: ProductMutationStatus;
 }
