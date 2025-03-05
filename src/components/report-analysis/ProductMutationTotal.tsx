@@ -31,8 +31,8 @@ const ProductMutationTotal: FC = () => {
       destinationWarehouseId,
     ],
     queryFn: () => {
-      if (!destinationWarehouseId || !dateRange.from || !dateRange.to) {
-        return Promise.resolve(undefined);
+      if (!dateRange.from || !dateRange.to) {
+        return Promise.resolve(null);
       }
       return getProductMutationReportTotal({
         startedAt: formatDateHyphen(dateRange.from),
@@ -44,7 +44,7 @@ const ProductMutationTotal: FC = () => {
         warehouseId: destinationWarehouseId,
       });
     },
-    enabled: !!dateRange.from && !!dateRange.to && !!destinationWarehouseId,
+    enabled: !!dateRange.from && !!dateRange.to,
   });
 
   if (isLoading) {
@@ -53,10 +53,6 @@ const ProductMutationTotal: FC = () => {
 
   if (isError) {
     return <div>Error occurred while fetching data.</div>;
-  }
-
-  if (!mutationTotal) {
-    return <div>No data available.</div>;
   }
 
   return (

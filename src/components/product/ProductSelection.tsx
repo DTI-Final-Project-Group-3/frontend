@@ -22,7 +22,7 @@ interface ProductSelectionProps {
   captionNoSelection?: string;
   filter: string;
   productId: number | undefined;
-  setProductId: (val: number) => void;
+  setProductId: (val: number | undefined) => void;
 }
 
 const ProductSelection: FC<ProductSelectionProps> = ({
@@ -80,12 +80,18 @@ const ProductSelection: FC<ProductSelectionProps> = ({
     return (
       <Select
         value={productId ? productId.toString() : "all"}
-        onValueChange={(val: string) => setProductId(Number(val))}
+        onValueChange={(val: string) => {
+          if (val === "all") {
+            setProductId(undefined);
+          } else {
+            setProductId(Number(val));
+          }
+        }}
       >
         <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-600 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
           <SelectValue>
             {allProducts?.find((product) => product.id == productId)?.name ||
-              "Select Product"}
+              captionNoSelection}
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="max-h-56 w-72">

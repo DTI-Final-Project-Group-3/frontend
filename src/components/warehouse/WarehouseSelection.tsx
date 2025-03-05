@@ -15,7 +15,7 @@ import { userRoles } from "@/constant/userConstant";
 interface WarehouseSelectionProps {
   captionNoSelection?: string;
   warehouseId: number | undefined;
-  setWarehouseId: (id: number) => void;
+  setWarehouseId: (id: number | undefined) => void;
 }
 
 const WarehouseSelection: FC<WarehouseSelectionProps> = ({
@@ -46,7 +46,13 @@ const WarehouseSelection: FC<WarehouseSelectionProps> = ({
       <Select
         disabled={data?.role !== userRoles.ADMIN_SUPER}
         value={warehouseId ? warehouseId.toString() : "all"}
-        onValueChange={(value) => setWarehouseId(Number(value))}
+        onValueChange={(value) => {
+          if (value === "all") {
+            setWarehouseId(undefined);
+          } else {
+            setWarehouseId(Number(value));
+          }
+        }}
       >
         <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-500 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
           <SelectValue placeholder="Select Warehouse" />

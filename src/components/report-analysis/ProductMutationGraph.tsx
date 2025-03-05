@@ -8,7 +8,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -20,30 +19,20 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../ui/chart";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-// Define chart configuration with hex colors
 const chartConfig = {
   added: {
     label: "In",
-    color: "#4CAF50", // Green hex color for added quantities
+    color: "#4CAF50",
   },
   reduced: {
     label: "Out",
-    color: "#F44336", // Red hex color for reduced quantities
+    color: "#F44336",
   },
 } satisfies ChartConfig;
 
 const ProductMutationGraph: FC = () => {
-  // Get filter values from report and product mutation stores
   const {
     dateRange,
     productMutationTypeId,
@@ -53,7 +42,6 @@ const ProductMutationGraph: FC = () => {
   } = useReport();
   const { destinationWarehouseId } = useProductMutation();
 
-  // Fetch daily summary data using react-query
   const { data: mutationDailySummary } = useQuery({
     queryKey: [
       "mutation-summary",
@@ -65,7 +53,7 @@ const ProductMutationGraph: FC = () => {
       destinationWarehouseId,
     ],
     queryFn: () => {
-      if (!dateRange.from || !dateRange.to || !destinationWarehouseId) {
+      if (!dateRange.from || !dateRange.to) {
         return Promise.resolve([]);
       }
       return getProductMutationReportDailySummary({
@@ -78,28 +66,28 @@ const ProductMutationGraph: FC = () => {
         warehouseId: destinationWarehouseId,
       });
     },
+    enabled: !!dateRange.from && !!dateRange.to,
   });
 
   return (
     <Card>
-      {/* Card Header */}
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          {/*<CardTitle>Product Mutation Over Time</CardTitle>*/}
+          <CardTitle className="text-md font-semibold">
+            Product Mutation Over Time
+          </CardTitle>
           <CardDescription>
             Showing daily added and reduced product quantities
           </CardDescription>
         </div>
       </CardHeader>
 
-      {/* Card Content with Chart */}
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-[250px] w-full"
         >
           <AreaChart data={mutationDailySummary ?? []}>
-            {/* Define gradients using hex colors */}
             <defs>
               <linearGradient id="fillAdded" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -127,7 +115,6 @@ const ProductMutationGraph: FC = () => {
               </linearGradient>
             </defs>
 
-            {/* Chart Components */}
             <CartesianGrid vertical={false} />
 
             <YAxis />
@@ -160,7 +147,6 @@ const ProductMutationGraph: FC = () => {
               }
             />
 
-            {/* Area for Added Quantities */}
             <Area
               dataKey="added"
               type="monotone"
@@ -168,7 +154,6 @@ const ProductMutationGraph: FC = () => {
               stroke={chartConfig.added.color}
             />
 
-            {/* Area for Reduced Quantities */}
             <Area
               dataKey="reduced"
               type="monotone"
@@ -176,7 +161,6 @@ const ProductMutationGraph: FC = () => {
               stroke={chartConfig.reduced.color}
             />
 
-            {/* Chart Legend */}
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>
         </ChartContainer>

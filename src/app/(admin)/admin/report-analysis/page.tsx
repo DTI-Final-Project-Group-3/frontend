@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import ReportAnalysisHeader from "@/components/report-analysis/ReportAnalysisHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import SalesReport from "@/components/report-analysis/SalesReport";
 import ProductMutationHistoryTable from "@/components/report-analysis/ProductMutationHistoryTable";
 import ProductMutationTotal from "@/components/report-analysis/ProductMutationTotal";
 import ProductMutationGraph from "@/components/report-analysis/ProductMutationGraph";

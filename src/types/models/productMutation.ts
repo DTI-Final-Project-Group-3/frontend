@@ -71,7 +71,7 @@ export interface ProductMutationHistoryParams {
   productCategoryId?: number;
   productMutationTypeId?: number;
   productMutationStatusId?: number;
-  warehouseId: number;
+  warehouseId?: number;
 }
 
 export interface ProductMutationReportDailySummaryResponse {

@@ -38,7 +38,7 @@ export default function ProductMutationHistoryTable() {
       productMutationStatusId,
     ],
     queryFn: () => {
-      if (!dateRange.from || !dateRange.to || !destinationWarehouseId) {
+      if (!dateRange.from || !dateRange.to) {
         return Promise.resolve([]);
       }
       return getProductMutationHistory({
@@ -51,6 +51,7 @@ export default function ProductMutationHistoryTable() {
         warehouseId: destinationWarehouseId,
       });
     },
+    enabled: !!dateRange.from && !!dateRange.to,
   });
 
   return (
