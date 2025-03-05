@@ -1,8 +1,10 @@
+"use client";
+
+import React, { FC, useState } from "react";
 import { paymentOptions } from "@/constant/paymentOptionConstant";
 import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
 import { ShippingDetail, ShippingList } from "@/types/models/shippingList";
 import { Loader2, ShoppingCart, VerifiedIcon } from "lucide-react";
-import { FC } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -48,17 +50,30 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
   setShippingMethod,
   shippingMethodSelected,
 }) => {
-  console.log(paymentMethod);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const processCheckout = async () => {
+    try {
+      if (paymentMethod === "gateway") {
+        await handleCheckout();
+      } else {
+        await handleManualCheckout();
+      }
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Checkout failed", error);
+    }
+  };
 
   return (
-    <div className="bg-white p-6 rounded-xl sticky top-[94px] flex flex-col gap-4 w-full">
+    <div className="sticky top-[94px] flex w-full flex-col gap-4 rounded-xl bg-white p-6">
       <h3 className="text-[22px] font-bold">Checkout summary</h3>
 
       <Separator className="my-2" />
 
       {/* Select Payment Method */}
       <div className="flex flex-col gap-4">
-        <h3 className="text-[18px] font-semibold mb-2">
+        <h3 className="mb-2 text-[18px] font-semibold">
           Select Payment Method :
         </h3>
 
@@ -82,12 +97,12 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
       />
 
       {/* Buy Now Button */}
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button className="font-semibold text-md" disabled={!shippingMethodSelected || isDisabled || isLoading}>
             {isLoading ? (
               <>
-                <Loader2 className="animate-spin w-4 h-4" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Processing...
               </>
             ) : (
@@ -98,29 +113,29 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
             )}
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:min-w-[400px] p-6">
-          <DialogHeader className="flex flex-col gap-2 w-full">
-            <DialogTitle className="text-3xl font-semibold m-0 p-0 text-black flex items-center gap-2">
-              <ShoppingCart className="w-6 h-6 black mr-2" />
+        <DialogContent className="p-6 sm:min-w-[400px]">
+          <DialogHeader className="flex w-full flex-col gap-2">
+            <DialogTitle className="m-0 flex items-center gap-2 p-0 text-3xl font-semibold text-black">
+              <ShoppingCart className="black mr-2 h-6 w-6" />
               Process this order ?
             </DialogTitle>
             <Separator />
           </DialogHeader>
           <>
-            <p className="text-black font-normal text-[16px] py-4">
+            <p className="py-4 text-[16px] font-normal text-black">
               This action cannot be undone. Please make sure you did not buy the
               wrong items.
             </p>
 
             {/* Show error message if an error occurs */}
             {isError && (
-              <p className="text-red-500 text-sm bg-red-100 p-2 rounded-md">
+              <p className="rounded-md bg-red-100 p-2 text-sm text-red-500">
                 Failed to process transaction. Please try again.
               </p>
             )}
           </>
           <Separator className="mt-4" />
-          <DialogFooter className="flex justify-end mt-4">
+          <DialogFooter className="mt-4 flex justify-end">
             <DialogClose asChild>
               <Button type="button" variant="outline" className="mr-2">
                 Cancel
@@ -132,14 +147,15 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
               className="px-6"
               disabled={isDisabled || isLoading}
               onClick={
-                paymentMethod === "gateway"
-                  ? handleCheckout
-                  : handleManualCheckout
+                // paymentMethod === "gateway"
+                //   ? handleCheckout
+                //   : handleManualCheckout
+                processCheckout
               }
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="animate-spin w-4 h-4" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   Processing...
                 </>
               ) : (
