@@ -60,6 +60,16 @@ const CheckoutPage: FC = () => {
     [cartItems],
   );
 
+  // Calculate total product weight
+  const totalWeight = useMemo(
+    () =>
+      cartItems.reduce(
+        (acc, item) => acc + (item.product?.weight ?? 0) * item.cartQuantity,
+        0,
+      ),
+    [cartItems],
+  );
+
   const setShippingMethod = (method: ShippingDetail | null) => {
     if (method) {
       setShippingCost(method.cost);
@@ -90,7 +100,7 @@ const CheckoutPage: FC = () => {
           warehouseId: 1,
           userAddressId: address?.id,
           courier: "jne:tiki:wahana:sicepat:anteraja:pos",
-          weight: 100, // gram
+          weight: totalWeight * 1000, // gram
         }),
       });
 
@@ -106,7 +116,7 @@ const CheckoutPage: FC = () => {
         });
       }
     },
-    [session],
+    [session, totalWeight],
   );
 
   const setSelectedShippingAddress = useCallback(
