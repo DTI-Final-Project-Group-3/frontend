@@ -5,7 +5,6 @@ import ImageComponent from "../common/ImageComponent";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
 import { formatDateString } from "@/utils/formatter";
 import ProductMutationReviewDialog from "./ProductMutationReviewDialog";
-import { getProductMutationStatusColor } from "@/utils/getColor";
 import StatusComponent from "@/components/common/StatusComponent";
 
 interface ProductMutationCardProps {
@@ -38,12 +37,8 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               </strong>
             </div>
           )}
-          <StatusComponent
-            name={productMutation?.productMutationStatusName}
-            color={getProductMutationStatusColor(
-              productMutation?.productMutationStatusName,
-            )}
-          />
+
+          <StatusComponent name={productMutation?.productMutationStatusName} />
         </div>
       )}
 

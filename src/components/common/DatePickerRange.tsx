@@ -76,6 +76,16 @@ const DatePickerRange: FC<DatePickerRangeProps> = ({
             onSelect={setDateRange}
             numberOfMonths={1}
             disabled={{ after: new Date() }}
+            classNames={{
+              day_selected:
+                "!bg-[#62AA62] text-white hover:!bg-[#62AA62]/90 hover:text-white focus:!bg-[#62AA62]",
+              day_range_middle:
+                "!bg-[#62AA62]/20 text-[#62AA62]/90 hover:!bg-[#62AA62]/30 hover:text-[#62AA62] focus:!bg-[#62AA62]/30",
+              day_range_end:
+                "!bg-[#62AA62] text-white hover:!bg-[#62AA62]/90 hover:text-white focus:!bg-[#62AA62]",
+              day_range_start:
+                "!bg-[#62AA62] text-white hover:!bg-[#62AA62]/90 hover:text-white focus:!bg-[#62AA62]",
+            }}
           />
         </PopoverContent>
       </Popover>
