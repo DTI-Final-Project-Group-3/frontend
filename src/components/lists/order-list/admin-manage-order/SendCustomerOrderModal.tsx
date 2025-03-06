@@ -43,7 +43,9 @@ const SendCustomerOrderModal: FC<SendCustomerOrderModalProps> = ({
     mutationFn: () => SendCustomerOrder(orderId, accessToken, isAdminApproved),
     onSuccess: () => {
       setIsOpen(false);
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000); 
     },
   });
 

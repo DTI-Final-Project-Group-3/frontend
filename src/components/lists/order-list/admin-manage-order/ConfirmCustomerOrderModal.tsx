@@ -42,7 +42,9 @@ const ConfirmCustomerOrderModal: FC<ConfirmCustomerOrderModalProps> = ({
       ConfirmPaymentOrder(orderId, accessToken, isAdminApproved),
     onSuccess: () => {
       setIsOpen(false);
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     },
   });
 
