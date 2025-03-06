@@ -14,15 +14,18 @@ import { CartItem, useCartStore } from "@/store/cartStore";
 import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
 import { Address } from "@/types/models/checkout/userAddresses";
 import { ShippingDetail, ShippingList } from "@/types/models/shippingList";
+import { WarehouseDetail } from "@/types/models/warehouses";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
-//const shipping_cost_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost`;
-const shipping_cost_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/shipping/cost-dummy`;
+const shipping_cost_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_SHIPPING_COST}`;
+const nearby_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSES}/nearby`;
+const user_address_id_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS_ID}`;
 
 const CheckoutPage: FC = () => {
   const { data: session } = useSession();
@@ -87,60 +90,99 @@ const CheckoutPage: FC = () => {
 
   const fetchShippingAddress = useCallback(
     async (address: Address | null) => {
-      if (!session) return;
-      if (!address) return;
+      if (!session || !address) return;
+  
+      try {
+        const { data: nearby_warehouse_response } = await axios.get(
+          `${nearby_url}?longitude=${address.longitude}&latitude=${address.latitude}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.accessToken}`,
+            },
+          }
+        );
 
-      const res = await fetch(shipping_cost_url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.accessToken}`,
-        },
-        body: JSON.stringify({
-          warehouseId: 1,
-          userAddressId: address?.id,
-          courier: "jne:tiki:wahana:sicepat:anteraja:pos",
-          weight: totalWeight * 1000, // gram
-        }),
-      });
+        const nearby_warehouse = nearby_warehouse_response.data as WarehouseDetail[];
 
-      const response = await res.json();
-      if (response.success) {
-        setShippingList(response.data);
-      } else {
-        toast({
-          title: "Failed to get shipping cost",
-          description: `${response.message}`,
-          variant: "destructive",
-          duration: 3000,
-        });
+        const { data: response } = await axios.post(
+          shipping_cost_url,
+          {
+            warehouseId: nearby_warehouse[0].id,
+            userAddressId: address?.id,
+            courier: "jne:tiki:wahana:sicepat:anteraja:pos",
+            weight: totalWeight * 1000, // gram
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.accessToken}`,
+            },
+          }
+        );
+  
+        if (response.success) {
+          setShippingList(response.data);
+        } else {
+          toast({title: "Failed", description: "Failed to get shipping cost", variant: "destructive", duration: 3000, });
+        }
+      } catch (error) {
+        console.log("Error fetching shipping cost " + error);
+        toast({ title: "Error", description: "Error fetching shipping cost", variant: "destructive", duration: 3000,});
       }
     },
-    [session, totalWeight],
+    [session, totalWeight]
   );
 
-  const setSelectedShippingAddress = useCallback(
-    (selectedShippingAddress: Address) => {
-      setShippingMethodSelected(false);
-      setShippingList(null);
-      fetchShippingAddress(selectedShippingAddress);
-    },
-    [fetchShippingAddress],
-  );
+  const fetchUserAddress = useCallback(async () => {
+    if (session) {
+      const userAddress = await getAllAddress(session.accessToken);
+      const mainAddress = await getMainAddress(session.accessToken);
+      setUserAddress(userAddress);
+      setMainAddress(mainAddress);
+      fetchShippingAddress(mainAddress);
+      console.log(mainAddress);
+    }
+  }, [session])
 
   useEffect(() => {
-    const fetchUserAddress = async () => {
-      if (session) {
-        const userAddress = await getAllAddress(session.accessToken);
-        const mainAddress = await getMainAddress(session.accessToken);
-        setUserAddress(userAddress);
-        setMainAddress(mainAddress);
-        console.log(mainAddress);
-      }
-    };
-
     fetchUserAddress();
-  }, [session]);
+  }, [session, fetchUserAddress]);
+
+  const setSelectedAddressAsPrimary = useCallback(async (addressId : number) => {
+    if (session)
+        try {
+          const res = await fetch(`${user_address_id_url}/${addressId}`, {
+                method: "PUT",
+                headers: { 
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${session.accessToken}`
+                 },
+                body: JSON.stringify({
+                    isPrimary : true
+                }),
+            });
+
+          if (res.ok) {
+              fetchUserAddress();
+          } else {
+            toast({title: "Failed", description: "Failed to set as primary", duration: 2000,});
+          }
+        } catch (err) {
+          console.error("Error set as primary:", err);
+          toast({title: "Error", description: "Error set as primary", duration: 2000,});
+        }
+  },[session, fetchUserAddress]);
+
+const setSelectedShippingAddress = useCallback((selectedShippingAddress: Address) => {
+    if (selectedShippingAddress.primary)
+      return;
+    setShippingMethodSelected(false);
+    setShippingList(null);
+    setSelectedAddressAsPrimary(selectedShippingAddress.id);
+  },
+  [setSelectedAddressAsPrimary],
+);
 
   // Tanstack Query mutations transaction
   const gatewayTransaction = useMutation({
