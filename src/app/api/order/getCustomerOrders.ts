@@ -1,3 +1,4 @@
+import { toast } from "@/hooks/use-toast";
 import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
 import { Order } from "@/types/models/orders/orders";
@@ -27,10 +28,13 @@ export const getAllCustomerOrders = async (
   if (endDate) params.append("endDate", endDate.toISOString());
   if (warehouseId) params.append("warehouseId", warehouseId.toString());
 
-  console.log("whid:",warehouseId)
-
   if (!accessToken) {
-    throw new Error("Access token is missing");
+    toast({
+      title: "Access token is missing",
+      description: "Please sign in with correct account",
+      variant: "destructive",
+      duration: 3000,
+    });
   }
 
   // Fetch the API
