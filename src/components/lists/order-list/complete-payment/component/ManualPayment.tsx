@@ -7,6 +7,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { formatDateTime } from "@/utils/formatter";
 import { useCountdownTimer } from "@/hooks/useCountdownTimer";
 import Image from "next/image";
+import { toast } from "@/hooks/use-toast";
 
 type ManualPaymentProps = {
   createdAt: Date;
@@ -20,17 +21,42 @@ const ManualPayment: FC<ManualPaymentProps> = ({ createdAt }) => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+
     if (file) {
+      const validExtensions = ["image/jpeg", "image/png", "image/jpg"];
+      const maxSize = 1 * 1024 * 1024; // 1MB
+
+      // Validate file type
+      if (!validExtensions.includes(file.type)) {
+        toast({
+          title: "Error uploading image",
+          description:
+            "Invalid file type. Only JPG, JPEG, and PNG are allowed.",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+
+      // Validate file size
+      if (file.size > maxSize) {
+        toast({
+          title: "Error uploading image",
+          description: "File size exceeds 1MB. Please upload a smaller file.",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+
+      // If valid, update state
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
   return (
-    <div
-      className="flex flex-col items-center gap-10 py-6 h-full md:max-h-[60vh] max-h-[60vh] overflow-y-auto
-    "
-    >
+    <div className="flex h-full max-h-[60vh] flex-col items-center gap-10 overflow-y-auto py-6 md:max-h-[60vh]">
       <div className="flex flex-col items-center gap-3">
         <h2 className="text-xl font-bold">Complete the payment within</h2>
         <span className="text-2xl font-bold text-green-600">
@@ -42,34 +68,34 @@ const ManualPayment: FC<ManualPaymentProps> = ({ createdAt }) => {
         </span>
       </div>
       {/* QR code section */}
-      <div className="flex flex-col md:flex-row gap-10">
+      <div className="flex flex-col gap-10 md:flex-row">
         <div className="flex flex-col items-center justify-center gap-6 border p-4">
           <QRCodeCanvas value="dummy-manual-payment-info" size={200} />
           <p className="mt-2 text-center text-gray-600">
             Scan the QR Code to pay the order
           </p>
         </div>
-        <div className="border border-gray-200 h-full" />
+        <div className="h-full border border-gray-200" />
         {/* File upload section */}
         <div className="flex flex-col items-center gap-6">
           <label
             htmlFor="file-upload"
-            className="relative cursor-pointer border-2 border-dashed border-gray-300 rounded-lg w-[300px] h-[300px] flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition"
+            className="relative flex h-[300px] w-[300px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition hover:bg-gray-100"
           >
             {previewUrl ? (
-              <div className="flex items-center justify-center mt-2 bg-slate-100 w-full h-full">
+              <div className="mt-2 flex h-full w-full items-center justify-center bg-slate-100">
                 <Image
                   src={previewUrl}
                   alt="Payment proof image"
                   height={300}
                   width={300}
-                  className="object-cover h-[300px] w-[300px] rounded-lg"
+                  className="h-[300px] w-[300px] rounded-lg object-cover"
                 />
               </div>
             ) : (
-              <div className="flex flex-col gap-3 items-center justify-center">
+              <div className="flex flex-col items-center justify-center gap-3">
                 <ImagePlus className="text-gray-400" size={28} />
-                <p className="text-gray-500 text-center">
+                <p className="text-center text-gray-500">
                   Click to upload image
                 </p>
               </div>
@@ -79,7 +105,7 @@ const ManualPayment: FC<ManualPaymentProps> = ({ createdAt }) => {
               type="file"
               accept="image/"
               onChange={handleFileChange}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
             />
           </label>
         </div>
