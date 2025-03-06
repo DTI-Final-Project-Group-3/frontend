@@ -4,11 +4,8 @@ import { FC, useState } from "react";
 import WarehouseSelection from "../warehouse/WarehouseSelection";
 import { useProductMutation } from "@/store/productMutationStore";
 import AddInventoryDialog from "./AddInventoryDialog";
-import { useSession } from "next-auth/react";
-import { userRoles } from "@/constant/userConstant";
 
 const InventoryManagementHeader: FC = () => {
-  const { data } = useSession();
   const [searchQuery, setSearchQuery] = useState("");
   const { destinationWarehouseId, setDestinationWarehouseId } =
     useProductMutation();
@@ -22,7 +19,6 @@ const InventoryManagementHeader: FC = () => {
       <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
         <div className="min-w-80">
           <WarehouseSelection
-            disable={data?.role !== userRoles.ADMIN_SUPER}
             warehouseId={destinationWarehouseId}
             setWarehouseId={setDestinationWarehouseId}
           />

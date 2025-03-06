@@ -16,7 +16,11 @@ const PUBLIC_PATHS = [
 
 const PROTECTED_PATHS = ["/cart", "/order-list", "/admin"];
 
-type UserRole = "NOT_VERIFIED" | "CUSTOMER_VERIFIED" | "ADMIN_WAREHOUSE" | "ADMIN_SUPER";
+type UserRole =
+  | "NOT_VERIFIED"
+  | "CUSTOMER_VERIFIED"
+  | "ADMIN_WAREHOUSE"
+  | "ADMIN_SUPER";
 
 const ROLE_PATHS: Record<UserRole, string[]> = {
   NOT_VERIFIED: [],
@@ -36,7 +40,7 @@ function isProtectedPath(pathname: string) {
 function hasRequiredRole(userRole: string, pathname: string) {
   return (
     ROLE_PATHS[userRole as UserRole]?.some((path: string) =>
-      pathname.startsWith(path)
+      pathname.startsWith(path),
     ) ?? false
   );
 }
@@ -60,8 +64,13 @@ export async function middleware(request: NextRequest) {
   const userRole = token.role;
 
   // Force ADMIN_SUPER & ADMIN_WAREHOUSE users to always go to /admin
-  if ((userRole === "ADMIN_SUPER" || userRole === "ADMIN_WAREHOUSE") && !pathname.startsWith("/admin")) {
-    return NextResponse.redirect(new URL("/admin", request.url));
+  if (
+    (userRole === "ADMIN_SUPER" || userRole === "ADMIN_WAREHOUSE") &&
+    !pathname.startsWith("/admin")
+  ) {
+    return NextResponse.redirect(
+      new URL("/admin/report-analysis", request.url),
+    );
   }
 
   if (isProtectedPath(pathname) && !hasRequiredRole(userRole, pathname)) {

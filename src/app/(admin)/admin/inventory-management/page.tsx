@@ -10,11 +10,10 @@ import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 
 const InventoryManagementPage = () => {
-  const { data } = useSession();
   const [page, setPage] = useState<number>(0);
   const [searchQuery] = useState<string>();
   const {
@@ -22,14 +21,7 @@ const InventoryManagementPage = () => {
     submitMutation,
     setProductId,
     setWarehouseInventoryId,
-    setDestinationWarehouseId,
   } = useProductMutation();
-
-  useEffect(() => {
-    if (data?.userDetail?.warehouseId) {
-      setDestinationWarehouseId(data?.userDetail?.warehouseId);
-    }
-  }, [data, setDestinationWarehouseId]);
 
   const {
     data: inventories,
@@ -203,11 +195,10 @@ const InventoryManagementPage = () => {
         {inventories && (
           <div className="mt-6">
             <PaginationAdmin
-              currentPage={page}
+              desc="Inventories"
+              page={page}
+              setPage={setPage}
               totalPages={inventories.totalPages}
-              hasNext={inventories.hasNext}
-              hasPrev={inventories.hasPrev}
-              onPageChange={setPage}
               totalElements={inventories.totalElements}
               currentPageSize={inventories.content.length}
             />

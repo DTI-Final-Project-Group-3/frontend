@@ -8,25 +8,32 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 type PaginationProps = {
   page: number;
   totalPages: number;
   setPage: (page: number) => void;
+  backToTop?: boolean;
+  className?: string;
 };
 
 const PaginationComponent: FC<PaginationProps> = ({
   page,
   setPage,
   totalPages,
+  backToTop = true,
+  className,
 }) => {
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top smoothly
+    if (backToTop) {
+      window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top smoothly
+    }
   };
 
   return (
-    <Pagination className="my-8">
+    <Pagination className={cn("my-5", className)}>
       <PaginationContent>
         {/* Previous button */}
         <PaginationItem>
