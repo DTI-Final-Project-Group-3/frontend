@@ -1,6 +1,11 @@
 "use client";
 
 import React, { FC, useState } from "react";
+import { paymentOptions } from "@/constant/paymentOptionConstant";
+import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
+import { ShippingDetail, ShippingList } from "@/types/models/shippingList";
+import { Loader2, ShoppingCart, VerifiedIcon } from "lucide-react";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogClose,
@@ -10,13 +15,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { PaymentMethods } from "@/types/models/checkout/paymentMethods";
-import { paymentOptions } from "@/constant/paymentOptionConstant";
-import { Loader2, ShoppingCart, VerifiedIcon } from "lucide-react";
-import PaymentOption from "./PaymentOption";
 import OrderDetails from "./OrderDetails";
+import PaymentOption from "./PaymentOption";
+import { toast } from "@/hooks/use-toast";
 
 type CheckoutSummaryProps = {
   paymentMethod: PaymentMethods;
@@ -29,6 +31,9 @@ type CheckoutSummaryProps = {
   isDisabled: boolean;
   isLoading: boolean;
   isError: boolean;
+  shippingList: ShippingList | null;
+  setShippingMethod: (method: ShippingDetail | null) => void;
+  shippingMethodSelected: boolean;
 };
 
 const CheckoutSummary: FC<CheckoutSummaryProps> = ({
@@ -42,6 +47,9 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
   isLoading,
   isError,
   isDisabled,
+  shippingList,
+  setShippingMethod,
+  shippingMethodSelected,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -54,7 +62,12 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
       }
       setIsOpen(false);
     } catch (error) {
-      console.error("Checkout failed", error);
+      toast({
+        title: "Checkout failed",
+        description: `${error}`,
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -84,6 +97,9 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
         totalQuantity={totalQuantity}
         totalPrice={totalPrice}
         shippingCost={shippingCost}
+        shippingMethodSelected={shippingMethodSelected}
+        shippingList={shippingList}
+        setShippingMethod={setShippingMethod}
       />
 
       {/* Buy Now Button */}
@@ -91,7 +107,7 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
         <DialogTrigger asChild>
           <Button
             className="text-md font-semibold"
-            disabled={isDisabled || isLoading}
+            disabled={!shippingMethodSelected || isDisabled || isLoading}
           >
             {isLoading ? (
               <>
@@ -139,12 +155,7 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
               variant="green"
               className="px-6"
               disabled={isDisabled || isLoading}
-              onClick={
-                // paymentMethod === "gateway"
-                //   ? handleCheckout
-                //   : handleManualCheckout
-                processCheckout
-              }
+              onClick={processCheckout}
             >
               {isLoading ? (
                 <>
