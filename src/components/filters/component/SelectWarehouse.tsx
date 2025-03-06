@@ -20,7 +20,7 @@ const SelectWarehouse: FC = () => {
   } = useQuery({
     queryKey: ["warehouses"],
     queryFn: getAllWarehouses,
-    staleTime: 1000 * 60 * 2, // Cache results for 5 minutes
+    staleTime: 1000 * 60 * 2, // Cache results for 2 minutes
   });
 
   return (

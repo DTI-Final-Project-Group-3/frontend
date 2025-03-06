@@ -9,6 +9,9 @@ const PUBLIC_PATHS = [
   "/icons",
   "/images",
   "/product",
+  "/reset-password",
+  "/verify-email",
+  "/forgot-password"
 ];
 
 const PROTECTED_PATHS = ["/cart", "/order-list", "/admin"];

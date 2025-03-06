@@ -8,7 +8,8 @@ export const useOrders = (
   status?: number,
   search?: string,
   startDate?: Date,
-  endDate?: Date
+  endDate?: Date,
+  warehouseId?: number,
 ) => {
   return useQuery({
     queryKey: [
@@ -20,6 +21,7 @@ export const useOrders = (
       search,
       startDate,
       endDate,
+      warehouseId,
     ],
     queryFn: () =>
       getAllCustomerOrders(
@@ -29,9 +31,10 @@ export const useOrders = (
         status,
         search,
         startDate,
-        endDate
+        endDate,
+        warehouseId,
       ),
     enabled: !!accessToken,
-    staleTime: 1000 * 60 * 2, // Cache results for 5 minutes
+    staleTime: 1000 * 60 * 2, // Cache results for 2 minutes
   });
 };

@@ -11,6 +11,7 @@ import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 
 const InventoryManagementPage = () => {
   const [page, setPage] = useState<number>(0);

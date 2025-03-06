@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
 import { ApiResponse } from "@/types/api/apiResponse";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { Loader2, SquareArrowOutUpRight } from "lucide-react";
 import { formatDateTime, formatPrice } from "@/utils/formatter";
 import Image from "next/image";
 import axios from "axios";
@@ -52,7 +52,7 @@ const OrderDetailsModal: FC<OrderDetailsModalProps> = ({ orderId }) => {
     queryKey: ["orderDetails", orderId, accessToken],
     queryFn: () => fetchOrderDetail(orderId, accessToken!),
     enabled: !!accessToken && isOpen, // Fetch data only when modal is open
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 3, // Cache for 3 minutes
   });
 
   return (
@@ -67,7 +67,7 @@ const OrderDetailsModal: FC<OrderDetailsModalProps> = ({ orderId }) => {
       </DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
-        className="sm:min-w-[360px] md:min-w-[900px] md:min-h-[700px] overflow-y-auto"
+        className="sm:min-w-[360px] md:min-w-[900px] md:min-h-[800px] overflow-y-auto"
       >
         <DialogHeader className="flex flex-col gap-2 w-full">
           <DialogTitle className="text-3xl font-semibold m-0 p-0">
@@ -77,7 +77,8 @@ const OrderDetailsModal: FC<OrderDetailsModalProps> = ({ orderId }) => {
         </DialogHeader>
 
         {isLoading ? (
-          <div className="flex justify-center items-center h-40">
+          <div className="flex flex-col gap-4 justify-center items-center mih-h-full w-full">
+            <Loader2 className="animate-spin" size={36} />
             Loading order details...
           </div>
         ) : isError ? (
@@ -86,7 +87,7 @@ const OrderDetailsModal: FC<OrderDetailsModalProps> = ({ orderId }) => {
           </div>
         ) : (
           data && (
-            <div className="py-4 w-full max-h-[50vh] overflow-y-auto pr-4">
+            <div className="py-4 w-full max-h-[70vh] overflow-y-auto pr-4">
               <div className="flex flex-col gap-2">
                 {/* Order status */}
                 <div className="flex flex-col gap-2">
@@ -108,6 +109,14 @@ const OrderDetailsModal: FC<OrderDetailsModalProps> = ({ orderId }) => {
                     </p>
                     <span className="text-[16px] font-semibold text-gray-600">
                       {formatDateTime(data.data.createdAt).formattedDateTime}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[16px] text-gray-500 font-medium">
+                      Order sent date
+                    </p>
+                    <span className="text-[16px] font-semibold text-gray-600">
+                      {data.data.sentAt ? (formatDateTime(data.data.sentAt).formattedDateTime) : "-"}
                     </span>
                   </div>
                 </div>
@@ -146,6 +155,27 @@ const OrderDetailsModal: FC<OrderDetailsModalProps> = ({ orderId }) => {
 
                 {/* Order payment details */}
                 <div className="flex flex-col gap-2">
+                  {data.data.paymentMethodId === 2 &&
+                  data.data.paymentProofImageUrl !== null ? (
+                    <div className="flex flex-col gap-4 w-full items-center justify-center">
+                      <h3 className="text-lg font-bold mb-3">Image Proof</h3>
+                      <Image
+                        src={data.data.paymentProofImageUrl}
+                        alt={"Payment proof img"}
+                        width={400}
+                        height={400}
+                        className="object-contain w-[400px] h-[400px]"
+                      />
+                    </div>
+                  ) : (
+                    data.data.paymentMethodId === 2 &&
+                    data.data.paymentProofImageUrl !== null && (
+                      <p className="text-md text-gray-600">
+                        No payment image proof uploaded yet.
+                      </p>
+                    )
+                  )}
+                  <Separator className="my-6" />
                   <h3 className="text-lg font-bold mb-3">Payment Details</h3>
                   <div className="flex items-center justify-between">
                     <p className="text-[16px] text-gray-500 font-normal">

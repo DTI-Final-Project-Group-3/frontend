@@ -10,7 +10,8 @@ export const getAllCustomerOrders = async (
   status?: number,
   search?: string,
   startDate?: Date,
-  endDate?: Date
+  endDate?: Date,
+  warehouseId?: number,
 ): Promise<ApiResponse<PaginationResponse<Order>>> => {
   const ENDPOINT_URL = "/api/v1/orders";
 
@@ -24,6 +25,9 @@ export const getAllCustomerOrders = async (
   if (search) params.append("search", search);
   if (startDate) params.append("startDate", startDate.toISOString());
   if (endDate) params.append("endDate", endDate.toISOString());
+  if (warehouseId) params.append("warehouseId", warehouseId.toString());
+
+  console.log("whid:", warehouseId);
 
   if (!accessToken) {
     throw new Error("Access token is missing");
@@ -38,7 +42,7 @@ export const getAllCustomerOrders = async (
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    }
+    },
   );
 
   return response.data;
