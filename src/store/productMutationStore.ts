@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { useSession } from "next-auth/react";
 
 type ProductMutationState = {
   warehouseInventoryId: number | undefined;

@@ -22,14 +22,7 @@ const InventoryManagementPage = () => {
     submitMutation,
     setProductId,
     setWarehouseInventoryId,
-    setDestinationWarehouseId,
   } = useProductMutation();
-
-  useEffect(() => {
-    if (data?.userDetail?.warehouseId) {
-      setDestinationWarehouseId(data?.userDetail?.warehouseId);
-    }
-  }, [data, setDestinationWarehouseId]);
 
   const {
     data: inventories,
@@ -203,11 +196,10 @@ const InventoryManagementPage = () => {
         {inventories && (
           <div className="mt-6">
             <PaginationAdmin
-              currentPage={page}
+              desc="Inventories"
+              page={page}
+              setPage={setPage}
               totalPages={inventories.totalPages}
-              hasNext={inventories.hasNext}
-              hasPrev={inventories.hasPrev}
-              onPageChange={setPage}
               totalElements={inventories.totalElements}
               currentPageSize={inventories.content.length}
             />

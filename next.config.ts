@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
     ],
     domains: ["lh3.googleusercontent.com", "i.ibb.co"],
   },
+  transpilePackages: ["react-day-picker"],
 };
 
 export default nextConfig;

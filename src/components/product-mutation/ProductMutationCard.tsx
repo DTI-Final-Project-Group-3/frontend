@@ -3,37 +3,19 @@
 import { FC } from "react";
 import ImageComponent from "../common/ImageComponent";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
-import { formatDate } from "@/utils/formatter";
+import { formatDateString } from "@/utils/formatter";
 import ProductMutationReviewDialog from "./ProductMutationReviewDialog";
+import StatusComponent from "@/components/common/StatusComponent";
 
 interface ProductMutationCardProps {
   productMutation: ProductMutationDetailResponse;
   isInbound: boolean;
 }
 
-const STATUS_VARIANTS = {
-  approved: "bg-emerald-100 text-emerald-700",
-  completed: "bg-emerald-100 text-emerald-700",
-  pending: "bg-amber-100 text-amber-700",
-  cancelled: "bg-rose-100 text-rose-700",
-  declined: "bg-red-100 text-rose-700",
-  expired: "bg-red-100 text-rose-700",
-  default: "bg-slate-100 text-slate-700",
-};
-
 const ProductMutationCard: FC<ProductMutationCardProps> = ({
   productMutation,
   isInbound,
 }) => {
-  const getStatusColor = (status: string): string => {
-    const key = status.toLowerCase() as keyof typeof STATUS_VARIANTS;
-    return STATUS_VARIANTS[key] || STATUS_VARIANTS.default;
-  };
-
-  const statusColorClass = getStatusColor(
-    productMutation?.productMutationStatusName || "",
-  );
-
   return (
     <div className="flex w-full flex-col gap-4 rounded-xl border border-slate-200 bg-white px-4 py-6 transition-all duration-300 hover:shadow-lg sm:px-6 lg:px-8">
       {productMutation.productMutationTypeId <= 2 && (
@@ -55,11 +37,8 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               </strong>
             </div>
           )}
-          <span
-            className={`rounded-full px-3 py-1 ${statusColorClass} whitespace-nowrap text-xs font-semibold`}
-          >
-            {productMutation?.productMutationStatusName}
-          </span>
+
+          <StatusComponent name={productMutation?.productMutationStatusName} />
         </div>
       )}
 
@@ -104,14 +83,14 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
       <div className="mt-2 flex w-full flex-col items-center justify-between gap-4 border-t border-slate-100 pt-4 sm:flex-row">
         <div className="flex w-full flex-col gap-1 sm:w-auto sm:flex-row sm:gap-6">
           <span className="text-xs text-slate-500">
-            Request on {formatDate(productMutation?.createdAt)} by{" "}
+            Request on {formatDateString(productMutation?.createdAt)} by{" "}
             <span className="font-medium">
               {productMutation?.requesterName}
             </span>
           </span>
           {productMutation?.reviewedAt && (
             <span className="text-xs text-slate-500">
-              Reviewed on {formatDate(productMutation?.reviewedAt)} by{" "}
+              Reviewed on {formatDateString(productMutation?.reviewedAt)} by{" "}
               <span className="font-medium">
                 {productMutation?.requesterName}
               </span>

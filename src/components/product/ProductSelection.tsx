@@ -19,12 +19,14 @@ import { useProductMutation } from "@/store/productMutationStore";
 import { ProductBasic } from "@/types/models/products";
 
 interface ProductSelectionProps {
+  captionNoSelection?: string;
   filter: string;
   productId: number | undefined;
-  setProductId: (val: number) => void;
+  setProductId: (val: number | undefined) => void;
 }
 
 const ProductSelection: FC<ProductSelectionProps> = ({
+  captionNoSelection = "Select Product",
   filter,
   productId,
   setProductId,
@@ -32,7 +34,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
   const { destinationWarehouseId } = useProductMutation();
 
   const {
-    data: excludeProducs,
+    data: excludeProducts,
     isLoading: excludeProductsLoading,
     isError: excludeProductError,
   } = useQuery({
@@ -78,18 +80,22 @@ const ProductSelection: FC<ProductSelectionProps> = ({
     return (
       <Select
         value={productId ? productId.toString() : "all"}
-        onValueChange={(val: string) => setProductId(Number(val))}
+        onValueChange={(val: string) => {
+          if (val === "all") {
+            setProductId(undefined);
+          } else {
+            setProductId(Number(val));
+          }
+        }}
       >
         <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-600 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
           <SelectValue>
             {allProducts?.find((product) => product.id == productId)?.name ||
-              "Select Product"}
+              captionNoSelection}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent className="max-h-40 max-w-80">
-          <SelectItem value="all" className="text-gray-500">
-            Select Product
-          </SelectItem>
+        <SelectContent className="max-h-56 w-72">
+          <SelectItem value="all">{captionNoSelection}</SelectItem>
           {isLoading ? (
             <SelectItem value="loading" disabled>
               Loading...
@@ -135,9 +141,9 @@ const ProductSelection: FC<ProductSelectionProps> = ({
             );
           case "exclude":
             return (
-              excludeProducs &&
+              excludeProducts &&
               renderContent(
-                excludeProducs,
+                excludeProducts,
                 excludeProductsLoading,
                 excludeProductError,
               )
