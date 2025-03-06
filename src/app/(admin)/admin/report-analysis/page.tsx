@@ -47,9 +47,7 @@ const ReportAnalysisPage = () => {
 
           <div className="rounded-xl bg-white shadow-sm">
             <ProductMutationFilter />
-            <TabsContent value="sales" className="p-4 sm:p-6">
-              {/*<SalesReport />*/}
-            </TabsContent>
+            <TabsContent value="sales" className="p-4 sm:p-6"></TabsContent>
 
             <TabsContent value="mutation" className="space-y-10 p-4 sm:p-6">
               <ProductMutationTotal />
