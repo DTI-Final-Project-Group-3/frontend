@@ -51,7 +51,7 @@ const ReportAnalysisPage = () => {
               {/*<SalesReport />*/}
             </TabsContent>
 
-            <TabsContent value="mutation" className="p-4 sm:p-6">
+            <TabsContent value="mutation" className="space-y-10 p-4 sm:p-6">
               <ProductMutationTotal />
               <ProductMutationGraph />
               <ProductMutationHistoryTable />

@@ -16,7 +16,8 @@ import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
 import { useState } from "react";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { ProductMutationReportResponse } from "@/types/models/productMutation";
-import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
+import { getProductMutationStatusColor } from "@/utils/getColor";
+import StatusComponent from "@/components/common/StatusComponent";
 
 export default function ProductMutationHistoryTable() {
   const [page, setPage] = useState<number>(0);
@@ -114,7 +115,12 @@ export default function ProductMutationHistoryTable() {
                       <TableCell>{history.productCategory.name}</TableCell>
                       <TableCell>{history.productMutationType.name}</TableCell>
                       <TableCell>
-                        {history.productMutationStatus.name}
+                        <StatusComponent
+                          name={history.productMutationStatus.name}
+                          color={getProductMutationStatusColor(
+                            history.productMutationStatus.name,
+                          )}
+                        />
                       </TableCell>
                       <TableCell>{history.quantity}</TableCell>
                     </TableRow>

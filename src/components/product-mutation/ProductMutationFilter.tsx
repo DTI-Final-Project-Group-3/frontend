@@ -20,26 +20,28 @@ const ProductMutationFilter: FC = () => {
     setProductMutationStatusId,
   } = useReport();
   return (
-    <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white p-7 md:grid-cols-5">
-      <DatePickerRange dateRange={dateRange} setDateRange={setDateRange} />
-      <ProductSelection
-        captionNoSelection="All Products"
-        filter={"show-all"}
-        productId={productId}
-        setProductId={setProductId}
-      />
-      <ProductCategorySelection
-        productCategoryId={productCategoryId}
-        setProductCategoryId={setProductCategoryId}
-      />
-      <ProductMutationTypeSelection
-        productMutationTypeId={productMutationTypeId}
-        setProductMutationTypeId={setProductMutationTypeId}
-      />
-      <ProductMutationStatusSelection
-        productMutationSelectionId={productMutationStatusId}
-        setProductMutationSelectionId={setProductMutationStatusId}
-      />
+    <div className="p-7">
+      <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white md:grid-cols-5">
+        <DatePickerRange dateRange={dateRange} setDateRange={setDateRange} />
+        <ProductSelection
+          captionNoSelection="All Products"
+          filter={"show-all"}
+          productId={productId}
+          setProductId={setProductId}
+        />
+        <ProductCategorySelection
+          productCategoryId={productCategoryId}
+          setProductCategoryId={setProductCategoryId}
+        />
+        <ProductMutationTypeSelection
+          productMutationTypeId={productMutationTypeId}
+          setProductMutationTypeId={setProductMutationTypeId}
+        />
+        <ProductMutationStatusSelection
+          productMutationSelectionId={productMutationStatusId}
+          setProductMutationSelectionId={setProductMutationStatusId}
+        />
+      </div>
     </div>
   );
 };

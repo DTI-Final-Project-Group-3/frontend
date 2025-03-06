@@ -11,3 +11,12 @@ export const ProductMutationConstant = {
   TYPE_UPDATE_INVENTORY: 3,
   TYPE_DELETE_INVENTORY: 5,
 } as const;
+
+export const ProductMutationStatusColorsConstant = {
+  pending: "bg-amber-100 text-amber-700", // pending
+  completed: "bg-emerald-100 text-emerald-700", // completed
+  cancelled: "bg-rose-100 text-rose-700", // cancelled
+  declined: "bg-red-100 text-rose-700", // declined
+  expired: "bg-red-100 text-rose-700", // expired
+  default: "bg-slate-100 text-slate-700", // default
+} as const;
