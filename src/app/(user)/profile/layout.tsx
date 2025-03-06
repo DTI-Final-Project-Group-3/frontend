@@ -64,7 +64,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
     <div className="py-[40px] px-6 min-h-[calc(100vh-70px)] bg-slate-100 w-full">
       <div className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
         <h1 className="text-2xl font-semibold">Welcome back,
-          <span className="text-[#04B4FC  ]">{" " + session?.userDetail?.fullname}
+          <span className="text-[#04B4FC]">{" " + session?.userDetail?.fullname}
             </span>
         </h1>
 

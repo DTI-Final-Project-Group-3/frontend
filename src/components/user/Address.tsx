@@ -1,11 +1,7 @@
 import { toast } from "@/hooks/use-toast";
-import { UserAddress } from "@/types/models/users";
 import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-const user_address_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS}`;
 const user_address_id_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS_ID}`;
 
 interface AddressComponentProps {
@@ -19,7 +15,7 @@ interface AddressComponentProps {
   session : Session | null
   }
 
-function AddressComponent({
+export default function AddressComponent({
   id,
   name,
   detailAddress,
@@ -29,6 +25,8 @@ function AddressComponent({
   refresh,
   session,
 } : AddressComponentProps) {
+  const router = useRouter();
+
   const handleDelete = async () => {
     if (session)
       try {
@@ -77,7 +75,9 @@ function AddressComponent({
   }
 
   
-
+  const handleEdit = async () => {
+    router.push("/profile/edit-address/"+id);
+  }
   
   return (
     <div
@@ -105,7 +105,7 @@ function AddressComponent({
         }
         <div className="flex">
             <button
-              onClick={handleDelete}
+              onClick={handleEdit}
               className="m-2 bg-blue-500 text-white p-2 rounded w-16">
               Edit
             </button>
@@ -116,71 +116,6 @@ function AddressComponent({
               Delete
             </button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-export default function Address() {
-  const { data: session } = useSession();
-  const [addresses, setAddresses] = useState<UserAddress[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const fetchAddresses = useCallback(async () => {
-    if (session) {
-      try {
-        const res = await fetch(user_address_url, {
-          headers: { Authorization: `Bearer ${session.accessToken}` },
-        });
-        const data = await res.json();
-        if (data.success) {
-          const tempAddresses = data.data as UserAddress[];
-          tempAddresses.sort((a, b) => Number(b.primary) - Number(a.primary));
-          setAddresses(tempAddresses);
-        } else {
-          setError("Failed to fetch addresses");
-        }
-      } catch (err) {
-        console.error("Error fetching addresses:", err);
-        setError("Error fetching addresses");
-      } finally {
-        setLoading(false);
-      }
-    }
-  }, [session]);
-
-  useEffect(() => {
-    fetchAddresses();
-  }, [session, fetchAddresses]);
-
-  if (loading)
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        Loading addresses...
-      </div>
-    );
-  if (error) return <div className="text-red-500">{error}</div>;
-
-  return (
-    <div className="space-y-4 flex flex-col gap-6">
-      <div className="w-full flex gap-4 flex-col md:flex-row md:justify-between md:items-center">
-        <h2 className="text-2xl font-semibold">My Address</h2>
-        <Link href="/profile/create-address">
-          <div className="bg-blue-600 text-white px-4 py-2 text-center cursor-pointer rounded-lg">
-            Create A New Address
-          </div>
-        </Link>
-      </div>
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-        {addresses.map((address) => (
-          <AddressComponent
-            key={address.id}
-            {...address}
-            refresh={fetchAddresses}
-            session={session}
-          />
-        ))}
       </div>
     </div>
   );
