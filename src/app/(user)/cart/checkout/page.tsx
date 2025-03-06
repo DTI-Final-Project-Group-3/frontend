@@ -55,9 +55,9 @@ const CheckoutPage: FC = () => {
     () =>
       cartItems.reduce(
         (acc, item) => acc + item.product.price * item.cartQuantity,
-        0
+        0,
       ),
-    [cartItems]
+    [cartItems],
   );
 
   const setShippingMethod = (method: ShippingDetail | null) => {
@@ -67,48 +67,56 @@ const CheckoutPage: FC = () => {
     } else {
       setShippingMethodSelected(false);
     }
-  }
+  };
 
   // Calculate total quantity
   const totalQuantity = useMemo(
     () => cartItems.reduce((acc, item) => acc + item.cartQuantity, 0),
-    [cartItems]
+    [cartItems],
   );
 
-  const fetchShippingAddress = useCallback(async (address : Address | null) => {
-    if (!session) return;
-    if (!address) return;
-  
-    const res = await fetch(shipping_cost_url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.accessToken}`,
-      },
-      body: JSON.stringify({
-        warehouseId: 1,
-        userAddressId: address?.id,
-        courier: "jne:tiki:wahana:sicepat:anteraja:pos",
-        weight: 100, // gram
-      }),
-    });
-  
-    const response = await res.json();
-    if (response.success) {
-      setShippingList(response.data);
-    } else {
-      toast({
-        title: "Failed to get shipping cost",
-        description: `${response.message}`,
-      });
-    }
-  }, [session]);
+  const fetchShippingAddress = useCallback(
+    async (address: Address | null) => {
+      if (!session) return;
+      if (!address) return;
 
-  const setSelectedShippingAddress = useCallback((selectedShippingAddress: Address) => {
-    setShippingMethodSelected(false);
-    setShippingList(null);
-    fetchShippingAddress(selectedShippingAddress);
-  }, [fetchShippingAddress]);
+      const res = await fetch(shipping_cost_url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        body: JSON.stringify({
+          warehouseId: 1,
+          userAddressId: address?.id,
+          courier: "jne:tiki:wahana:sicepat:anteraja:pos",
+          weight: 100, // gram
+        }),
+      });
+
+      const response = await res.json();
+      if (response.success) {
+        setShippingList(response.data);
+      } else {
+        toast({
+          title: "Failed to get shipping cost",
+          description: `${response.message}`,
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    },
+    [session],
+  );
+
+  const setSelectedShippingAddress = useCallback(
+    (selectedShippingAddress: Address) => {
+      setShippingMethodSelected(false);
+      setShippingList(null);
+      fetchShippingAddress(selectedShippingAddress);
+    },
+    [fetchShippingAddress],
+  );
 
   useEffect(() => {
     const fetchUserAddress = async () => {
@@ -150,7 +158,7 @@ const CheckoutPage: FC = () => {
           totalPrice: totalPrice,
           cartItems: cartItems as CartItem[],
         },
-        router
+        router,
       ),
   });
 
@@ -162,26 +170,29 @@ const CheckoutPage: FC = () => {
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
         strategy="lazyOnload"
       />
-      <section className="py-[40px] px-6 bg-slate-100 min-h-[calc(100vh-70px)] w-full">
-        <div className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
+      <section className="min-h-[calc(100vh-70px)] w-full bg-slate-100 px-6 py-[40px]">
+        <div className="mx-auto w-full md:max-w-4xl lg:max-w-[1340px]">
           {/* Breadcrumbs */}
           <div className="flex">
-            <h1 className="text-4xl text-gray-500 font-medium">
+            <h1 className="text-4xl font-medium text-gray-500">
               <Link href="/cart">Cart</Link>
             </h1>
-            <span className="text-4xl text-gray-500 mx-2">/</span>
+            <span className="mx-2 text-4xl text-gray-500">/</span>
             <h1 className="text-4xl font-semibold">Checkout</h1>
           </div>
 
-          <div className="mt-[40px] flex flex-col-reverse lg:flex-row gap-8 w-full">
+          <div className="mt-[40px] flex w-full flex-col-reverse gap-8 lg:flex-row">
             {/* Checkout details & shipping address */}
-            <div className="flex flex-col gap-6 w-full">
-              <ShippingAddress userAddress={userAddress} setSelectedShippingAddress={setSelectedShippingAddress}/>
+            <div className="flex w-full flex-col gap-6">
+              <ShippingAddress
+                userAddress={userAddress}
+                setSelectedShippingAddress={setSelectedShippingAddress}
+              />
               <CartItemsList cartItems={cartItems} />
             </div>
 
             {/* Checkout Summary */}
-            <div className="flex flex-col w-full md:w-[480px] lg:w-[600px] relative">
+            <div className="relative flex w-full flex-col md:w-[480px] lg:w-[600px]">
               <CheckoutSummary
                 paymentMethod={paymentMethod}
                 setPaymentMethod={setPaymentMethod}

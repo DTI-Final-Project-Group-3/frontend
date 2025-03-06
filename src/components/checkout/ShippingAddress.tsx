@@ -54,13 +54,13 @@ const ShippingAddress: FC<ShippingAddressProps> = ({ userAddress, setSelectedShi
                     : "bg-white border border-gray-200"
                 )}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                   <input
                     type="radio"
                     name="shippingAddress"
                     checked={selectedAddressId === address.id}
                     onChange={() => handleAddressChange(address)}
-                    className="form-radio text-green-600"
+                    className="form-radio text-green-600 checked:accent-green-600 w-[20px] h-[20px]"
                   />
                   <div className="flex flex-col gap-2">
                     <h3 className="flex gap-2 items-center text-lg font-semibold">

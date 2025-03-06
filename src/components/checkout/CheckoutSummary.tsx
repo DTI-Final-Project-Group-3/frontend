@@ -18,6 +18,7 @@ import {
 import { Separator } from "../ui/separator";
 import OrderDetails from "./OrderDetails";
 import PaymentOption from "./PaymentOption";
+import { toast } from "@/hooks/use-toast";
 
 type CheckoutSummaryProps = {
   paymentMethod: PaymentMethods;
@@ -30,9 +31,9 @@ type CheckoutSummaryProps = {
   isDisabled: boolean;
   isLoading: boolean;
   isError: boolean;
-  shippingList : ShippingList | null;
-  setShippingMethod : (method: ShippingDetail | null) => void;
-  shippingMethodSelected : boolean;
+  shippingList: ShippingList | null;
+  setShippingMethod: (method: ShippingDetail | null) => void;
+  shippingMethodSelected: boolean;
 };
 
 const CheckoutSummary: FC<CheckoutSummaryProps> = ({
@@ -61,7 +62,12 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
       }
       setIsOpen(false);
     } catch (error) {
-      console.error("Checkout failed", error);
+      toast({
+        title: "Checkout failed",
+        description: `${error}`,
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -99,7 +105,10 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
       {/* Buy Now Button */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button className="font-semibold text-md" disabled={!shippingMethodSelected || isDisabled || isLoading}>
+          <Button
+            className="text-md font-semibold"
+            disabled={!shippingMethodSelected || isDisabled || isLoading}
+          >
             {isLoading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -146,12 +155,7 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
               variant="green"
               className="px-6"
               disabled={isDisabled || isLoading}
-              onClick={
-                // paymentMethod === "gateway"
-                //   ? handleCheckout
-                //   : handleManualCheckout
-                processCheckout
-              }
+              onClick={processCheckout}
             >
               {isLoading ? (
                 <>
