@@ -23,6 +23,7 @@ const ManualPatmentPage = () => {
   const accessToken = session?.accessToken;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["orderDetails", orderId, accessToken],
@@ -38,7 +39,7 @@ const ManualPatmentPage = () => {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-160px)]">
+      <div className="flex min-h-[calc(100vh-160px)] items-center justify-center">
         <p className="text-lg font-semibold text-red-500">
           Failed to load order details. Please try again.
         </p>
@@ -49,6 +50,32 @@ const ManualPatmentPage = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      const validExtensions = ["image/jpeg", "image/png", "image/jpg"];
+      const maxSize = 1 * 1024 * 1024; // 1MB
+
+      // Validate file type
+      if (!validExtensions.includes(file.type)) {
+        toast({
+          title: "Error uploading image",
+          description:
+            "Invalid file type. Only JPG, JPEG, and PNG are allowed.",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+
+      // Validate file size
+      if (file.size > maxSize) {
+        toast({
+          title: "Error uploading image",
+          description: "File size exceeds 1MB. Please upload a smaller file.",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
     }
@@ -64,6 +91,8 @@ const ManualPatmentPage = () => {
       });
       return;
     }
+
+    setLoading(true);
 
     try {
       await uploadImageManualTransaction({
@@ -81,21 +110,23 @@ const ManualPatmentPage = () => {
         variant: "destructive",
         duration: 2000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <section className="py-[40px] px-6 bg-white min-h-[calc(100vh-70px)] w-full">
+    <section className="min-h-[calc(100vh-70px)] w-full bg-white px-6 py-[40px]">
       {isLoading ? (
-        <div className="flex flex-col gap-4 items-center justify-center min-h-[calc(100vh-160px)] w-full">
-          <Loader2 className="animate-spin w-10 h-10" />
+        <div className="flex min-h-[calc(100vh-160px)] w-full flex-col items-center justify-center gap-4">
+          <Loader2 className="h-10 w-10 animate-spin" />
           <p className="text-lg font-semibold">Loading payment details...</p>
         </div>
       ) : (
-        <div className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full flex flex-col items-center gap-14">
+        <div className="mx-auto flex w-full flex-col items-center gap-14 md:max-w-4xl lg:max-w-[1340px]">
           {/* Payment time details */}
-          <div className="flex flex-col items-center gap-4 w-full md:w-[660px]">
-            <h2 className="text-2xl font-bold text-center">
+          <div className="flex w-full flex-col items-center gap-4 md:w-[660px]">
+            <h2 className="text-center text-2xl font-bold">
               Complete the payment within
             </h2>
             {data?.data.orderStatusId === 2 ? (
@@ -122,38 +153,38 @@ const ManualPatmentPage = () => {
             )}
 
             {/* Payment details */}
-            <div className="flex flex-col border w-full rounded-xl p-6 mt-6">
+            <div className="mt-6 flex w-full flex-col rounded-xl border p-6">
               <div className="flex items-center justify-between">
                 <span>Total payment</span>
-                <span className="font-bold text-lg">
+                <span className="text-lg font-bold">
                   {formatPrice(String(data?.data.totalAmount))}
                 </span>
               </div>
               <Separator className="my-3" />
               <div className="flex items-center justify-between">
                 <span>Invoice code</span>
-                <span className="font-bold text-lg">
+                <span className="text-lg font-bold">
                   {data?.data.invoiceCode}
                 </span>
               </div>
             </div>
           </div>
           {data?.data.orderStatusId === 2 ? (
-            <div className="flex items-center justify-center mt-2 w-full h-full">
+            <div className="mt-2 flex h-full w-full items-center justify-center">
               <Image
                 src={data?.data.paymentProofImageUrl}
                 alt="Payment proof image"
                 height={660}
                 width={660}
-                className="object-cover md:h-[660px] md:w-[660px] rounded-lg"
+                className="rounded-lg object-cover md:h-[660px] md:w-[660px]"
               />
             </div>
           ) : data?.data.orderStatusId === 6 || timeLeft <= 0 ? (
-            <div className="h-[200px] flex items-center justify-center text-base font-semibold text-red-500 border rounded-xl w-[660px]">
+            <div className="flex h-[200px] w-[660px] items-center justify-center rounded-xl border text-base font-semibold text-red-500">
               <span>Order canceled, payment already expired.</span>
             </div>
           ) : (
-            <div className="flex flex-col md:flex-row gap-9 w-full h-full items-center justify-center">
+            <div className="flex h-full w-full flex-col items-center justify-center gap-9 md:flex-row">
               {timeLeft > 0 && (
                 <>
                   {/* QR code section */}
@@ -166,27 +197,27 @@ const ManualPatmentPage = () => {
                       Scan QR Code to pay the order
                     </p>
                   </div>
-                  <div className="border border-gray-200 h-full" />
+                  <div className="h-full border border-gray-200" />
                   {/* File upload section */}
                   <div className="flex flex-col items-center gap-6">
                     <label
                       htmlFor="file-upload"
-                      className="relative cursor-pointer border-2 border-dashed border-gray-300 rounded-lg w-[300px] h-[300px] flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition"
+                      className="relative flex h-[300px] w-[300px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition hover:bg-gray-100"
                     >
                       {previewUrl ? (
-                        <div className="flex items-center justify-center mt-2 bg-slate-100 w-full h-full">
+                        <div className="mt-2 flex h-full w-full items-center justify-center bg-slate-100">
                           <Image
                             src={previewUrl}
                             alt="Payment proof image"
                             height={300}
                             width={300}
-                            className="object-cover h-[300px] w-[300px] rounded-lg"
+                            className="h-[300px] w-[300px] rounded-lg object-cover"
                           />
                         </div>
                       ) : (
-                        <div className="flex flex-col gap-3 items-center justify-center">
+                        <div className="flex flex-col items-center justify-center gap-3">
                           <ImagePlus className="text-gray-400" size={28} />
-                          <p className="text-gray-500 text-center">
+                          <p className="text-center text-gray-500">
                             Click to upload image
                           </p>
                         </div>
@@ -195,7 +226,7 @@ const ManualPatmentPage = () => {
                         type="file"
                         accept="image/*"
                         onChange={handleFileChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                       />
                     </label>
                   </div>
@@ -203,7 +234,7 @@ const ManualPatmentPage = () => {
               )}
             </div>
           )}
-          <div className="flex md:flex-row flex-col w-full md:max-w-[660px] gap-6">
+          <div className="flex w-full flex-col gap-6 md:max-w-[660px] md:flex-row">
             <Button
               variant="outline"
               className="w-full"
@@ -217,11 +248,18 @@ const ManualPatmentPage = () => {
               <Button
                 type="submit"
                 variant="green"
-                disabled={timeLeft < 0}
-                className="px-6 w-full"
+                disabled={loading || timeLeft < 0}
+                className="w-full px-6"
                 onClick={handleUploadPaymentImage}
               >
-                Upload image
+                {loading ? (
+                  <div className="flex gap-2 items-center">
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />{" "}
+                    Uploading...
+                  </div>
+                ) : (
+                  "Upload image"
+                )}
               </Button>
             )}
           </div>
