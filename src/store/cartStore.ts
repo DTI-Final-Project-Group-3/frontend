@@ -79,6 +79,20 @@ export const useCartStore = create<CartState>()(
           if (existingItemIndex >= 0) {
             const existingItem = state.cartItems[existingItemIndex];
 
+            // Check if when adding another item quantity exceeds stock
+            if (
+              existingItem.cartQuantity + 1 >
+              existingItem.product.totalStock
+            ) {
+              toast({
+                title: "Stock limit reached",
+                description: "You cannot add more than the available stock.",
+                variant: "destructive",
+                duration: 2000,
+              });
+              return state;
+            }
+
             const updatedCartItems = [...state.cartItems];
             updatedCartItems[existingItemIndex] = {
               ...existingItem,
@@ -90,6 +104,17 @@ export const useCartStore = create<CartState>()(
               cartItems: updatedCartItems,
               totalItems: state.totalItems + 1,
             };
+          }
+
+          // Check stock before adding a new product
+          if (cart.cartQuantity > cart.product.totalStock) {
+            toast({
+              title: "Stock limit reached",
+              description: "Not enough stock available.",
+              variant: "destructive",
+              duration: 2000,
+            });
+            return state;
           }
 
           const newItem: CartItem = {

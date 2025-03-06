@@ -1,8 +1,8 @@
 "use client";
 import Logo from "@/components/navbar/components/Logo";
 import { Button } from "@/components/ui/button";
+import { formatSpringBootError, SpringBootErrorResponse } from "@/types/models/springBootErrorResponse";
 import axios from "axios";
-import { Eye, EyeOff } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,10 +41,23 @@ function SignupForm({ onSubmit, onGoogleLogin }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [agree, setAgree] = useState(false);
+  const [sendingRequest, setSendingRequest] = useState(false);
 
   const handleFormSubmit = (e) => {
     e.preventDefault(); // Prevent the default form submission
-    onSubmit(fullname, username, email, password); // Call the onSubmit callback with fullname, username, email, and password
+    if (!agree) {
+      alert("You must agree with Privacy Policy and Terms of use")
+      return;
+    }
+
+    setSendingRequest(true); // Disable the button
+
+    setFullname("");
+    setUsername("");
+    setPassword("");
+    setShowPassword(showPassword);
+    onSubmit(fullname, username, email, password, setSendingRequest); // Call the onSubmit callback with fullname, username, email, and password
   };
 
   return (
@@ -66,26 +79,6 @@ function SignupForm({ onSubmit, onGoogleLogin }) {
         </div>
 
         <form onSubmit={handleFormSubmit}>
-          <div className="mt-6">
-            <input
-              type="text"
-              placeholder="Your full name"
-              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
-            />
-          </div>
-
-          <div className="mt-4">
-            <input
-              type="text"
-              placeholder="Your username"
-              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-
           <div className="mt-4">
             <input
               type="text"
@@ -96,29 +89,8 @@ function SignupForm({ onSubmit, onGoogleLogin }) {
             />
           </div>
 
-          <div className="mt-4 relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button
-              type="button"
-              className="absolute inset-y-0 right-3 flex items-center"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <EyeOff className="w-5 h-5" />
-              ) : (
-                <Eye className="w-5 h-5" />
-              )}
-            </button>
-          </div>
-
           <div className="text-sm md:text-[16px] mt-4 flex md:flex-nowrap gap-2 md:items-center whitespace-nowrap w-full">
-            <input type="checkbox" className="mr-1" />
+            <input type="checkbox" className="mr-1" onChange={(e) => setAgree(e.target.value)} />
             <div className="flex items-center gap-2 flex-wrap">
               <p className="flex items-center gap-2">
                 I agree with
@@ -128,8 +100,8 @@ function SignupForm({ onSubmit, onGoogleLogin }) {
             </div>
           </div>
 
-          <Button type="submit" className="w-full mt-6 font-semibold">
-            Sign up
+          <Button type="submit" className="w-full mt-6 font-semibold" disabled={sendingRequest}>
+            {sendingRequest ? "Signing up..." : "Sign up"}
           </Button>
 
           {/* Divider */}
@@ -171,7 +143,7 @@ export default function SignupPage() {
     }
   }, [status, router]);
 
-  const handleSubmit = async (fullname, username, email, password) => {
+  const handleSubmit = async (fullname, username, email, password, setSendingRequest) => {
     try {
       const response = await axios.post(signup_url, {
         fullname,
@@ -182,14 +154,23 @@ export default function SignupPage() {
 
       console.log("Signup response:", response.data);
 
+      setSendingRequest(false);
+
       if (response.data.success) {
-        // Redirect to login page if signup is successful
+        alert("Signup succesful, please check your email for verification link");
         router.push("/login");
       } else {
-        console.error("Signup failed:", response.data.message);
+        alert("signup response failed :" + response.data.message);
+        console.log("Signup response failed:"+ response.data.message);
       }
     } catch (error) {
-      console.error("Signup failed", error);
+      setSendingRequest(false);
+      if (error.response === undefined)
+        alert("Unknown error " + error);
+      else {
+        const response = error.response.data as SpringBootErrorResponse;
+        alert(formatSpringBootError(response));
+      }
     }
   };
 

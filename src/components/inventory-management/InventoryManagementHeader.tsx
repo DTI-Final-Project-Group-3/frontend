@@ -6,6 +6,7 @@ import { useProductMutation } from "@/store/productMutationStore";
 import AddInventoryDialog from "./AddInventoryDialog";
 
 const InventoryManagementHeader: FC = () => {
+  const { data } = useSession();
   const [searchQuery, setSearchQuery] = useState("");
   const { destinationWarehouseId, setDestinationWarehouseId } =
     useProductMutation();

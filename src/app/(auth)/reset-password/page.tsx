@@ -1,8 +1,9 @@
 'use client';
 
+import { formatSpringBootError } from '@/types/models/springBootErrorResponse';
+import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
 export default function ResetPassword() {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -21,22 +22,25 @@ export default function ResetPassword() {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/reset-password-verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token, password }),
+            await axios.post('http://localhost:8080/api/v1/auth/reset-password-verify', {
+                token,
+                password
             });
-            if (!response.ok) {
-                throw new Error('Failed to reset password');
-            }
+
             alert('Password successfully reset');
             router.push('/login');
         } catch (error) {
-            alert(error.message);
+            if (!error.response) {
+                alert("Unknown error " + error);
+             } else {
+                const response = error.response.data;
+                alert(formatSpringBootError(response));
+             }
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="flex justify-center items-center h-screen bg-gray-100">

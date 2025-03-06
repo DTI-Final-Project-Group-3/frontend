@@ -21,8 +21,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "example.com" },
       { protocol: "https", hostname: "down-id.img.susercontent.com" },
       { protocol: "https", hostname: "cdn.builder.io" },
+      { protocol: 'https', hostname: "i.ibb.co"},
+      
     ],
-    domains: ["lh3.googleusercontent.com"],
+    domains: ["lh3.googleusercontent.com", "i.ibb.co"],
   },
   transpilePackages: ["react-day-picker"],
 };

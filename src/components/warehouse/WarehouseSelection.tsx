@@ -25,7 +25,6 @@ const WarehouseSelection: FC<WarehouseSelectionProps> = ({
 }) => {
   const { data } = useSession();
   const { setDestinationWarehouseId } = useProductMutation();
-
   const {
     data: warehouses,
     isLoading,
