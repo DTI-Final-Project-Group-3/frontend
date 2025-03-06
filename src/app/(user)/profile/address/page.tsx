@@ -23,7 +23,6 @@ export default function AddressPage() {
         const data = await res.json();
         if (data.success) {
           const tempAddresses = data.data as UserAddress[];
-          tempAddresses.sort((a, b) => Number(b.primary) - Number(a.primary));
           setAddresses(tempAddresses);
         } else {
           setError("Failed to fetch addresses");
