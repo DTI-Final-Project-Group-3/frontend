@@ -13,17 +13,17 @@ const CartPage: FC = () => {
   const setCartItems = useCartStore((state) => state.setCartItems);
 
   // Load cart data from local storage if there is any data on mount
-  // useEffect(() => {
-  //   const storedCart = localStorage.getItem("cart-storage");
-  //   if (storedCart) setCartItems(JSON.parse(storedCart));
-  // }, [setCartItems]);
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart-storage");
+    if (storedCart) setCartItems(JSON.parse(storedCart));
+  }, [setCartItems]);
 
-  // // Sync cart data to local storage whenever cartItems change
-  // useEffect(() => {
-  //   if (cartItems.length > 0)
-  //     localStorage.setItem("cart-storage", JSON.stringify(cartItems));
-  //   else localStorage.removeItem("cart-storage");
-  // }, [cartItems]);
+  // Sync cart data to local storage whenever cartItems change
+  useEffect(() => {
+    if (cartItems.length > 0)
+      localStorage.setItem("cart-storage", JSON.stringify(cartItems));
+    else localStorage.removeItem("cart-storage");
+  }, [cartItems]);
 
   // Calculate total price
   const totalPrice = useMemo(

@@ -23,4 +23,5 @@ export type Order = {
   orderStatusName: string;
   invoiceCode: string;
   createdAt: Date;
+  sentAt: Date;
 };

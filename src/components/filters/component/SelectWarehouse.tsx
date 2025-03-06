@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { useOrderStore } from "@/store/orderStore";
-import { getAllWarehouses } from "@/app/api/getWarehouses";
+import { getAllWarehouses } from "@/app/api/warehouse/getWarehouses";
 
 const SelectWarehouse: FC = () => {
   const { warehouseId, setFilters } = useOrderStore();
@@ -20,7 +20,7 @@ const SelectWarehouse: FC = () => {
   } = useQuery({
     queryKey: ["warehouses"],
     queryFn: getAllWarehouses,
-    staleTime: 1000 * 60 * 2, // Cache results for 5 minutes
+    staleTime: 1000 * 60 * 2, // Cache results for 2 minutes
   });
 
   return (

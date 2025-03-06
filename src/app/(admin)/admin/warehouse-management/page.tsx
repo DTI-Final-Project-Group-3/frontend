@@ -5,7 +5,7 @@ import { WarehouseAssignedDetail } from "@/types/models/warehouseAssigned";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-const warehouse_all = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSES}/all-assigned`;
+const warehouse_all = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSES_ALL}/all-assigned`;
 const admin_not_assigned = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_NOT_ASSIGNED}`;
 const admin_assigned = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_ASSIGNED}`;
 const admin_assign = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_ASSIGN_WAREHOUSE}`;

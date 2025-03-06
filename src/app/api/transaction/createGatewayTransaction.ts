@@ -1,5 +1,5 @@
 import { toast } from "@/hooks/use-toast";
-import { CartItem } from "@/store/cartStore";
+import { CartItem, useCartStore } from "@/store/cartStore";
 
 type GatewayTransferPayload = {
   accessToken: string | undefined;
@@ -22,18 +22,25 @@ export const createGatewayTransaction = async ({
   cartItems,
 }: GatewayTransferPayload) => {
   try {
+    if (!accessToken) {
+      toast({
+        title: "Authentication Error",
+        description: "Please log in to proceed.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Set order items
     const orderItems = cartItems.map((item) => ({
-      productId: 3,
+      productId: item.product.id,
       quantity: item.cartQuantity,
       unitPrice: item.product.price,
     }));
 
     // Set payload
     const payload = {
-      orderId: `ORDER-${Date.now()}-${Math.random().toString(10)}`,
-      grossAmount: totalPrice + 25000,
-      warehouseId: 3,
+      grossAmount: totalPrice + shippingCost,
       latitude: latitude,
       longitude: longitude,
       paymentMethodId: paymentMethodId,
@@ -43,7 +50,8 @@ export const createGatewayTransaction = async ({
     };
 
     const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL + "/api/v1/transactions/create",
+      process.env.NEXT_PUBLIC_BACKEND_URL +
+        "/api/v1/transactions/create-gateway",
       {
         method: "POST",
         headers: {
@@ -54,18 +62,33 @@ export const createGatewayTransaction = async ({
       }
     );
 
-    if (!response.ok) throw new Error("Failed to create transaction");
+    if (!response.ok) {
+      toast({
+        title: "Failed to create transaction",
+        description: "Please make sure you're verified and try again.",
+        variant: "destructive",
+      });
+      throw new Error("Failed to create transaction");
+    }
 
     const data = await response.json();
 
+    // Reset cart items
+    useCartStore.getState().resetCart();
+
+    toast({
+      title: "Your order have been set.",
+      description: "Please complete the order payment.",
+      duration: 3000,
+    });
+
     await window.snap.pay(data.data.token);
   } catch (error) {
-    console.error("Error creating transaction:", error);
     toast({
       title: "Payment failed",
       duration: 2000,
       variant: "destructive",
-      description: "Please check your order and payment detail.",
+      description: `${error} Please check your order and payment detail.`,
     });
   }
 };

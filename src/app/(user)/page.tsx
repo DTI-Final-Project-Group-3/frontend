@@ -11,12 +11,12 @@ import Filtering from "@/components/product/FilterCategory";
 import LocationSelector from "@/components/product/FilterLocation";
 import { useUserAddressStore } from "@/store/userAddressStore";
 import { useSearchStore } from "@/store/searchStore";
-import { getNearbyProduct } from "@/app/api/getProducts";
 import { ProductSummary } from "@/types/models/products";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import ProductCard from "@/components/product/ProductCard";
-import { cookies } from "next/headers";
 import { useSession } from "next-auth/react";
+import { getNearbyProduct } from "../api/product/getProducts";
+import { toast } from "@/hooks/use-toast";
 
 export default function Home() {
   const { data: session } = useSession();

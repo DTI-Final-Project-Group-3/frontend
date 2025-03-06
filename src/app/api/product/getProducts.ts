@@ -1,8 +1,9 @@
 import { ApiResponse } from "@/types/api/apiResponse";
-import { PaginationParams, PaginationResponse } from "@/types/api/pagination";
+import { PaginationResponse } from "@/types/api/pagination";
 import { LocationParams } from "@/types/location";
 import {
   PaginatedProductParams,
+  ProductBasic,
   ProductCategory,
   ProductDetail,
   ProductSummary,
@@ -17,7 +18,7 @@ export const getProductCategory = async (): Promise<
 > => {
   console.log(productCategoryUrl);
   const response = await axios.get<ApiResponse<ProductCategory[]>>(
-    `${productCategoryUrl}/all`
+    `${productCategoryUrl}/all`,
   );
   return response.data;
 };
@@ -46,7 +47,7 @@ export const getNearbyProduct = async ({
       },
     });
     return response.data.data;
-  } catch (error) {
+  } catch {
     throw new Error("Failed to fetch nearby products");
   }
 };
@@ -70,7 +71,7 @@ export const getProductDetailById = async ({
         latitude: latitude,
         radius: radius,
       },
-    }
+    },
   );
   return response.data.data;
 };
@@ -94,5 +95,40 @@ export const getPaginatedProducts = async ({
     },
   });
 
+  return response.data.data;
+};
+
+export const getAllProductList = async (): Promise<ProductBasic[]> => {
+  const response = await axios.get<ApiResponse<ProductBasic[]>>(
+    `${productUrl}/all`,
+  );
+  return response.data.data;
+};
+
+export const getProductIncludeFilter = async (
+  warehouseId: number,
+): Promise<ProductBasic[]> => {
+  const response = await axios.get<ApiResponse<ProductBasic[]>>(
+    `${productUrl}/filter/include`,
+    {
+      params: {
+        warehouseId,
+      },
+    },
+  );
+  return response.data.data;
+};
+
+export const getProductExcludeFilter = async (
+  warehouseId: number,
+): Promise<ProductBasic[]> => {
+  const response = await axios.get<ApiResponse<ProductBasic[]>>(
+    `${productUrl}/filter/exclude`,
+    {
+      params: {
+        warehouseId,
+      },
+    },
+  );
   return response.data.data;
 };

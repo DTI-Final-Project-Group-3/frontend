@@ -1,10 +1,5 @@
 export const menuItems = [
   {
-    title: "Dashboard",
-    route: "/admin",
-    icon: "/icons/admin/layout-dashboard.svg",
-  },
-  {
     title: "Report & Analysis",
     route: "/admin/report-analysis",
     icon: "/icons/admin/chart-spline.svg",
@@ -28,6 +23,11 @@ export const menuItems = [
     title: "Inventory Management",
     route: "/admin/inventory-management",
     icon: "/icons/admin/truck.svg",
+  },
+  {
+    title: "Product Mutation & Journal",
+    route: "/admin/product-mutation",
+    icon: "/icons/admin/notebook-pen.svg",
   },
   {
     title: "Order Management",

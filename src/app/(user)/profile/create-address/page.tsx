@@ -1,58 +1,30 @@
 "use client";
 
-import { Icon } from 'leaflet';
-import "leaflet/dist/leaflet.css";
+import MapSelector from "@/components/location/MapSelector";
+import { toast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
-import Link from 'next/link';
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 const user_address_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS}`;
 
-interface Position {
-    lat: number;
-    lng: number;
-}
-
 export default function CreateAddress() {
     const { data: session, status } = useSession();
-    const router = useRouter();
-    
     const [name, setName] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
-    const [position, setPosition] = useState<Position | null>(null);
+    const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
     
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const origin = searchParams.get("origin") || "/profile/address";
+
     useEffect(() => {
         if (status === "unauthenticated") {
             alert("You are not logged in.");
-            router.push("/login");
+            router.push(origin);
         }
-        
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-                },
-                () => {
-                    setPosition({ lat: 1.0, lng: -1.0 }); // Fallback location
-                }
-            );
-        }
-    }, [status, router]);
-    
-    function LocationMarker() {
-        useMapEvents({
-            click(e: { latlng: Position }) {
-                setPosition(e.latlng);
-            },
-        });
-        return position ? (
-            <Marker position={position} 
-                icon={new Icon({iconUrl: '/icons/marker-icon.png', iconSize: [25, 41], iconAnchor: [12, 41]})} />
-        ) : null;
-    }
-    
+    }, [status, router, origin]);
+
     const handleSubmit = async () => {
         if (!session) {
             alert("Session is not available");
@@ -62,13 +34,17 @@ export default function CreateAddress() {
             alert("Please select a location on the map.");
             return;
         }
-        
+        if (!name.trim()) {
+            alert("Name cannot be empty.");
+            return;
+        }
+
         const response = await fetch(user_address_url, {
             method: "POST",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
-                'Authorization': `Bearer ${session.accessToken}`
-             },
+                "Authorization": `Bearer ${session.accessToken}`
+            },
             body: JSON.stringify({
                 name,
                 detailAddress,
@@ -76,54 +52,32 @@ export default function CreateAddress() {
                 longitude: position.lng,
             }),
         });
-        
+
         if (response.ok) {
-            router.push("/profile");
+            toast({ title: "Success", description: "Create address success", duration: 2000 });
+            router.push(origin);
         } else {
             alert("Failed to create address. Please try again.");
         }
     };
-    
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-                <h1 className="text-xl font-bold mb-4">Create a New Address</h1>
-                <Link href="/profile">
-                    <button className='w-full bg-gray-700 text-white p-2 rounded mb-4 hover:bg-gray-800'>
-                        Back to Profile
-                    </button>
-                </Link>
-                
-                <input
-                    type="text"
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full p-2 border rounded mb-2"
-                />
-                <input
-                    type="text"
-                    placeholder="Detail Address"
-                    value={detailAddress}
-                    onChange={(e) => setDetailAddress(e.target.value)}
-                    className="w-full p-2 border rounded mb-4"
-                />
-                
-                <div className="w-full h-64 mb-4">
-                    {position && (
-                        <MapContainer center={[position.lat, position.lng]} zoom={15} className="w-full h-full rounded-lg">
-                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                            <LocationMarker />
-                        </MapContainer>
-                    )}
-                </div>
-                
-                <button
-                    onClick={handleSubmit}
-                    className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-                >
-                    Create Address
+            <div className="flex flex-col items-center justify-center bg-white p-6 rounded-lg shadow-lg w-full ">
+                <h1 className="text-xl font-bold mb-4 ">Create a New Address</h1>
+                <button className='w-full bg-gray-700 text-white p-2 rounded mb-4 hover:bg-gray-800 max-w-md' onClick={() => router.push(origin)}>
+                    Return
                 </button>
+                <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-2 border rounded mb-2" />
+                <input type="text" placeholder="Detail Address" value={detailAddress} onChange={(e) => setDetailAddress(e.target.value)} className="w-full p-2 border rounded mb-4" />
+            </div>
+
+            <button onClick={handleSubmit} className="w-full bg-blue-500 text-white p-2 rounded mt-4 hover:bg-blue-600">
+                Create Address
+            </button>
+
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full md:h-[600px] mt-4">
+                <MapSelector onSelectLocation={setPosition} setDetailAddress={setDetailAddress}/>
             </div>
         </div>
     );
