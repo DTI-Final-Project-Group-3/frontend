@@ -84,6 +84,5 @@ export const getHistoryCustomerOrders = async ({
       productCategoryId,
     },
   });
-  console.log(response.data.data);
   return response.data.data;
 };

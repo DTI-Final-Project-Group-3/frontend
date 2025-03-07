@@ -32,6 +32,7 @@ const CustomerOrderHistoryTable: FC = () => {
   } = useQuery({
     queryKey: [
       "customer-order-chart",
+      page,
       destinationWarehouseId,
       dateRange.from,
       dateRange.to,
@@ -72,7 +73,7 @@ const CustomerOrderHistoryTable: FC = () => {
           </div>
         </div>
       ) : customerOrderIsError ? (
-        <div>Error loading mutation history</div>
+        <div>Error loading sales history</div>
       ) : (
         customerOrders && (
           <>
