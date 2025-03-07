@@ -25,3 +25,30 @@ export type Order = {
   createdAt: Date;
   sentAt: Date;
 };
+
+export interface CustomerOrderHistoryRequestParams {
+  page: number;
+  limit: number;
+  startDate?: string;
+  endDate?: string;
+  warehouseId?: number;
+  customerOrderStatusId?: number;
+  productId?: number;
+  productCategoryId?: number;
+  accessToken?: string;
+}
+
+export interface CustomerOrderHistoryResponse {
+  dateTime: Date;
+  orderId: number;
+  invoiceCode: string;
+  orderStatusId: number;
+  orderStatusName: string;
+  orderItemId: number;
+  productId: number;
+  productName: string;
+  productCategoryId: number;
+  productCategoryName: string;
+  quantity: number;
+  unitPrice: number;
+}

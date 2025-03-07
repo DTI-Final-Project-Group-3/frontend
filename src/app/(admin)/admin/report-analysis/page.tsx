@@ -8,6 +8,7 @@ import ProductMutationHistoryTable from "@/components/report-analysis/ProductMut
 import ProductMutationTotal from "@/components/report-analysis/ProductMutationTotal";
 import ProductMutationGraph from "@/components/report-analysis/ProductMutationGraph";
 import ProductMutationFilter from "@/components/product-mutation/ProductMutationFilter";
+import CustomerOrderHistoryTable from "@/components/report-analysis/CustomerOrderHistoryTable";
 
 const ReportAnalysisPage = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
@@ -46,8 +47,10 @@ const ReportAnalysisPage = () => {
           </TabsList>
 
           <div className="rounded-xl bg-white shadow-sm">
-            <ProductMutationFilter />
-            <TabsContent value="sales" className="p-4 sm:p-6"></TabsContent>
+            <ProductMutationFilter isProductMutation={selectedTab === 2} />
+            <TabsContent value="sales" className="p-4 sm:p-6">
+              <CustomerOrderHistoryTable />
+            </TabsContent>
 
             <TabsContent value="mutation" className="space-y-10 p-4 sm:p-6">
               <ProductMutationTotal />

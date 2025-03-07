@@ -5,8 +5,15 @@ import { useReport } from "@/store/reportStore";
 import ProductMutationTypeSelection from "@/components/product-mutation/ProductMutationTypeSelection";
 import ProductMutationStatusSelection from "@/components/product-mutation/ProductMutationStatusSelection";
 import ProductCategorySelection from "@/components/product/ProductCategorySelection";
+import CustomerOrderStatusSelection from "@/components/report-analysis/CustomerOrderStatusSelection";
 
-const ProductMutationFilter: FC = () => {
+interface ProductMutationFilterProps {
+  isProductMutation?: boolean;
+}
+
+const ProductMutationFilter: FC<ProductMutationFilterProps> = ({
+  isProductMutation = false,
+}) => {
   const {
     dateRange,
     productId,
@@ -33,14 +40,20 @@ const ProductMutationFilter: FC = () => {
           productCategoryId={productCategoryId}
           setProductCategoryId={setProductCategoryId}
         />
-        <ProductMutationTypeSelection
-          productMutationTypeId={productMutationTypeId}
-          setProductMutationTypeId={setProductMutationTypeId}
-        />
-        <ProductMutationStatusSelection
-          productMutationSelectionId={productMutationStatusId}
-          setProductMutationSelectionId={setProductMutationStatusId}
-        />
+        {isProductMutation ? (
+          <>
+            <ProductMutationTypeSelection
+              productMutationTypeId={productMutationTypeId}
+              setProductMutationTypeId={setProductMutationTypeId}
+            />
+            <ProductMutationStatusSelection
+              productMutationSelectionId={productMutationStatusId}
+              setProductMutationSelectionId={setProductMutationStatusId}
+            />
+          </>
+        ) : (
+          <CustomerOrderStatusSelection />
+        )}
       </div>
     </div>
   );

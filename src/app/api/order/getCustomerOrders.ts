@@ -1,7 +1,13 @@
 import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
-import { Order } from "@/types/models/orders/orders";
+import {
+  CustomerOrderHistoryRequestParams,
+  CustomerOrderHistoryResponse,
+  Order,
+} from "@/types/models/orders/orders";
 import axios from "axios";
+
+const customerOrderUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/orders`;
 
 export const getAllCustomerOrders = async (
   page: number,
@@ -46,4 +52,38 @@ export const getAllCustomerOrders = async (
   );
 
   return response.data;
+};
+
+export const getHistoryCustomerOrders = async ({
+  page,
+  limit,
+  startDate,
+  endDate,
+  warehouseId,
+  customerOrderStatusId,
+  productId,
+  productCategoryId,
+  accessToken,
+}: CustomerOrderHistoryRequestParams): Promise<
+  PaginationResponse<CustomerOrderHistoryResponse>
+> => {
+  const response = await axios.get<
+    ApiResponse<PaginationResponse<CustomerOrderHistoryResponse>>
+  >(`${customerOrderUrl}/history`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    params: {
+      page,
+      limit,
+      startDate,
+      endDate,
+      warehouseId,
+      customerOrderStatusId,
+      productId,
+      productCategoryId,
+    },
+  });
+  console.log(response.data.data);
+  return response.data.data;
 };

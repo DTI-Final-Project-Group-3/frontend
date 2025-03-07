@@ -9,11 +9,15 @@ type ReportStoreProps = {
   productMutationTypeId?: number;
   productMutationStatusId?: number;
 
+  customerOrderStatusId?: number;
+
   setProductId: (val: number | undefined) => void;
   setProductCategoryId: (val: number | undefined) => void;
   setDateRange: (val: DateRange | undefined) => void;
   setProductMutationTypeId: (val: number | undefined) => void;
   setProductMutationStatusId: (val: number | undefined) => void;
+
+  setCustomerOrderStatusId: (val: number | undefined) => void;
 };
 
 export const useReport = create<ReportStoreProps>((set) => ({
@@ -25,6 +29,8 @@ export const useReport = create<ReportStoreProps>((set) => ({
   },
   productMutationTypeId: undefined,
   productMutationStatusId: ProductMutationConstant.STATUS_COMPLETED,
+
+  customerOrderStatusId: 5,
 
   setProductId: (val) => set({ productId: val }),
 
@@ -40,5 +46,9 @@ export const useReport = create<ReportStoreProps>((set) => ({
   },
   setProductMutationTypeId: (val) => {
     set({ productMutationTypeId: val });
+  },
+
+  setCustomerOrderStatusId: (val) => {
+    set({ customerOrderStatusId: val });
   },
 }));

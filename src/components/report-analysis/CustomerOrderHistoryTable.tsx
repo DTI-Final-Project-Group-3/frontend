@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import { useReport } from "@/store/reportStore";
 import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
-import { getAllCustomerOrders } from "@/app/api/order/getCustomerOrders";
+import { getHistoryCustomerOrders } from "@/app/api/order/getCustomerOrders";
 import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -15,13 +15,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
-import { Order, OrderItems } from "@/types/models/orders/orders";
-import { formatDateString } from "@/utils/formatter";
+import { CustomerOrderHistoryResponse } from "@/types/models/orders/orders";
+import { formatDateHyphen, formatDateString } from "@/utils/formatter";
 
 const CustomerOrderHistoryTable: FC = () => {
   const [page, setPage] = useState<number>(0);
   const { data } = useSession();
-  const { dateRange } = useReport();
+  const { dateRange, productId, productCategoryId, customerOrderStatusId } =
+    useReport();
   const { destinationWarehouseId } = useProductMutation();
 
   const {
@@ -29,18 +30,28 @@ const CustomerOrderHistoryTable: FC = () => {
     isError: customerOrderIsError,
     isLoading: customerOrderIsLoading,
   } = useQuery({
-    queryKey: ["customer-order-chart"],
+    queryKey: [
+      "customer-order-chart",
+      destinationWarehouseId,
+      dateRange.from,
+      dateRange.to,
+      productId,
+      productCategoryId,
+      customerOrderStatusId,
+    ],
     queryFn: () =>
-      getAllCustomerOrders(
-        page,
-        ADMIN_PRODUCT_MUTATION,
-        data?.accessToken.toString() || "",
-        undefined,
-        undefined,
-        dateRange.from,
-        dateRange.to,
-        destinationWarehouseId,
-      ),
+      getHistoryCustomerOrders({
+        page: page,
+        limit: ADMIN_PRODUCT_MUTATION,
+        startDate: formatDateHyphen(dateRange.from),
+        endDate: formatDateHyphen(dateRange.to),
+        customerOrderStatusId: customerOrderStatusId,
+        productId: productId,
+        productCategoryId: productCategoryId,
+        warehouseId: destinationWarehouseId,
+        accessToken: data?.accessToken,
+      }),
+    enabled: !!data?.accessToken,
   });
   return (
     <div className="rounded-lg bg-white p-6 shadow">
@@ -72,27 +83,25 @@ const CustomerOrderHistoryTable: FC = () => {
                   <TableHead>Invoice Code</TableHead>
                   <TableHead>Order Status</TableHead>
                   <TableHead>Product</TableHead>
+                  <TableHead>Product Category</TableHead>
                   <TableHead>Quantity</TableHead>
                   <TableHead>Price</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {customerOrders?.data.content.map((customerOrder: Order) =>
-                  customerOrder.customerOrderitems.map(
-                    (item: OrderItems, index: number) => (
-                      <TableRow key={`${customerOrder.id}-${index}`}>
-                        <TableCell>
-                          {formatDateString(
-                            customerOrder.createdAt.toUTCString(),
-                          )}
-                        </TableCell>
-                        <TableCell>{customerOrder.invoiceCode}</TableCell>
-                        <TableCell>{customerOrder.orderStatusName}</TableCell>
-                        <TableCell>{item.productName}</TableCell>
-                        <TableCell>{item.quantity}</TableCell>
-                        <TableCell>{item.unitPrice}</TableCell>
-                      </TableRow>
-                    ),
+                {customerOrders?.content.map(
+                  (customerOrder: CustomerOrderHistoryResponse, index) => (
+                    <TableRow key={`${customerOrder.orderId}-${index}`}>
+                      <TableCell>
+                        {formatDateString(customerOrder.dateTime.toString())}
+                      </TableCell>
+                      <TableCell>{customerOrder.invoiceCode}</TableCell>
+                      <TableCell>{customerOrder.orderStatusName}</TableCell>
+                      <TableCell>{customerOrder.productName}</TableCell>
+                      <TableCell>{customerOrder.productCategoryName}</TableCell>
+                      <TableCell>{customerOrder.quantity}</TableCell>
+                      <TableCell>{customerOrder.unitPrice}</TableCell>
+                    </TableRow>
                   ),
                 )}
               </TableBody>
@@ -102,9 +111,9 @@ const CustomerOrderHistoryTable: FC = () => {
               desc="History"
               page={page}
               setPage={setPage}
-              totalPages={customerOrders.data.totalPages}
-              totalElements={customerOrders.data.totalElements}
-              currentPageSize={customerOrders.data.content.length}
+              totalPages={customerOrders.totalPages}
+              totalElements={customerOrders.totalElements}
+              currentPageSize={customerOrders.content.length}
             />
           </>
         )
