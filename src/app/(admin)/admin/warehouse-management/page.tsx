@@ -4,6 +4,7 @@ import { WarehouseCard } from "@/components/warehouse-management/WarehouseCard";
 import { toast } from "@/hooks/use-toast";
 import { WarehouseAssignedDetail } from "@/types/models/warehouseAssigned";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 const warehouse_all = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSES_ALL}/all-assigned`;
@@ -47,9 +48,12 @@ const WarehouseManagementPage = () => {
 
   return (
     <section className="w-full rounded-2xl bg-white p-7 min-h-[calc(100vh-178px)]">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold">Warehouse Management</h2>
-      </div>
+      <div className="flex items-center gap-4">
+          <h2 className="text-xl font-semibold">Warehouse Management</h2>
+          <Link href="/admin/warehouse-management/create" className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+            Create new
+          </Link>
+        </div>
       <div className="mt-7 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {warehouses && warehouses.length > 0 ? (
           warehouses.map((warehouse) => (

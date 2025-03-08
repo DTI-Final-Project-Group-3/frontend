@@ -84,9 +84,15 @@ const AccountManagementPage = () => {
   return (
     <section className="w-full rounded-2xl bg-white p-7 min-h-[calc(100vh-178px)]">
       {/* Title and Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold">Warehouse Admins</h2>
-        <div className="flex gap-3 items-center">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div className="flex items-center gap-4">
+          <h2 className="text-xl font-semibold">Warehouse Admins</h2>
+          <Link href="/admin/account-management/create" className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+            Create new
+          </Link>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full md:w-auto">
           <input
             type="text"
             placeholder="Search..."
@@ -95,59 +101,57 @@ const AccountManagementPage = () => {
               setSearchQuery(e.target.value);
               setFilter("all");
             }}
-            className="border p-2 rounded"
+            className="border p-2 rounded w-full md:w-auto"
           />
           <select
             value={searchField}
             onChange={(e) => setSearchField(e.target.value)}
-            className="border p-2 rounded"
+            className="border p-2 rounded w-full md:w-auto"
           >
             <option value="both">Name or Email</option>
             <option value="fullname">Name</option>
             <option value="email">Email</option>
           </select>
-          <div className="flex gap-2">
-            <label>
-              <input
-                type="radio"
-                value="all"
-                checked={filter === "all"}
-                onChange={() => {
-                  setFilter("all");
-                  setSearchQuery("");
-                }}
-              />
-              All
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="assigned"
-                checked={filter === "assigned"}
-                onChange={() => {
-                  setFilter("assigned");
-                  setSearchQuery("");
-                }}
-              />
-              Assigned
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="not_assigned"
-                checked={filter === "not_assigned"}
-                onChange={() => {
-                  setFilter("not_assigned");
-                  setSearchQuery("");
-                }}
-              />
-              Not Assigned
-            </label>
-          </div>
         </div>
-        <Link href="/admin/account-management/create" className="bg-blue-500 text-white px-4 py-2 rounded-lg">
-          Create a new Warehouse Admin
-        </Link>
+
+        <div className="flex gap-2 justify-center md:justify-end">
+          <label className="flex items-center gap-1">
+            <input
+              type="radio"
+              value="all"
+              checked={filter === "all"}
+              onChange={() => {
+                setFilter("all");
+                setSearchQuery("");
+              }}
+            />
+            All
+          </label>
+          <label className="flex items-center gap-1">
+            <input
+              type="radio"
+              value="assigned"
+              checked={filter === "assigned"}
+              onChange={() => {
+                setFilter("assigned");
+                setSearchQuery("");
+              }}
+            />
+            Assigned
+          </label>
+          <label className="flex items-center gap-1">
+            <input
+              type="radio"
+              value="not_assigned"
+              checked={filter === "not_assigned"}
+              onChange={() => {
+                setFilter("not_assigned");
+                setSearchQuery("");
+              }}
+            />
+            Not Assigned
+          </label>
+        </div>
       </div>
 
       {/* Content */}
