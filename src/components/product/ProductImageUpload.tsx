@@ -1,8 +1,9 @@
-import React, { ChangeEvent, FC, useEffect, useMemo } from "react";
+import React, { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
 import { ProductImage } from "@/types/models/products";
 import ImageComponent from "@/components/common/ImageComponent";
 import { ImagePlus, PenSquare, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AlertDialogComponent from "@/components/common/AlertDialogComponent";
 
 interface TestProductImageUploadProps {
   existingImage?: ProductImage[];
@@ -10,11 +11,13 @@ interface TestProductImageUploadProps {
   setSelectedImages: (val: Map<number, string | File>) => void;
 }
 
-const TestProductImageUpload: FC<TestProductImageUploadProps> = ({
+const ProductImageUpload: FC<TestProductImageUploadProps> = ({
   existingImage,
   selectedImages,
   setSelectedImages,
 }) => {
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+
   useEffect(() => {
     if (existingImage) {
       const newMap = new Map(selectedImages);
@@ -31,19 +34,15 @@ const TestProductImageUpload: FC<TestProductImageUploadProps> = ({
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith("image/")) {
-        alert("Please upload an image file");
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image size should be less than 5MB");
+      if (file.size > 1024 * 1024) {
+        setOpenAlert(true);
+        event.target.value = "";
         return;
       }
       const newMap = new Map(selectedImages);
       newMap.set(position, file);
       setSelectedImages(newMap);
     }
-    event.target.value = "";
   };
 
   const isPositionSelectable = (position: number): boolean => {
@@ -78,7 +77,7 @@ const TestProductImageUpload: FC<TestProductImageUploadProps> = ({
   }, [selectedImages]);
 
   return (
-    <div className="grid w-full grid-cols-5 gap-3">
+    <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-5">
       {Array.from({ length: 5 }).map((_, index) => {
         const position = index + 1;
         const imageUrl = imageUrls.get(position);
@@ -104,7 +103,8 @@ const TestProductImageUpload: FC<TestProductImageUploadProps> = ({
                   <input
                     type="file"
                     id={`image-input-${index}`}
-                    accept="image/*"
+                    accept="image/jpg, image/jpeg, image/png, image/gif"
+                    max={1024 * 1024}
                     className="hidden"
                     onChange={(e) => handleFileChange(position, e)}
                     disabled={!isPositionSelectable(position)}
@@ -139,7 +139,8 @@ const TestProductImageUpload: FC<TestProductImageUploadProps> = ({
                 <input
                   type="file"
                   id={`image-change-${index}`}
-                  accept="image/*"
+                  accept="image/jpg, image/jpeg, image/png, image/gif"
+                  max={1024 * 1024}
                   className="hidden"
                   onChange={(e) => handleFileChange(position, e)}
                 />
@@ -156,8 +157,16 @@ const TestProductImageUpload: FC<TestProductImageUploadProps> = ({
           </div>
         );
       })}
+      <AlertDialogComponent
+        open={openAlert}
+        setOpen={setOpenAlert}
+        title="Maximum image size reached !"
+        description="Image size should be less than 1MB"
+        cancelText="Okay"
+        onCancel={() => setOpenAlert(false)}
+      />
     </div>
   );
 };
 
-export default TestProductImageUpload;
+export default ProductImageUpload;

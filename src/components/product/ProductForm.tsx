@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ProductDetail, ProductForm } from "@/types/models/products";
@@ -8,9 +8,11 @@ import { postFileBuilderIo } from "@/app/api/builder-io/postBuilderIo";
 import { Button } from "../ui/button";
 import ProductCategorySelection from "@/components/product/ProductCategorySelection";
 import { toast } from "@/hooks/use-toast";
-import TestProductImageUpload from "@/components/product/TestProductImageUpload";
+import ProductImageUpload from "@/components/product/ProductImageUpload";
 import { updateProductById } from "@/app/api/product/putProducts";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { postProducts } from "@/app/api/product/postProducts";
+import AlertDialogComponent from "@/components/common/AlertDialogComponent";
 
 interface ProductFormProps {
   props?: ProductDetail;
@@ -21,7 +23,9 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
   const [selectedImages, setSelectedImages] = useState<
     Map<number, string | File>
   >(new Map());
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
   const { productId } = useParams();
+  const router = useRouter();
 
   const initialValues: ProductForm = {
     name: props?.name ?? "",
@@ -32,7 +36,7 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
     width: props?.width ?? 0,
     length: props?.length ?? 0,
     images: props?.images ?? [],
-    categoryId: props?.category.id ?? 0,
+    productCategoryId: props?.category.id ?? 0,
   };
 
   const validationSchema = Yup.object().shape({
@@ -59,28 +63,11 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
     length: Yup.number()
       .min(0, "Length must be greater than or equal to 0")
       .nullable(),
-    // images: Yup.array().min(1, "At least one image is required"),
-    categoryId: Yup.number()
+    productCategoryId: Yup.number()
       .nonNullable()
       .min(1, "Category is required")
       .required("Category is required"),
   });
-
-  const handleUploadForm = (values: ProductForm) => {
-    try {
-      updateProductById(Number(productId), values).then((r) =>
-        setIsSubmitting(false),
-      );
-    } catch {
-      setIsSubmitting(false);
-      toast({
-        title: "Failed to upload product form",
-        description: "Please try again",
-        variant: "destructive",
-        duration: 2000,
-      });
-    }
-  };
 
   const handleOnSubmit = async (values: ProductForm) => {
     try {
@@ -105,9 +92,21 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
           };
         },
       );
+
       const responses = await Promise.all(uploadPromise);
       values.images = responses.map((response) => response);
-      handleUploadForm(values);
+
+      if (productId) {
+        const response = await updateProductById(Number(productId), values);
+        if (response.success) {
+          setOpenAlert(true);
+        }
+      } else {
+        const response = await postProducts(values);
+        if (response.success) {
+          setOpenAlert(true);
+        }
+      }
     } catch {
       setIsSubmitting(false);
       toast({
@@ -122,154 +121,175 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={(values) => handleOnSubmit(values)}
-    >
-      {({ values, setFieldValue }) => (
-        <Form className="space-y-6">
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
-            <h2 className="mb-6 text-xl font-semibold">Basic Information</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_3fr]">
-              <div className="">
-                <label className="block font-medium text-gray-700">
-                  Product Name
-                </label>
-              </div>
-              <div className="space-y-2">
-                <Field
-                  name="name"
-                  type="text"
-                  className={"h-10 w-full rounded-md border-2 px-3"}
-                  placeholder="Product name"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="mt-1 text-sm text-red-500"
-                />
-              </div>
-
-              <div className="flex items-center">
-                <label className="block font-medium text-gray-700">Price</label>
-              </div>
-              <div className="space-y-2">
-                <div className="grid grid-cols-[auto_1fr] items-center gap-2">
-                  <span className="font-semibold">Rp</span>
-                  <Field
-                    name="price"
-                    type="number"
-                    className={"h-10 w-full rounded-md border-2 px-3"}
-                    placeholder="Product price"
-                  />
-                </div>
-                <ErrorMessage
-                  name="price"
-                  component="div"
-                  className="mt-1 text-sm text-red-500"
-                />
-              </div>
-
-              <div className="flex items-start pt-2">
-                <label className="block font-medium text-gray-700">
-                  Description
-                </label>
-              </div>
-              <div className="space-y-2">
-                <Field
-                  as="textarea"
-                  name="description"
-                  className={"h-32 w-full rounded-md border-2 p-3"}
-                  placeholder="Product description"
-                />
-                <ErrorMessage
-                  name="description"
-                  component="div"
-                  className="mt-1 text-sm text-red-500"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
-            <h2 className="mb-6 text-xl font-semibold">Product Images</h2>
-            <div className="space-y-4">
-              <label className="block font-medium text-gray-700">
-                Upload up to 5 images
-              </label>
-              <TestProductImageUpload
-                existingImage={props?.images}
-                selectedImages={selectedImages}
-                setSelectedImages={setSelectedImages}
-              />
-              <ErrorMessage
-                name="images"
-                component="div"
-                className="mt-1 text-sm text-red-500"
-              />
-            </div>
-          </div>
-
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
-            <h2 className="mb-6 text-xl font-semibold">Product Dimensions</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {["weight", "height", "width", "length"].map((field) => (
-                <div key={field} className="space-y-2">
-                  <label className="block font-medium capitalize text-gray-700">
-                    {field} ({field === "weight" ? "kg" : "cm"})
+    <>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => handleOnSubmit(values)}
+      >
+        {({ values, setFieldValue }) => (
+          <Form className="space-y-6">
+            <div className="rounded-lg border bg-white p-6 shadow-sm">
+              <h2 className="mb-6 text-xl font-semibold">Basic Information</h2>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_3fr]">
+                <div className="">
+                  <label className="block font-medium text-gray-700">
+                    Product Name
                   </label>
+                </div>
+                <div className="space-y-2">
                   <Field
-                    name={field}
-                    type="number"
+                    name="name"
+                    type="text"
                     className={"h-10 w-full rounded-md border-2 px-3"}
-                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                    placeholder="Product name"
                   />
                   <ErrorMessage
-                    name={field}
+                    name="name"
                     component="div"
                     className="mt-1 text-sm text-red-500"
                   />
                 </div>
-              ))}
-            </div>
-          </div>
 
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
-            <h2 className="mb-6 text-xl font-semibold">Category</h2>
-            <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-[1fr_3fr]">
-              <label className="block font-medium text-gray-700">
-                Select Category
-              </label>
-              <div className="space-y-2">
-                <ProductCategorySelection
-                  productCategoryId={values.categoryId}
-                  setProductCategoryId={(value) => {
-                    setFieldValue("categoryId", value);
-                  }}
-                  captionNoSelection="Select Product Category"
+                <div className="flex items-center">
+                  <label className="block font-medium text-gray-700">
+                    Price
+                  </label>
+                </div>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+                    <span className="font-semibold">Rp</span>
+                    <Field
+                      name="price"
+                      type="number"
+                      className={"h-10 w-full rounded-md border-2 px-3"}
+                      placeholder="Product price"
+                    />
+                  </div>
+                  <ErrorMessage
+                    name="price"
+                    component="div"
+                    className="mt-1 text-sm text-red-500"
+                  />
+                </div>
+
+                <div className="flex items-start pt-2">
+                  <label className="block font-medium text-gray-700">
+                    Description
+                  </label>
+                </div>
+                <div className="space-y-2">
+                  <Field
+                    as="textarea"
+                    name="description"
+                    className={"h-32 w-full rounded-md border-2 p-3"}
+                    placeholder="Product description"
+                  />
+                  <ErrorMessage
+                    name="description"
+                    component="div"
+                    className="mt-1 text-sm text-red-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-lg border bg-white p-6 shadow-sm">
+              <h2 className="mb-6 text-xl font-semibold">Product Images</h2>
+              <div className="space-y-4">
+                <label className="block font-medium text-gray-700">
+                  Upload up to 5 images
+                </label>
+                <ProductImageUpload
+                  existingImage={props?.images}
+                  selectedImages={selectedImages}
+                  setSelectedImages={setSelectedImages}
                 />
                 <ErrorMessage
-                  name="categoryId"
+                  name="images"
                   component="div"
                   className="mt-1 text-sm text-red-500"
                 />
               </div>
             </div>
-          </div>
 
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="h-full w-40"
-            >
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </Button>
-          </div>
-        </Form>
-      )}
-    </Formik>
+            <div className="rounded-lg border bg-white p-6 shadow-sm">
+              <h2 className="mb-6 text-xl font-semibold">Product Dimensions</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {["weight", "height", "width", "length"].map((field) => (
+                  <div key={field} className="space-y-2">
+                    <label className="block font-medium capitalize text-gray-700">
+                      {field} ({field === "weight" ? "kg" : "cm"})
+                    </label>
+                    <Field
+                      name={field}
+                      type="number"
+                      className={"h-10 w-full rounded-md border-2 px-3"}
+                      placeholder={
+                        field.charAt(0).toUpperCase() + field.slice(1)
+                      }
+                    />
+                    <ErrorMessage
+                      name={field}
+                      component="div"
+                      className="mt-1 text-sm text-red-500"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-lg border bg-white p-6 shadow-sm">
+              <h2 className="mb-6 text-xl font-semibold">Category</h2>
+              <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-[1fr_3fr]">
+                <label className="block font-medium text-gray-700">
+                  Select Category
+                </label>
+                <div className="space-y-2">
+                  <ProductCategorySelection
+                    productCategoryId={values.productCategoryId}
+                    setProductCategoryId={(value) => {
+                      setFieldValue("productCategoryId", value);
+                    }}
+                    captionNoSelection="Select Product Category"
+                  />
+                  <ErrorMessage
+                    name="categoryId"
+                    component="div"
+                    className="mt-1 text-sm text-red-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="h-full w-40"
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </Button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+      <AlertDialogComponent
+        open={openAlert}
+        setOpen={setOpenAlert}
+        title={productId ? "Update Product " : "Create New Product"}
+        description={
+          productId
+            ? "Successfully updated product"
+            : "Successfully created product"
+        }
+        confirmText="Okay"
+        onConfirm={() => {
+          router.push("/admin/product-management");
+          setOpenAlert(false);
+        }}
+      />
+    </>
   );
 };
 
