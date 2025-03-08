@@ -69,32 +69,37 @@ export const AdminCard = ({ admin, refresh, session }: Props) => {
   };
 
   return (
-    <div className="bg-gray-100 p-5 rounded-xl shadow-md flex flex-col items-center">
-      <img
-        src={admin.profileImageUrl?.trim() ? admin.profileImageUrl : placeholderImage}
-        alt={`${admin.fullname}'s profile`}
-        className="w-24 h-24 rounded-full object-cover mb-3"
-      />
-      <h3 className="text-lg font-semibold">{admin.fullname}</h3>
-      <p className="text-sm text-gray-600">{admin.email}</p>
-      <p className="text-sm font-medium mt-2">Admin ID: {admin.id}</p>
+    <div className="bg-gray-100 p-5 rounded-xl shadow-md flex flex-col items-start">
+      <div className="flex items-center gap-4 mb-3">
+        <img
+          src={admin.profileImageUrl?.trim() ? admin.profileImageUrl : placeholderImage}
+          alt={`${admin.fullname}'s profile`}
+          className="w-24 h-24 rounded-full object-cover"
+        />
+        <div>
+          <h3 className="text-lg font-semibold">{admin.fullname}</h3>
+          <p className="text-sm text-gray-600">{admin.email}</p>
+          <p className="text-sm font-medium mt-1">Admin ID: {admin.id}</p>
+        </div>
+      </div>
+      
       {admin.warehouseId > 0 ? (
         <>
-          <p className="text-sm font-medium mt-2 text-blue-600">Warehouse ID: {admin.warehouseId}</p>
-          <p className="text-sm font-medium mt-2 text-blue-600">Assigner ID: {admin.userAssignerId}</p>
+          <p className="text-sm font-medium text-blue-600">Warehouse: {admin.warehouseName}</p>
+          <p className="text-sm font-medium text-blue-600">Assigner: {admin.userAssignerEmail}</p>
           <Button variant="blue" className="mt-2" onClick={() => setAssignmentDialogOpen(true)}>
             Remove assignment
           </Button>
         </>
       ) : (
         <>
-          <p className="text-sm font-medium mt-2 text-red-500">Not assigned to a warehouse</p>
+          <p className="text-sm font-medium text-red-500">Not assigned to a warehouse</p>
           <Button variant="destructive" className="mt-2" onClick={() => setDeleteDialogOpen(true)}>
             Delete admin
           </Button>
         </>
       )}
-
+  
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogTitle>Confirm Deletion</DialogTitle>
@@ -107,7 +112,7 @@ export const AdminCard = ({ admin, refresh, session }: Props) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
+  
       <Dialog open={assignmentDialogOpen} onOpenChange={setAssignmentDialogOpen}>
         <DialogContent>
           <DialogTitle>Confirm Removal</DialogTitle>
