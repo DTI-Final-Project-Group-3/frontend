@@ -27,7 +27,6 @@ const ImageUpload: FC<ImageUploadProps> = ({
     const file = event.target.files?.[0];
 
     if (file) {
-      // Validate file
       if (!file.type.startsWith("image/")) {
         alert("Please upload an image file");
         return;
@@ -52,19 +51,9 @@ const ImageUpload: FC<ImageUploadProps> = ({
 
   return (
     <div
-      className={`
-        relative 
-        w-full 
-        aspect-square 
-        border-2 
-        rounded-lg 
-        overflow-hidden
-        transition-all
-        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:border-gray-300"}
-        border-gray-200
-      `}
+      className={`relative aspect-square w-full overflow-hidden rounded-lg border-2 transition-all ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-gray-300"} border-gray-200`}
     >
-      <div onClick={handleImageClick} className="w-full h-full relative">
+      <div onClick={handleImageClick} className="relative h-full w-full">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -74,8 +63,8 @@ const ImageUpload: FC<ImageUploadProps> = ({
             sizes="(max-width: 768px) 50vw, 20vw"
           />
         ) : (
-          <div className="flex items-center justify-center h-full bg-gray-50">
-            <ImagePlus className="w-12 h-12 text-gray-400" />
+          <div className="flex h-full items-center justify-center bg-gray-50">
+            <ImagePlus className="h-12 w-12 text-gray-400" />
           </div>
         )}
       </div>
@@ -84,10 +73,10 @@ const ImageUpload: FC<ImageUploadProps> = ({
         <button
           type="button"
           onClick={handleImageRemove}
-          className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+          className="absolute right-2 top-2 rounded-full bg-white p-1 shadow-md transition-colors hover:bg-gray-100"
           aria-label="Remove image"
         >
-          <X className="w-4 h-4" />
+          <X className="h-4 w-4" />
         </button>
       )}
 

@@ -27,7 +27,7 @@ const ProductMutationFilter: FC<ProductMutationFilterProps> = ({
     setProductMutationStatusId,
   } = useReport();
   return (
-    <div className="p-7">
+    <div className="px-7 pt-7">
       <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white md:grid-cols-5">
         <DatePickerRange dateRange={dateRange} setDateRange={setDateRange} />
         <ProductSelection

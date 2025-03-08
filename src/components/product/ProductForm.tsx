@@ -4,13 +4,13 @@ import { FC, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ProductDetail, ProductForm } from "@/types/models/products";
-import { getProductCategory } from "@/app/api/product/getProducts";
-import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
-import ImageUpload from "./ImageUploud";
-import { cn } from "@/lib/utils";
 import { postFileBuilderIo } from "@/app/api/builder-io/postBuilderIo";
+import { Button } from "../ui/button";
+import ProductCategorySelection from "@/components/product/ProductCategorySelection";
+import { toast } from "@/hooks/use-toast";
+import TestProductImageUpload from "@/components/product/TestProductImageUpload";
 import { updateProductById } from "@/app/api/product/putProducts";
+import { useParams } from "next/navigation";
 
 interface ProductFormProps {
   props?: ProductDetail;
@@ -18,16 +18,10 @@ interface ProductFormProps {
 
 const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
-
-  const {
-    data: productCategories,
-    isLoading: productCategoriesLoading,
-    error: productCategoriesError,
-  } = useQuery({
-    queryKey: ["product-categories"],
-    queryFn: getProductCategory,
-  });
+  const [selectedImages, setSelectedImages] = useState<
+    Map<number, string | File>
+  >(new Map());
+  const { productId } = useParams();
 
   const initialValues: ProductForm = {
     name: props?.name ?? "",
@@ -65,93 +59,73 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
     length: Yup.number()
       .min(0, "Length must be greater than or equal to 0")
       .nullable(),
+    // images: Yup.array().min(1, "At least one image is required"),
     categoryId: Yup.number()
+      .nonNullable()
       .min(1, "Category is required")
       .required("Category is required"),
-    images: Yup.array().min(1, "At least one image is required"),
   });
 
-  const handleOnSubmit = async (values: ProductForm) => {
-    if (!props || !props.id) return;
+  const handleUploadForm = (values: ProductForm) => {
+    try {
+      updateProductById(Number(productId), values).then((r) =>
+        setIsSubmitting(false),
+      );
+    } catch {
+      setIsSubmitting(false);
+      toast({
+        title: "Failed to upload product form",
+        description: "Please try again",
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
+  };
 
+  const handleOnSubmit = async (values: ProductForm) => {
     try {
       setIsSubmitting(true);
-
-      const filesToUpload = imageFiles
-        .map((file, index) => ({ file, index }))
-        .filter(
-          (item): item is { file: File; index: number } => item.file !== null,
-        );
-
-      const uploadPromises = filesToUpload.map(({ file, index }) =>
-        postFileBuilderIo({
-          name: `product-${values.name}-${Date.now()}`,
-          altText: values.name,
-          folder: process.env.NEXT_PUBLIC_BUILDER_IO_PRODUCT_FOLDER_ID,
-          file,
-        }).then((response) => ({ ...response, index })),
-      );
-
-      const uploadedImages = await Promise.all(uploadPromises);
-
-      const finalImages = Array.from({ length: 5 })
-        .map((_, index) => {
-          const existingImage = values.images?.[index];
-          const file = imageFiles[index];
-
-          if (file) {
-            const uploadedImage = uploadedImages.find(
-              (img) => img.index === index,
-            );
-            return uploadedImage
-              ? { url: uploadedImage.url, position: index + 1 }
-              : null;
-          } else if (existingImage) {
-            return existingImage;
-          } else {
-            return null;
+      const uploadPromise = Array.from(selectedImages.entries()).map(
+        async ([key, val]) => {
+          if (val instanceof File) {
+            const response = await postFileBuilderIo({
+              name: val.name,
+              altText: val.name,
+              folder: process.env.NEXT_PUBLIC_BUILDER_IO_PRODUCT_FOLDER_ID,
+              file: val,
+            });
+            return {
+              url: response.url,
+              position: key,
+            };
           }
-        })
-        .filter((img) => img !== null);
-
-      const finalValues: ProductForm = {
-        ...values,
-        images: finalImages,
-      };
-
-      console.log("Submitting form with values:", finalValues);
-      await new Promise(() => updateProductById(props?.id, finalValues));
-
-      setImageFiles([]);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Error submitting form. Please try again.");
+          return {
+            url: val,
+            position: key,
+          };
+        },
+      );
+      const responses = await Promise.all(uploadPromise);
+      values.images = responses.map((response) => response);
+      handleUploadForm(values);
+    } catch {
+      setIsSubmitting(false);
+      toast({
+        title: "Failed to upload images",
+        description: "Please try again",
+        variant: "destructive",
+        duration: 2000,
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (productCategoriesLoading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-      </div>
-    );
-  }
-
-  if (productCategoriesError) {
-    return (
-      <div className="p-4 text-center text-red-500">
-        Error loading categories. Please try again later.
-      </div>
-    );
-  }
-
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleOnSubmit}
+      onSubmit={(values) => handleOnSubmit(values)}
     >
       {({ values, setFieldValue }) => (
         <Form className="space-y-6">
@@ -224,53 +198,11 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
               <label className="block font-medium text-gray-700">
                 Upload up to 5 images
               </label>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-                {Array.from({ length: 5 }).map((_, index) => {
-                  const currentImage = values.images?.[index];
-                  const previousImage =
-                    index > 0 ? values.images?.[index - 1] : true;
-                  const isDisabled = !previousImage && index !== 0;
-
-                  return (
-                    <ImageUpload
-                      key={index}
-                      imageUrl={
-                        currentImage?.url ||
-                        (imageFiles[index]
-                          ? URL.createObjectURL(imageFiles[index])
-                          : undefined)
-                      }
-                      disabled={isDisabled}
-                      onImageChange={(file) => {
-                        if (file === null) {
-                        } else {
-                          const newImageFiles = [...imageFiles];
-                          newImageFiles[index] = file;
-                          setImageFiles(newImageFiles);
-
-                          const newImages = [...(values.images || [])];
-                          if (file) {
-                            if (newImages[index]) {
-                              newImages[index] = {
-                                ...newImages[index],
-                                position: index + 1,
-                              };
-                            } else {
-                              newImages[index] = {
-                                url: "",
-                                position: index + 1,
-                              };
-                            }
-                          } else {
-                            newImages.splice(index, 1);
-                          }
-                          setFieldValue("images", newImages);
-                        }
-                      }}
-                    />
-                  );
-                })}
-              </div>
+              <TestProductImageUpload
+                existingImage={props?.images}
+                selectedImages={selectedImages}
+                setSelectedImages={setSelectedImages}
+              />
               <ErrorMessage
                 name="images"
                 component="div"
@@ -310,18 +242,13 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
                 Select Category
               </label>
               <div className="space-y-2">
-                <Field
-                  name="categoryId"
-                  as="select"
-                  className={"h-11 w-full rounded-md border-2 px-3"}
-                >
-                  <option value="">Select a category</option>
-                  {productCategories?.data?.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </Field>
+                <ProductCategorySelection
+                  productCategoryId={values.categoryId}
+                  setProductCategoryId={(value) => {
+                    setFieldValue("categoryId", value);
+                  }}
+                  captionNoSelection="Select Product Category"
+                />
                 <ErrorMessage
                   name="categoryId"
                   component="div"
@@ -331,28 +258,14 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1">
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={cn(
-                  "rounded-md px-6 py-2 font-medium text-white transition-colors",
-                  isSubmitting
-                    ? "cursor-not-allowed bg-gray-800"
-                    : "bg-black hover:bg-gray-800",
-                )}
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center">
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Submitting...
-                  </span>
-                ) : (
-                  "Submit"
-                )}
-              </button>
-            </div>
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-full w-40"
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
           </div>
         </Form>
       )}

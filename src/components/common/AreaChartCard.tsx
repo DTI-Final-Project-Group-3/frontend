@@ -15,68 +15,62 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { formatPrice } from "@/utils/formatter";
 
-const chartConfig = {
-  added: {
-    label: "In",
-    color: "#4CAF50",
-  },
-  reduced: {
-    label: "Out",
-    color: "#F44336",
-  },
-} satisfies ChartConfig;
+interface AreaChartCardProps {
+  title: string;
+  description: string;
+  data: any[];
+  dataKey: string;
+  config: ChartConfig;
+  height?: string;
+}
 
-const CustomerOrderGraph: FC = () => {
+const AreaChartCard: FC<AreaChartCardProps> = ({
+  title,
+  description,
+  data,
+  dataKey,
+  config,
+  height = "h-[250px]",
+}) => {
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle className="text-md font-semibold">
-            Inventory quantity Over Time
-          </CardTitle>
-          <CardDescription>
-            Showing daily changes inventory quantities
-          </CardDescription>
+          <CardTitle className="text-md font-semibold">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </div>
       </CardHeader>
 
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
+          config={config}
+          className={`aspect-auto ${height} w-full`}
         >
-          <AreaChart data={customerOrder?.data.content ?? []}>
+          <AreaChart data={data}>
             <defs>
-              <linearGradient id="fillAdded" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id={`fill${dataKey}`} x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor={chartConfig.added.color}
+                  stopColor={Object.values(config)[0].color}
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor={chartConfig.added.color}
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillReduced" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor={chartConfig.reduced.color}
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor={chartConfig.reduced.color}
+                  stopColor={Object.values(config)[0].color}
                   stopOpacity={0.1}
                 />
               </linearGradient>
             </defs>
 
             <CartesianGrid vertical={false} />
+            <YAxis
+              tickFormatter={(value) =>
+                dataKey === "totalValue" ? formatPrice(value) : value
+              }
+            />
 
-            <YAxis />
             <XAxis
               dataKey="date"
               tickLine={false}
@@ -101,23 +95,25 @@ const CustomerOrderGraph: FC = () => {
                       day: "numeric",
                     });
                   }}
+                  formatter={(value) => {
+                    const formattedValue =
+                      dataKey === "totalValue" ? formatPrice(value) : value;
+                    const label =
+                      dataKey === "totalValue"
+                        ? "Total value"
+                        : "Total quantity";
+                    return `${label} : ${formattedValue}`;
+                  }}
                   indicator="dot"
                 />
               }
             />
 
             <Area
-              dataKey="added"
+              dataKey={dataKey}
               type="monotone"
-              fill="url(#fillAdded)"
-              stroke={chartConfig.added.color}
-            />
-
-            <Area
-              dataKey="reduced"
-              type="monotone"
-              fill="url(#fillReduced)"
-              stroke={chartConfig.reduced.color}
+              fill={`url(#fill${dataKey})`}
+              stroke={Object.values(config)[0].color}
             />
 
             <ChartLegend content={<ChartLegendContent />} />
@@ -128,4 +124,4 @@ const CustomerOrderGraph: FC = () => {
   );
 };
 
-export default CustomerOrderGraph;
+export default AreaChartCard;

@@ -27,8 +27,8 @@ export type Order = {
 };
 
 export interface CustomerOrderHistoryRequestParams {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
   startDate?: string;
   endDate?: string;
   warehouseId?: number;

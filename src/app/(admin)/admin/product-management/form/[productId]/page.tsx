@@ -16,12 +16,12 @@ const EditProductFormPage: FC = () => {
   });
 
   return (
-    <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
+    <section className="min-h-[calc(100vh-178px)] w-full rounded-2xl bg-white py-4 shadow-sm md:py-7">
       <ProductManagementHeader />
 
-      <div className="mt-4 md:mt-7 w-full overflow-x-auto flex justify-center px-4 md:px-17 text-gray-600">
+      <div className="md:px-17 mt-4 flex w-full justify-center overflow-x-auto px-4 text-gray-600 md:mt-7">
         {data && !isLoading && !isFetching && (
-          <ProductFormComponent props={data}></ProductFormComponent>
+          <ProductFormComponent props={data} />
         )}
       </div>
     </section>

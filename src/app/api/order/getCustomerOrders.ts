@@ -50,6 +50,9 @@ export const getAllCustomerOrders = async (
       },
     },
   );
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
 
   return response.data;
 };
@@ -84,5 +87,46 @@ export const getHistoryCustomerOrders = async ({
       productCategoryId,
     },
   });
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+  return response.data.data;
+};
+
+export interface CustomerOrderDailyTotalResponse {
+  date: string;
+  totalQuantity: number;
+  totalValue: number;
+}
+
+export const getDailyTotalProductMutation = async ({
+  startDate,
+  endDate,
+  warehouseId,
+  customerOrderStatusId,
+  productId,
+  productCategoryId,
+  accessToken,
+}: CustomerOrderHistoryRequestParams): Promise<
+  CustomerOrderDailyTotalResponse[]
+> => {
+  const response = await axios.get<
+    ApiResponse<CustomerOrderDailyTotalResponse[]>
+  >(`${customerOrderUrl}/daily`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    params: {
+      startDate,
+      endDate,
+      warehouseId,
+      customerOrderStatusId,
+      productId,
+      productCategoryId,
+    },
+  });
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
   return response.data.data;
 };
