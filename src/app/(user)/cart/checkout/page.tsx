@@ -91,7 +91,7 @@ const CheckoutPage: FC = () => {
   const fetchShippingAddress = useCallback(
     async (address: Address | null) => {
       if (!session || !address) return;
-  
+
       try {
         const { data: nearby_warehouse_response } = await axios.get(
           `${nearby_url}?longitude=${address.longitude}&latitude=${address.latitude}`,
@@ -100,10 +100,11 @@ const CheckoutPage: FC = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${session.accessToken}`,
             },
-          }
+          },
         );
 
-        const nearby_warehouse = nearby_warehouse_response.data as WarehouseDetail[];
+        const nearby_warehouse =
+          nearby_warehouse_response.data as WarehouseDetail[];
 
         const { data: response } = await axios.post(
           shipping_cost_url,
@@ -118,20 +119,29 @@ const CheckoutPage: FC = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${session.accessToken}`,
             },
-          }
+          },
         );
-  
+
         if (response.success) {
           setShippingList(response.data);
         } else {
-          toast({title: "Failed", description: "Failed to get shipping cost", variant: "destructive", duration: 3000, });
+          toast({
+            title: "Failed",
+            description: "Failed to get shipping cost",
+            variant: "destructive",
+            duration: 3000,
+          });
         }
       } catch (error) {
-        console.log("Error fetching shipping cost " + error);
-        toast({ title: "Error", description: "Error fetching shipping cost", variant: "destructive", duration: 3000,});
+        toast({
+          title: "Error fetching shipping cost",
+          description: `${error}`,
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     },
-    [session, totalWeight]
+    [session, totalWeight],
   );
 
   const fetchUserAddress = useCallback(async () => {
@@ -143,46 +153,58 @@ const CheckoutPage: FC = () => {
       fetchShippingAddress(mainAddress);
       console.log(mainAddress);
     }
-  }, [session])
+  }, [session, fetchShippingAddress]);
 
   useEffect(() => {
     fetchUserAddress();
   }, [session, fetchUserAddress]);
 
-  const setSelectedAddressAsPrimary = useCallback(async (addressId : number) => {
-    if (session)
+  const setSelectedAddressAsPrimary = useCallback(
+    async (addressId: number) => {
+      if (session)
         try {
           const res = await fetch(`${user_address_id_url}/${addressId}`, {
-                method: "PUT",
-                headers: { 
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${session.accessToken}`
-                 },
-                body: JSON.stringify({
-                    isPrimary : true
-                }),
-            });
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.accessToken}`,
+            },
+            body: JSON.stringify({
+              isPrimary: true,
+            }),
+          });
 
           if (res.ok) {
-              fetchUserAddress();
+            fetchUserAddress();
           } else {
-            toast({title: "Failed", description: "Failed to set as primary", duration: 2000,});
+            toast({
+              title: "Failed to set address",
+              description: "Failed to set address as Primay, please try again",
+              variant: "destructive",
+              duration: 3000,
+            });
           }
         } catch (err) {
-          console.error("Error set as primary:", err);
-          toast({title: "Error", description: "Error set as primary", duration: 2000,});
+          toast({
+            title: "Error setting address as primary",
+            description: `${err}`,
+            variant: "destructive",
+            duration: 3000,
+          });
         }
-  },[session, fetchUserAddress]);
+    },
+    [session, fetchUserAddress],
+  );
 
-const setSelectedShippingAddress = useCallback((selectedShippingAddress: Address) => {
-    if (selectedShippingAddress.primary)
-      return;
-    setShippingMethodSelected(false);
-    setShippingList(null);
-    setSelectedAddressAsPrimary(selectedShippingAddress.id);
-  },
-  [setSelectedAddressAsPrimary],
-);
+  const setSelectedShippingAddress = useCallback(
+    (selectedShippingAddress: Address) => {
+      if (selectedShippingAddress.primary) return;
+      setShippingMethodSelected(false);
+      setShippingList(null);
+      setSelectedAddressAsPrimary(selectedShippingAddress.id);
+    },
+    [setSelectedAddressAsPrimary],
+  );
 
   // Tanstack Query mutations transaction
   const gatewayTransaction = useMutation({

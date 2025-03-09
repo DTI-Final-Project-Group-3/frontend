@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import "react-day-picker/dist/style.css";
 import SelectWarehouse from "./component/SelectWarehouse";
 import { useSession } from "next-auth/react";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const Filters: FC = () => {
   const { data: session } = useSession();
@@ -19,6 +20,8 @@ const Filters: FC = () => {
 
   const { search, statusId, startDate, endDate, setFilters, resetFilters } =
     useOrderStore();
+  const [searchQuery, setSearchQuery] = useState(search || "");
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   useEffect(() => {
     const handleScrollShadow = () => setHasShadow(window.scrollY > 100);
@@ -26,31 +29,31 @@ const Filters: FC = () => {
     return () => window.removeEventListener("scroll", handleScrollShadow);
   }, []);
 
-  console.log("StartDate : ", startDate, "endDate : ", endDate);
+  useEffect(() => {
+    setFilters({ search: debouncedSearch || undefined });
+  }, [debouncedSearch, setFilters]);
 
   return (
     <div
       className={cn(
-        "md:sticky md:top-[70px] z-[40] flex flex-col items-center justify-between gap-8 w-full bg-white rounded-xl p-6 md:p-12",
-        hasShadow ? "shadow-lg" : ""
+        "z-[40] flex w-full flex-col items-center justify-between gap-8 rounded-xl bg-white p-6 md:sticky md:top-[70px] md:p-12",
+        hasShadow ? "shadow-lg" : "",
       )}
     >
-      <div className="flex md:flex-row flex-col w-full gap-4">
+      <div className="flex w-full flex-col gap-4 md:flex-row">
         <div className="relative w-full">
           {/* Search Icon (Left) */}
-          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-500">
+          <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-500">
             <SearchIcon size={22} />
           </div>
 
           {/* Input Field */}
           <input
             type="text"
-            value={search || ""}
-            onChange={(e) =>
-              setFilters({ search: e.target.value || undefined })
-            }
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search transaction by invoice code..."
-            className="w-full pl-12 pr-10 py-3 border border-gray-300 text-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+            className="w-full rounded-lg border border-gray-300 py-3 pl-12 pr-10 text-lg transition-all focus:outline-none focus:ring-2 focus:ring-green-500"
           />
 
           {/* Clear (X) Button (Right) */}
@@ -69,7 +72,7 @@ const Filters: FC = () => {
         <div className="w-full">
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex items-center justify-start gap-3 border border-gray-300 bg-white text-lg text-gray-400 px-3 py-3 rounded-lg shadow-sm hover:border-green-500 focus:ring-2 focus:ring-green-500 transition-all w-full">
+              <button className="flex w-full items-center justify-start gap-3 rounded-lg border border-gray-300 bg-white px-3 py-3 text-lg text-gray-400 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
                 <CalendarIcon size={20} />
                 {startDate ? (
                   <span className="line-clamp-1 text-black">
@@ -82,7 +85,7 @@ const Filters: FC = () => {
               </button>
             </PopoverTrigger>
 
-            <PopoverContent className="p-4 w-[340px] md:w-full flex flex-col md:flex-row bg-white rounded-xl shadow-lg border ">
+            <PopoverContent className="flex w-[340px] flex-col rounded-xl border bg-white p-4 shadow-lg md:w-full md:flex-row">
               <DayPicker
                 mode="range"
                 selected={{ from: startDate, to: endDate }}
@@ -135,8 +138,8 @@ const Filters: FC = () => {
 
       {/* Select Filter By Status */}
       <div className="w-full">
-        <div className="flex items-center gap-3 w-full overflow-x-auto flex-nowrap whitespace-nowrap hide-scrollbar">
-          <h3 className="hidden md:block font-bold text-lg">Status</h3>
+        <div className="hide-scrollbar flex w-full flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap">
+          <h3 className="hidden text-lg font-bold md:block">Status</h3>
           {trxStatuses.map((status) => (
             <button
               key={status.id}
@@ -144,10 +147,10 @@ const Filters: FC = () => {
                 setFilters({ statusId: status.id, page: 0, limit: 10 })
               }
               className={cn(
-                "px-4 py-2 text-sm md:text-base font-nurmal border rounded-xl transition-all",
+                "font-nurmal rounded-xl border px-4 py-2 text-sm transition-all md:text-base",
                 statusId === status.id
-                  ? "bg-green-50 text-green-600 border-green-500"
-                  : "bg-white text-gray-600 border-gray-300 hover:border-green-500"
+                  ? "border-green-500 bg-green-50 text-green-600"
+                  : "border-gray-300 bg-white text-gray-600 hover:border-green-500",
               )}
             >
               {status.text}
