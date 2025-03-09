@@ -2,6 +2,7 @@ import { toast } from "@/hooks/use-toast";
 import { UserAdminDetail } from "@/types/models/userAdminDetail";
 import { WarehouseAssignedDetail } from "@/types/models/warehouseAssigned";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const admin_not_assigned = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_NOT_ASSIGNED}`;
@@ -20,6 +21,7 @@ export const WarehouseCard = ({
     const [admins, setAdmins] = useState<UserAdminDetail[] | null>(null);
     const [selectedAdmin, setSelectedAdmin] = useState<number | null>(null);
     const [isRemoveAdmin, setIsRemoveAdmin] = useState(false);
+    const router = useRouter();
   
     const fetchUnassignedAdmins = async () => {
       setIsRemoveAdmin(false);
@@ -135,6 +137,13 @@ export const WarehouseCard = ({
         <p className="text-sm font-medium mt-2">
           Assigned Admins: {warehouse.assignedAdmins.length}
         </p>
+
+        <button
+          onClick={() => router.push(`/admin/warehouse-management/${warehouse.id}`)}
+          className="mt-4 bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500"
+        >
+          Warehouse Detail
+        </button>
   
         <button
           onClick={fetchUnassignedAdmins}
@@ -142,6 +151,7 @@ export const WarehouseCard = ({
         >
           Assign Admin
         </button>
+
         <button
           onClick={fetchAssignedAdmins}
           className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
