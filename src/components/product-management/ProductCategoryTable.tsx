@@ -15,19 +15,21 @@ import { getPaginatedProductCategories } from "@/app/api/product/getProducts";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "next-auth/react";
-import { PenSquare, Trash2 } from "lucide-react";
 import EditProductCategoryDialog from "@/components/product-management/EditProductCategoryDialog";
+import { useProductAdmin } from "@/store/productAdminStore";
+import DeleteProductCategoryAlert from "@/components/product-management/DeleteProductCategoryAlert";
 
 const ProductCategoryTable: FC = () => {
   const [page, setPage] = useState<number>(0);
   const { data } = useSession();
+  const { updateProductCategory } = useProductAdmin();
 
   const {
     data: productCategories,
     isError,
     isLoading,
   } = useQuery({
-    queryKey: ["product-category-table", page],
+    queryKey: ["product-category-table", page, updateProductCategory],
     queryFn: () =>
       getPaginatedProductCategories({
         page,
@@ -43,28 +45,28 @@ const ProductCategoryTable: FC = () => {
         <TableHeader>
           <TableRow>
             <TableHead>
-              <Skeleton />
+              <Skeleton className="h-8 w-full" />
             </TableHead>
             <TableHead>
-              <Skeleton />
+              <Skeleton className="h-8 w-full" />
             </TableHead>
             <TableHead>
-              <Skeleton />
+              <Skeleton className="h-8 w-full" />
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {Array.from({ length: ADMIN_PRODUCT_CATEGORY_PER_PAGE }).map(
-            (productCategory, index) => (
+            (_, index) => (
               <TableRow key={index}>
                 <TableCell>
-                  <Skeleton />
+                  <Skeleton className="h-6 w-full" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton />
+                  <Skeleton className="h-6 w-full" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton />
+                  <Skeleton className="h-6 w-full" />
                 </TableCell>
               </TableRow>
             ),
@@ -75,7 +77,7 @@ const ProductCategoryTable: FC = () => {
   };
 
   const renderError = () => {
-    return <div>Error</div>;
+    return <div>Error loading product categories.</div>;
   };
 
   const renderContent = () => {
@@ -99,7 +101,10 @@ const ProductCategoryTable: FC = () => {
                     id={productCategory.id}
                     name={productCategory.name}
                   />
-                  <Trash2 className="h-5 w-5 text-gray-600" />
+                  <DeleteProductCategoryAlert
+                    id={productCategory.id}
+                    name={productCategory.name}
+                  />
                 </div>
               </TableCell>
             </TableRow>

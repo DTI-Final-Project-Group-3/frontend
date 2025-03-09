@@ -4,6 +4,7 @@ import { ApiResponse } from "@/types/api/apiResponse";
 import { toast } from "@/hooks/use-toast";
 
 const productUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}`;
+const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}${process.env.NEXT_PUBLIC_PRODUCT_CATEGORY}`;
 
 export const updateProductById = async (
   productId: number,
@@ -27,8 +28,8 @@ export const updateProductCategoryById = async ({
   accessToken,
 }: UpdateProductCategoryRequest): Promise<ApiResponse<ProductCategory>> => {
   const response = await axios.put<ApiResponse<ProductCategory>>(
-    `${productUrl}/category/${id}`,
-    name,
+    `${productCategoryUrl}/${id}`,
+    { name },
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -42,7 +43,7 @@ export const updateProductCategoryById = async ({
   toast({
     title: "Update Category",
     description: "Successfully updated product category",
-    duration: 20000,
+    duration: 2000,
   });
   return response.data;
 };

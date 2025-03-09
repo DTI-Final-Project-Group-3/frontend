@@ -3,8 +3,15 @@
 import Link from "next/link";
 import { FC, useState } from "react";
 import { Button } from "@/components/ui/button";
+import AddProductCategory from "@/components/product-management/AddProductCategory";
 
-const ProductManagementHeader: FC = () => {
+interface ProductManagementHeaderProps {
+  selectedTab: number;
+}
+
+const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({
+  selectedTab,
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -36,9 +43,12 @@ const ProductManagementHeader: FC = () => {
             />
           </svg>
         </div>
-        <Link href={`/admin/product-management/form`}>
-          <Button className="h-full">Add product</Button>
-        </Link>
+        {selectedTab === 1 && (
+          <Link href={`/admin/product-management/form`}>
+            <Button className="h-full">Add product</Button>
+          </Link>
+        )}
+        {selectedTab === 2 && <AddProductCategory />}
       </div>
     </div>
   );

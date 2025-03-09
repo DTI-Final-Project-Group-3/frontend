@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import ProductImageUpload from "@/components/product-management/ProductImageUpload";
 import { updateProductById } from "@/app/api/product/putProducts";
 import { useParams, useRouter } from "next/navigation";
-import { postProducts } from "@/app/api/product/postProducts";
+import { createProduct } from "@/app/api/product/createProduct";
 import AlertDialogComponent from "@/components/common/AlertDialogComponent";
 
 interface ProductFormProps {
@@ -102,7 +102,7 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
           setOpenAlert(true);
         }
       } else {
-        const response = await postProducts(values);
+        const response = await createProduct(values);
         if (response.success) {
           setOpenAlert(true);
         }
