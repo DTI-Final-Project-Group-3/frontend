@@ -168,7 +168,7 @@ const InventoryManagementPage = () => {
                 {inventory.quantity}
               </TableCell>
               <TableCell className="text-center">
-                <div className="flex justify-center space-x-2 md:px-6">
+                <div className="flex justify-center gap-5 md:px-6">
                   <MutationDialog
                     buttonName="Change"
                     onClick={() => {

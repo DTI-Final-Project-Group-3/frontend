@@ -14,6 +14,7 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useProductAdmin } from "@/store/productAdminStore";
 import { createProductCategory } from "@/app/api/product/createProduct";
+import { toast } from "@/hooks/use-toast";
 
 const AddProductCategory = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -32,10 +33,19 @@ const AddProductCategory = () => {
     createProductCategory({
       name: productCategoryName,
       accessToken: data?.accessToken,
-    }).finally(() => {
-      setDialogOpen(false);
-      setUpdateProductCategory(false);
-    });
+    })
+      .catch((error) => {
+        toast({
+          title: "Error creating product category",
+          description: error.response.data.message,
+          variant: "destructive",
+          duration: 5000,
+        });
+      })
+      .finally(() => {
+        setDialogOpen(false);
+        setUpdateProductCategory(false);
+      });
   };
 
   return (

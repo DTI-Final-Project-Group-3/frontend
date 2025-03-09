@@ -6,11 +6,27 @@ import { useProductAdmin } from "@/store/productAdminStore";
 import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import DeleteIcon from "@/components/icon/DeleteIcon";
+import { useQuery } from "@tanstack/react-query";
+import { getProductMutationHistory } from "@/app/api/product-mutation/getProductMutation";
+import { ProductMutationConstant } from "@/constant/productMutationConstant";
+import { useProductMutation } from "@/store/productMutationStore";
 
 const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
-  const { setUpdateProductCategory } = useProductAdmin();
+  const { updateProductCategory, setUpdateProductCategory } = useProductAdmin();
   const { data } = useSession();
+  const { destinationWarehouseId } = useProductMutation();
+
+  const { data: pendingMutation } = useQuery({
+    queryKey: ["pending-mutation", updateProductCategory],
+    queryFn: async () =>
+      getProductMutationHistory({
+        page: 0,
+        limit: 1,
+        productMutationStatusId: ProductMutationConstant.STATUS_PENDING,
+        destinationWarehouseId,
+      }),
+  });
 
   const handleConfirmDelete = () => {
     setUpdateProductCategory(true);
@@ -18,6 +34,20 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
     if (!id || !data?.accessToken) {
       setOpenAlert(false);
       setUpdateProductCategory(false);
+      return;
+    }
+
+    console.log(pendingMutation);
+    if (pendingMutation?.content.length !== 0) {
+      setOpenAlert(false);
+      setUpdateProductCategory(false);
+      toast({
+        title: "Pending Product Mutation",
+        description:
+          "Unable to delete, there's still pending product mutation for this product category.",
+        variant: "destructive",
+        duration: 5000,
+      });
       return;
     }
 

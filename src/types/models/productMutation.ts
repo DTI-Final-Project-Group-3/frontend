@@ -67,8 +67,8 @@ export interface ProductMutationDetailResponse {
 export interface ProductMutationHistoryParams {
   page?: number;
   limit?: number;
-  startedAt: string;
-  endedAt: string;
+  startedAt?: string;
+  endedAt?: string;
   productId?: number;
   productCategoryId?: number;
   productMutationTypeId?: number;

@@ -16,11 +16,11 @@ const ProductManagementPage: FC = () => {
   ];
 
   return (
-    <div>
+    <div className="space-y-2">
       <ProductManagementHeader selectedTab={selectedTab} />
       <Tabs defaultValue="products" className="w-full">
         <div>
-          <TabsList className="my-4 grid h-12 w-full grid-cols-2 rounded-lg bg-white shadow-sm sm:h-14">
+          <TabsList className="grid h-12 w-full grid-cols-2 rounded-lg bg-white shadow-sm sm:h-14">
             {tabOptions.map((tab) => (
               <TabsTrigger
                 key={tab.id}
@@ -37,7 +37,7 @@ const ProductManagementPage: FC = () => {
             ))}
           </TabsList>
 
-          <div className="rounded-xl bg-white shadow-sm">
+          <div className="w-full rounded-xl bg-white shadow-sm">
             <TabsContent value="products">
               <ProductListTable />
             </TabsContent>

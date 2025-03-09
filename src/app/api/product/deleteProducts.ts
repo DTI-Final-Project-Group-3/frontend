@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ApiResponse } from "@/types/api/apiResponse";
+import { toast } from "@/hooks/use-toast";
 
 const productUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}`;
 const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}${process.env.NEXT_PUBLIC_PRODUCT_CATEGORY}`;
@@ -40,7 +41,12 @@ export const deleteProductCategoryById = async ({
     },
   );
   if (!response.data.success) {
-    throw new Error(response.data.message);
+    toast({
+      title: "Error deleting product category",
+      description: response.data.message,
+      variant: "destructive",
+      duration: 3000,
+    });
   }
   return response.data;
 };

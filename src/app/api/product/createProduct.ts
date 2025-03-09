@@ -10,9 +10,6 @@ export const createProduct = async (
 ): Promise<ApiResponse<ProductForm>> => {
   const response = await axios.post<ApiResponse<ProductForm>>(productUrl, form);
 
-  if (!response.data.success) {
-    throw new Error(response.data.message);
-  }
   return response.data;
 };
 
@@ -34,8 +31,5 @@ export const createProductCategory = async ({
       },
     },
   );
-  if (!response.data.success) {
-    throw new Error(response.data.message);
-  }
   return response.data;
 };

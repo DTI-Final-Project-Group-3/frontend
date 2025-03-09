@@ -120,7 +120,7 @@ const ProductCategoryTable: FC = () => {
   };
 
   return (
-    <section className="mt-4 px-4 py-4 shadow-sm md:mt-7 md:px-10 md:py-7">
+    <section className="w-full px-4 py-4 shadow-sm md:px-10 md:py-7">
       {isLoading ? renderLoading() : isError ? renderError() : renderContent()}
 
       {productCategories && (

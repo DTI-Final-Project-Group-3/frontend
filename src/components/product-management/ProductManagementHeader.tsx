@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import AddProductCategory from "@/components/product-management/categories/AddProductCategory";
 
 interface ProductManagementHeaderProps {
-  selectedTab: number;
+  selectedTab?: number;
 }
 
 const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({

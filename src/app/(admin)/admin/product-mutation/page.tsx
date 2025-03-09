@@ -154,7 +154,7 @@ const ProductMutation: FC = () => {
                   "data-[state=active]:border-b-2 data-[state=active]:border-warehub-green data-[state=active]:text-emerald-700",
                   "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
                 )}
-                onClick={() => setPage(tab.id)}
+                onClick={() => setSelectedTab(tab.id)}
               >
                 <span>{tab.label}</span>
               </TabsTrigger>

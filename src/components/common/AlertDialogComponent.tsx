@@ -34,16 +34,16 @@ const MyAlertDialog: FC<AlertDialogProps> = ({
       <AlertDialogContent>
         <AlertDialogTitle>{title}</AlertDialogTitle>
         <AlertDialogDescription>{description}</AlertDialogDescription>
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          {confirmText && (
-            <AlertDialogAction onClick={onConfirm}>
-              {confirmText}
-            </AlertDialogAction>
-          )}
+        <div className="mt-4 flex justify-end gap-2">
           {cancelText && (
-            <AlertDialogCancel onClick={onCancel}>
+            <AlertDialogCancel onClick={onCancel} className="w-32">
               {cancelText}
             </AlertDialogCancel>
+          )}
+          {confirmText && (
+            <AlertDialogAction onClick={onConfirm} className="w-32">
+              {confirmText}
+            </AlertDialogAction>
           )}
         </div>
       </AlertDialogContent>

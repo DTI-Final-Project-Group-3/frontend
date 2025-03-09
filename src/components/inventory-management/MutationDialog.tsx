@@ -24,6 +24,7 @@ import { toast } from "@/hooks/use-toast";
 import { createProductMutationManual } from "@/app/api/product-mutation/postProductMutation";
 import AvailableWarehouseSelection from "../warehouse/AvailableWarehouseSelection";
 import { cn } from "@/lib/utils";
+import EditIcon from "@/components/icon/EditIcon";
 
 interface ProductMutationProps {
   isProductMutation?: boolean;
@@ -135,17 +136,26 @@ const MutationDialog: FC<ProductMutationProps> = ({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          onClick={() => {
-            handleOpenChange();
-            if (isProductMutation) setIsMutation(isProductMutation);
-            if (onClick) onClick();
-          }}
-          className={cn(buttonClassName, "h-full")}
-        >
-          {buttonName}
-        </Button>
+        {isProductMutation ? (
+          <Button
+            variant="outline"
+            onClick={() => {
+              handleOpenChange();
+              setIsMutation(isProductMutation);
+              if (onClick) onClick();
+            }}
+            className={cn(buttonClassName, "h-full")}
+          >
+            {buttonName}
+          </Button>
+        ) : (
+          <EditIcon
+            onClick={() => {
+              handleOpenChange();
+              if (onClick) onClick();
+            }}
+          />
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="mb-5">
