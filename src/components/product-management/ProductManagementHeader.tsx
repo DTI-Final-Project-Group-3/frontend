@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import AddProductCategory from "@/components/product-management/categories/AddProductCategory";
+import { useProductAdmin } from "@/store/productAdminStore";
+import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
 
 interface ProductManagementHeaderProps {
   selectedTab?: number;
@@ -12,14 +14,20 @@ interface ProductManagementHeaderProps {
 const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({
   selectedTab,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    searchQuery,
+    productCategoryId,
+    setSearchQuery,
+    setProductCategoryId,
+    setProductPage,
+  } = useProductAdmin();
 
   return (
     <div className="z-[40] flex w-full flex-wrap items-center justify-between gap-2 rounded-xl bg-white p-7 md:sticky md:top-[0]">
       <h2 className="text-xl font-semibold text-gray-800 md:text-2xl">
         Product Management
       </h2>
-      <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+      <div className="flex h-full flex-col gap-3 sm:w-auto sm:flex-row">
         <div className="relative w-full sm:w-auto">
           <input
             type="text"
@@ -44,9 +52,19 @@ const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({
           </svg>
         </div>
         {selectedTab === 1 && (
-          <Link href={`/admin/product-management/form`}>
-            <Button className="h-full">Add Product</Button>
-          </Link>
+          <>
+            <div className="w-60">
+              <ProductCategorySelection
+                productCategoryId={productCategoryId}
+                setProductCategoryId={setProductCategoryId}
+                setPage={setProductPage}
+              />
+            </div>
+
+            <Link href={`/admin/product-management/form`}>
+              <Button className="h-full">Add Product</Button>
+            </Link>
+          </>
         )}
         {selectedTab === 2 && <AddProductCategory />}
       </div>

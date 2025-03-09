@@ -17,20 +17,24 @@ import { ProductMutationConstant } from "@/constant/productMutationConstant";
 
 const ProductMutation: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
-  const [page, setPage] = useState<number>(0);
-  const { destinationWarehouseId, submitMutation } = useProductMutation();
+  const {
+    destinationWarehouseId,
+    submitMutation,
+    productMutationPage,
+    setProductMutationPage,
+  } = useProductMutation();
 
   const { data: adjustmentJournals, isLoading: isLoadingJournals } = useQuery({
     queryKey: [
       "inventory-journal",
       destinationWarehouseId,
       selectedTab,
-      page,
+      productMutationPage,
       submitMutation,
     ],
     queryFn: () =>
       getPaginatedProductMutation({
-        page,
+        page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
         destinationWarehouseId: destinationWarehouseId,
         productMutationTypeId: [
@@ -47,12 +51,12 @@ const ProductMutation: FC = () => {
       "inbound-mutation",
       destinationWarehouseId,
       selectedTab,
-      page,
+      productMutationPage,
       submitMutation,
     ],
     queryFn: () =>
       getPaginatedProductMutation({
-        page,
+        page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
         destinationWarehouseId: destinationWarehouseId,
         productMutationTypeId: [
@@ -65,15 +69,15 @@ const ProductMutation: FC = () => {
 
   const { data: outboundMutation, isLoading: isLoadingOutbound } = useQuery({
     queryKey: [
-      "outbond-mutation",
+      "outbound-mutation",
       destinationWarehouseId,
       selectedTab,
-      page,
+      productMutationPage,
       submitMutation,
     ],
     queryFn: () =>
       getPaginatedProductMutation({
-        page,
+        page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
         originWarehouseId: destinationWarehouseId,
         productMutationTypeId: [
@@ -128,8 +132,8 @@ const ProductMutation: FC = () => {
         </div>
         <PaginationAdmin
           desc="mutation"
-          page={page}
-          setPage={setPage}
+          page={productMutationPage}
+          setPage={setProductMutationPage}
           totalPages={data.totalPages}
           totalElements={data.totalElements}
           currentPageSize={data.content.length}
@@ -154,7 +158,10 @@ const ProductMutation: FC = () => {
                   "data-[state=active]:border-b-2 data-[state=active]:border-warehub-green data-[state=active]:text-emerald-700",
                   "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
                 )}
-                onClick={() => setSelectedTab(tab.id)}
+                onClick={() => {
+                  setProductMutationPage(0);
+                  setSelectedTab(tab.id);
+                }}
               >
                 <span>{tab.label}</span>
               </TabsTrigger>

@@ -4,11 +4,13 @@ import { FC, useState } from "react";
 import WarehouseSelection from "../warehouse/WarehouseSelection";
 import { useProductMutation } from "@/store/productMutationStore";
 import AddInventoryDialog from "./AddInventoryDialog";
+import { useInventoryAdmin } from "@/store/inventoryAdminStore";
 
 const InventoryManagementHeader: FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { destinationWarehouseId, setDestinationWarehouseId } =
     useProductMutation();
+  const { setInventoryPage } = useInventoryAdmin();
 
   return (
     <div className="flex flex-col items-start justify-between gap-4 border-b px-4 pb-4 sm:flex-row sm:items-center md:px-7 md:pb-7">
@@ -21,6 +23,7 @@ const InventoryManagementHeader: FC = () => {
           <WarehouseSelection
             warehouseId={destinationWarehouseId}
             setWarehouseId={setDestinationWarehouseId}
+            setPage={setInventoryPage}
           />
         </div>
 

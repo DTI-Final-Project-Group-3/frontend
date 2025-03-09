@@ -37,7 +37,7 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
       return;
     }
 
-    console.log(pendingMutation);
+    console.log("test");
     if (pendingMutation?.content.length !== 0) {
       setOpenAlert(false);
       setUpdateProductCategory(false);
@@ -59,6 +59,14 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
           duration: 2000,
         }),
       )
+      .catch((err) => {
+        toast({
+          title: "Error Deleting Product Category",
+          description: err.response?.data?.error?.message,
+          variant: "destructive",
+          duration: 5000,
+        });
+      })
       .finally(() => {
         setOpenAlert(false);
         setUpdateProductCategory(false);

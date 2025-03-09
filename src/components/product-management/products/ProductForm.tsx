@@ -283,8 +283,8 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
             ? "Successfully updated product"
             : "Successfully created product"
         }
-        confirmText="Okay"
-        onConfirm={() => {
+        cancelText="Cancel"
+        onCancel={() => {
           router.push("/admin/product-management");
           setOpenAlert(false);
         }}

@@ -69,9 +69,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
     setSubmitIsLoading(true);
     updateQuantityWarehouseInventoryById(warehouseInventoryId, newMutation)
       .then(() => {
-        setDialogOpen(false);
         setSubmitMutation(true);
-
         toast({
           title: `Update Product Quantity`,
           description: `Successfully update ${ItemQuantity} quantity`,
@@ -79,6 +77,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
         });
       })
       .finally(() => {
+        setDialogOpen(false);
         setSubmitMutation(false);
         setSubmitIsLoading(false);
       });
@@ -88,9 +87,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
     setSubmitIsLoading(true);
     createProductMutationManual(newMutation)
       .then(() => {
-        setDialogOpen(false);
         setSubmitMutation(true);
-
         toast({
           title: "Manual Product Mutation",
           description: "Successfully create new request",
@@ -98,6 +95,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
         });
       })
       .finally(() => {
+        setDialogOpen(false);
         setSubmitMutation(false);
         setSubmitIsLoading(false);
       });

@@ -9,6 +9,9 @@ type ProductMutationState = {
 
   originWarehouseQuantity: number | undefined;
 
+  productMutationPage: number;
+  setProductMutationPage: (val: number) => void;
+
   setWarehouseInventoryId: (val: number | undefined) => void;
   setProductId: (val: number | undefined) => void;
   setOriginWarehouseId: (val: number | undefined) => void;
@@ -25,6 +28,12 @@ export const useProductMutation = create<ProductMutationState>((set) => ({
   submitMutation: false,
 
   originWarehouseQuantity: undefined,
+
+  productMutationPage: 0,
+
+  setProductMutationPage: (val: number) => {
+    set({ productMutationPage: val });
+  },
 
   setWarehouseInventoryId: (val: number | undefined) => {
     set({ warehouseInventoryId: val });

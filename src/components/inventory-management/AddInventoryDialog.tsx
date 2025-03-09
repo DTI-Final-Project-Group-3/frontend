@@ -45,12 +45,13 @@ const AddInventoryDialog: FC = () => {
       requesterNotes,
       destinationWarehouseId,
     })
-      .then(() => {
-        setSubmitMutation(false);
-        handleDialog();
-      })
+      .then(() => {})
       .catch(() => {
         setSubmitMutation(false);
+      })
+      .finally(() => {
+        setSubmitMutation(false);
+        handleDialog();
       });
   };
 

@@ -24,10 +24,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useInventoryAdmin } from "@/store/inventoryAdminStore";
 
 const InventoryManagementPage = () => {
-  const [page, setPage] = useState<number>(0);
   const [searchQuery] = useState<string>();
+  const { inventoryPage, setInventoryPage } = useInventoryAdmin();
+
   const {
     destinationWarehouseId,
     submitMutation,
@@ -42,14 +44,14 @@ const InventoryManagementPage = () => {
   } = useQuery({
     queryKey: [
       "warehouse-inventories-admin",
-      page,
+      inventoryPage,
       searchQuery,
       submitMutation,
       destinationWarehouseId,
     ],
     queryFn: () =>
       getPaginatedWarehouseInventories({
-        page,
+        page: inventoryPage,
         limit: INVENTORY_PER_PAGE,
         warehouseId: destinationWarehouseId,
         searchQuery,
@@ -261,8 +263,8 @@ const InventoryManagementPage = () => {
           <div className="mt-6">
             <PaginationAdmin
               desc="Inventories"
-              page={page}
-              setPage={setPage}
+              page={inventoryPage}
+              setPage={setInventoryPage}
               totalPages={inventories.totalPages}
               totalElements={inventories.totalElements}
               currentPageSize={inventories.content.length}

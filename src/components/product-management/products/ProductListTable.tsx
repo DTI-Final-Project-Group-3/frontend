@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPaginatedProducts } from "@/app/api/product/getProducts";
 import { ADMIN_PRODUCT_PER_PAGE } from "@/constant/productConstant";
@@ -16,22 +16,21 @@ import {
 } from "@/components/ui/table";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Eye, PenSquare, Trash2 } from "lucide-react";
 import Link from "next/link";
 import ViewIcon from "@/components/icon/ViewIcon";
 import EditIcon from "@/components/icon/EditIcon";
 import DeleteIcon from "@/components/icon/DeleteIcon";
+import { useProductAdmin } from "@/store/productAdminStore";
 
 const ProductListTable: FC = () => {
-  const [page, setPage] = useState<number>(0);
-  const [productCategoryId, setProductCategoryId] = useState<number>();
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const { productPage, productCategoryId, searchQuery, setProductPage } =
+    useProductAdmin();
 
   const { data: products, isLoading: productsLoading } = useQuery({
-    queryKey: ["products-admin", page, productCategoryId, searchQuery],
+    queryKey: ["products-admin", productPage, productCategoryId, searchQuery],
     queryFn: () =>
       getPaginatedProducts({
-        page: page,
+        page: productPage,
         limit: ADMIN_PRODUCT_PER_PAGE,
         productCategoryId,
         searchQuery,
@@ -39,7 +38,7 @@ const ProductListTable: FC = () => {
   });
 
   const renderEmptyState = () => (
-    <div className="flex flex-grow text-center text-gray-500">
+    <div className="flex flex-col text-center text-gray-500">
       <svg
         className="mx-auto h-12 w-12 text-gray-400"
         xmlns="http://www.w3.org/2000/svg"
@@ -233,8 +232,8 @@ const ProductListTable: FC = () => {
           <div className="mt-6">
             <PaginationAdmin
               desc="Products"
-              page={page}
-              setPage={setPage}
+              page={productPage}
+              setPage={setProductPage}
               totalPages={products.totalPages}
               totalElements={products.totalElements}
               currentPageSize={products.content.length}

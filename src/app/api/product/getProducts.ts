@@ -17,7 +17,6 @@ const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.
 export const getProductCategory = async (): Promise<
   ApiResponse<ProductCategory[]>
 > => {
-  console.log(productCategoryUrl);
   const response = await axios.get<ApiResponse<ProductCategory[]>>(
     `${productCategoryUrl}/all`,
   );

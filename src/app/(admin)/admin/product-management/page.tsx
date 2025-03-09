@@ -6,9 +6,11 @@ import { cn } from "@/lib/utils";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
 import ProductCategoryTable from "@/components/product-management/categories/ProductCategoryTable";
 import ProductListTable from "@/components/product-management/products/ProductListTable";
+import { useProductAdmin } from "@/store/productAdminStore";
 
 const ProductManagementPage: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
+  const { setProductPage } = useProductAdmin();
 
   const tabOptions = [
     { id: 1, value: "products", label: "Product" },
@@ -30,7 +32,10 @@ const ProductManagementPage: FC = () => {
                   "data-[state=active]:border-b-2 data-[state=active]:border-warehub-green data-[state=active]:text-emerald-700",
                   "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
                 )}
-                onClick={() => setSelectedTab(tab.id)}
+                onClick={() => {
+                  setProductPage(0);
+                  setSelectedTab(tab.id);
+                }}
               >
                 <span>{tab.label}</span>
               </TabsTrigger>
