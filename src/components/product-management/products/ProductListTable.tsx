@@ -21,10 +21,13 @@ import ViewIcon from "@/components/icon/ViewIcon";
 import EditIcon from "@/components/icon/EditIcon";
 import DeleteIcon from "@/components/icon/DeleteIcon";
 import { useProductAdmin } from "@/store/productAdminStore";
+import { useSession } from "next-auth/react";
+import { userRoles } from "@/constant/userConstant";
 
 const ProductListTable: FC = () => {
   const { productPage, productCategoryId, searchQuery, setProductPage } =
     useProductAdmin();
+  const { data } = useSession();
 
   const { data: products, isLoading: productsLoading } = useQuery({
     queryKey: ["products-admin", productPage, productCategoryId, searchQuery],
@@ -199,12 +202,18 @@ const ProductListTable: FC = () => {
                   <Link href={`/admin/product-management/${product.id}`}>
                     <ViewIcon />
                   </Link>
-                  <Link href={`/admin/product-management/form/${product.id}`}>
-                    <EditIcon />
-                  </Link>
-                  <Link href="">
-                    <DeleteIcon />
-                  </Link>
+                  {data?.role === userRoles.ADMIN_SUPER && (
+                    <>
+                      <Link
+                        href={`/admin/product-management/form/${product.id}`}
+                      >
+                        <EditIcon />
+                      </Link>
+                      <Link href="">
+                        <DeleteIcon />
+                      </Link>
+                    </>
+                  )}
                 </div>
               </TableCell>
             </TableRow>

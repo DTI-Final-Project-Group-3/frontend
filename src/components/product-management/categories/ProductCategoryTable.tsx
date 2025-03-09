@@ -18,6 +18,7 @@ import { useSession } from "next-auth/react";
 import EditProductCategoryDialog from "@/components/product-management/categories/EditProductCategoryDialog";
 import { useProductAdmin } from "@/store/productAdminStore";
 import DeleteProductCategoryAlert from "@/components/product-management/categories/DeleteProductCategoryAlert";
+import { userRoles } from "@/constant/userConstant";
 
 const ProductCategoryTable: FC = () => {
   const [page, setPage] = useState<number>(0);
@@ -90,9 +91,11 @@ const ProductCategoryTable: FC = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[10%]">Id</TableHead>
-            <TableHead className="w-[45%]">Product Category Name</TableHead>
-            <TableHead className="w-[45%] text-center">Actions</TableHead>
+            <TableHead>Id</TableHead>
+            <TableHead>Product Category Name</TableHead>
+            {data?.role === userRoles.ADMIN_SUPER && (
+              <TableHead className="text-center">Actions</TableHead>
+            )}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -100,18 +103,20 @@ const ProductCategoryTable: FC = () => {
             <TableRow key={productCategory.id}>
               <TableCell>{productCategory.id}</TableCell>
               <TableCell>{productCategory.name}</TableCell>
-              <TableCell>
-                <div className="flex justify-center gap-8">
-                  <EditProductCategoryDialog
-                    id={productCategory.id}
-                    name={productCategory.name}
-                  />
-                  <DeleteProductCategoryAlert
-                    id={productCategory.id}
-                    name={productCategory.name}
-                  />
-                </div>
-              </TableCell>
+              {data?.role === userRoles.ADMIN_SUPER && (
+                <TableCell>
+                  <div className="flex justify-center gap-8">
+                    <EditProductCategoryDialog
+                      id={productCategory.id}
+                      name={productCategory.name}
+                    />
+                    <DeleteProductCategoryAlert
+                      id={productCategory.id}
+                      name={productCategory.name}
+                    />
+                  </div>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

@@ -120,7 +120,7 @@ const ProductMutation: FC = () => {
     }
 
     return (
-      <div className="flex flex-grow flex-col items-center justify-between gap-10">
+      <div className="flex flex-grow flex-col items-center justify-between">
         <div className="grid w-[90%] grid-cols-1 gap-4">
           {data.content.map((item: ProductMutationDetailResponse) => (
             <ProductMutationCard
@@ -143,12 +143,12 @@ const ProductMutation: FC = () => {
   };
 
   return (
-    <div className="bg-slate-50">
+    <div className="space-y-2">
       <ProductMutationHeader />
 
       <Tabs defaultValue="journal" className="w-full">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">
-          <TabsList className="mb-6 mt-4 grid h-12 w-full grid-cols-3 rounded-lg bg-white shadow-sm sm:h-14">
+        <div>
+          <TabsList className="grid h-12 w-full grid-cols-3 rounded-lg bg-white shadow-sm sm:h-14">
             {tabOptions.map((tab) => (
               <TabsTrigger
                 key={tab.id}

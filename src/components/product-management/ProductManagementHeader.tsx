@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import AddProductCategory from "@/components/product-management/categories/AddProductCategory";
 import { useProductAdmin } from "@/store/productAdminStore";
 import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
+import { useSession } from "next-auth/react";
+import { userRoles } from "@/constant/userConstant";
 
 interface ProductManagementHeaderProps {
   selectedTab?: number;
@@ -21,6 +23,7 @@ const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({
     setProductCategoryId,
     setProductPage,
   } = useProductAdmin();
+  const { data } = useSession();
 
   return (
     <div className="z-[40] flex w-full flex-wrap items-center justify-between gap-2 rounded-xl bg-white p-7 md:sticky md:top-[0]">
@@ -51,6 +54,7 @@ const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({
             />
           </svg>
         </div>
+
         {selectedTab === 1 && (
           <>
             <div className="w-60">
@@ -61,12 +65,16 @@ const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({
               />
             </div>
 
-            <Link href={`/admin/product-management/form`}>
-              <Button className="h-full">Add Product</Button>
-            </Link>
+            {data?.role === userRoles.ADMIN_SUPER && (
+              <Link href={`/admin/product-management/form`}>
+                <Button className="h-full">Add Product</Button>
+              </Link>
+            )}
           </>
         )}
-        {selectedTab === 2 && <AddProductCategory />}
+        {selectedTab === 2 && data?.role === userRoles.ADMIN_SUPER && (
+          <AddProductCategory />
+        )}
       </div>
     </div>
   );
