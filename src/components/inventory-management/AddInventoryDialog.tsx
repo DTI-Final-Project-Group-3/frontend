@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Label } from "@radix-ui/react-label";
-import ProductSelection from "../product/ProductSelection";
+import ProductSelection from "../product-management/ProductSelection";
 import QuantityChange from "../common/QuantityChange";
 import { useProductMutation } from "@/store/productMutationStore";
 import { createWarehouseInventory } from "@/app/api/warehouse-inventories/postWarehouseInventories";

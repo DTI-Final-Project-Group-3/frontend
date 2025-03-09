@@ -8,7 +8,7 @@ import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
 import { cn } from "@/lib/utils";
 import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
@@ -150,19 +150,13 @@ const ProductMutation: FC = () => {
                 key={tab.id}
                 value={tab.value}
                 className={cn(
-                  "h-full rounded-none font-medium transition-all",
-                  selectedTab === tab.id
-                    ? "border-b-2 border-warehub-green text-emerald-700"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+                  "relative h-full rounded-none font-medium",
+                  "data-[state=active]:border-b-2 data-[state=active]:border-warehub-green data-[state=active]:text-emerald-700",
+                  "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
                 )}
-                onClick={() => setSelectedTab(tab.id)}
+                onClick={() => setPage(tab.id)}
               >
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">
-                  {tab.label
-                    .replace("Mutation", "")
-                    .replace("Adjustment", "Adj.")}
-                </span>
+                <span>{tab.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>

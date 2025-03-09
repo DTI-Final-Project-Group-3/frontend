@@ -70,7 +70,7 @@ const ProductMutationChart: FC = () => {
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle className="text-md font-semibold">
-            Inventory quantity Over Time
+            Inventory Quantity Over Time
           </CardTitle>
           <CardDescription>
             Showing daily changes inventory quantities

@@ -4,7 +4,7 @@ import { useReport } from "@/store/reportStore";
 import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
 import { getHistoryCustomerOrders } from "@/app/api/order/getCustomerOrders";
-import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
+import { ADMIN_CUSTOMER_ORDER_REPORT_PER_PAGE } from "@/constant/productConstant";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -43,7 +43,7 @@ const CustomerOrderHistoryTable: FC = () => {
     queryFn: () =>
       getHistoryCustomerOrders({
         page: page,
-        limit: ADMIN_PRODUCT_MUTATION,
+        limit: ADMIN_CUSTOMER_ORDER_REPORT_PER_PAGE,
         startDate: formatDateHyphen(dateRange.from),
         endDate: formatDateHyphen(dateRange.to),
         customerOrderStatusId: customerOrderStatusId,

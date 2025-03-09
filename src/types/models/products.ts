@@ -65,3 +65,7 @@ export interface ProductForm {
   images?: ProductImage[];
   productCategoryId: number;
 }
+
+export interface PaginatedProductCategoryParams extends PaginationParams {
+  accessToken?: string;
+}

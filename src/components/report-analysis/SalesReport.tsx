@@ -10,7 +10,7 @@ import {
 
 const productSales = [
   { product: "Product A", sales: 1400 },
-  { product: "Product B", sales: 1500 },
+  { product: "Product B", order: 1500 },
 ];
 
 export default function SalesReport() {
@@ -41,8 +41,8 @@ export default function SalesReport() {
             <tr key={item.product} className="border-t">
               <td className="p-2">{item.product}</td>
               <td className="p-2">Category</td>
-              <td className="p-2">{item.sales}</td>
-              <td className="p-2">${item.sales * 10}</td>
+              <td className="p-2">{item.order}</td>
+              <td className="p-2">${item.order * 10}</td>
             </tr>
           ))}
         </tbody>

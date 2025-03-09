@@ -2,6 +2,7 @@ import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
 import { LocationParams } from "@/types/location";
 import {
+  PaginatedProductCategoryParams,
   PaginatedProductParams,
   ProductBasic,
   ProductCategory,
@@ -21,6 +22,27 @@ export const getProductCategory = async (): Promise<
     `${productCategoryUrl}/all`,
   );
   return response.data;
+};
+
+export const getPaginatedProductCategories = async ({
+  page,
+  limit,
+  accessToken,
+}: PaginatedProductCategoryParams): Promise<
+  PaginationResponse<ProductCategory>
+> => {
+  const response = await axios.get<
+    ApiResponse<PaginationResponse<ProductCategory>>
+  >(productCategoryUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    params: {
+      page,
+      limit,
+    },
+  });
+  return response.data.data;
 };
 
 export const getNearbyProduct = async ({

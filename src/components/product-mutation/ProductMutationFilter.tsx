@@ -1,10 +1,10 @@
 import { FC } from "react";
 import DatePickerRange from "@/components/common/DatePickerRange";
-import ProductSelection from "@/components/product/ProductSelection";
+import ProductSelection from "@/components/product-management/ProductSelection";
 import { useReport } from "@/store/reportStore";
 import ProductMutationTypeSelection from "@/components/product-mutation/ProductMutationTypeSelection";
 import ProductMutationStatusSelection from "@/components/product-mutation/ProductMutationStatusSelection";
-import ProductCategorySelection from "@/components/product/ProductCategorySelection";
+import ProductCategorySelection from "@/components/product-management/ProductCategorySelection";
 import CustomerOrderStatusSelection from "@/components/report-analysis/CustomerOrderStatusSelection";
 
 interface ProductMutationFilterProps {

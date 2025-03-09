@@ -1,5 +1,5 @@
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
-import ProductFormComponent from "@/components/product/ProductForm";
+import ProductFormComponent from "@/components/product-management/ProductForm";
 import { FC } from "react";
 
 const ProductFormPage: FC = () => {
