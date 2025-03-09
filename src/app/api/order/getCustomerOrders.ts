@@ -4,6 +4,13 @@ import { PaginationResponse } from "@/types/api/pagination";
 import { Order } from "@/types/models/orders/orders";
 import axios from "axios";
 
+const toUTCDateString = (date: Date, isEndDate = false) => {
+  if (isEndDate) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)).toISOString();
+  }
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString();
+};
+
 export const getAllCustomerOrders = async (
   page: number,
   limit: number,
@@ -24,8 +31,8 @@ export const getAllCustomerOrders = async (
 
   if (status) params.append("customerOrderStatusId", status.toString());
   if (search) params.append("search", search);
-  if (startDate) params.append("startDate", startDate.toISOString());
-  if (endDate) params.append("endDate", endDate.toISOString());
+  if (startDate) params.append("startDate", toUTCDateString(startDate));
+  if (endDate) params.append("endDate", toUTCDateString(endDate, true));
   if (warehouseId) params.append("warehouseId", warehouseId.toString());
 
   if (!accessToken) {
