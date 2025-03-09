@@ -61,7 +61,10 @@ const Filters: FC = () => {
             <button
               type="button"
               className="absolute inset-y-0 right-3 flex items-center text-lg text-gray-500 hover:text-gray-700"
-              onClick={() => setFilters({ search: undefined })}
+              onClick={() => {
+                setFilters({ search: undefined });
+                setSearchQuery("");
+              }}
             >
               <X size={18} />
             </button>
@@ -130,6 +133,7 @@ const Filters: FC = () => {
           variant={session?.role !== "ADMIN_SUPER" ? "default" : "green"}
           onClick={() => {
             resetFilters();
+            setSearchQuery("");
           }}
         >
           Reset Filters
