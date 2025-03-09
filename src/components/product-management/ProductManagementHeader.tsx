@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FC, useState } from "react";
 import { Button } from "@/components/ui/button";
-import AddProductCategory from "@/components/product-management/AddProductCategory";
+import AddProductCategory from "@/components/product-management/categories/AddProductCategory";
 
 interface ProductManagementHeaderProps {
   selectedTab: number;
@@ -45,7 +45,7 @@ const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({
         </div>
         {selectedTab === 1 && (
           <Link href={`/admin/product-management/form`}>
-            <Button className="h-full">Add product</Button>
+            <Button className="h-full">Add Product</Button>
           </Link>
         )}
         {selectedTab === 2 && <AddProductCategory />}

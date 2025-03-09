@@ -15,9 +15,9 @@ import { getPaginatedProductCategories } from "@/app/api/product/getProducts";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "next-auth/react";
-import EditProductCategoryDialog from "@/components/product-management/EditProductCategoryDialog";
+import EditProductCategoryDialog from "@/components/product-management/categories/EditProductCategoryDialog";
 import { useProductAdmin } from "@/store/productAdminStore";
-import DeleteProductCategoryAlert from "@/components/product-management/DeleteProductCategoryAlert";
+import DeleteProductCategoryAlert from "@/components/product-management/categories/DeleteProductCategoryAlert";
 
 const ProductCategoryTable: FC = () => {
   const [page, setPage] = useState<number>(0);
@@ -44,14 +44,14 @@ const ProductCategoryTable: FC = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
-              <Skeleton className="h-8 w-full" />
+            <TableHead className="w-[10%]">
+              <Skeleton className="h-8 w-[80%]" />
             </TableHead>
-            <TableHead>
-              <Skeleton className="h-8 w-full" />
+            <TableHead className="w-[45%]">
+              <Skeleton className="h-8 w-[90%]" />
             </TableHead>
-            <TableHead>
-              <Skeleton className="h-8 w-full" />
+            <TableHead className="w-[45%] text-center">
+              <Skeleton className="mx-auto h-8 w-[60%]" />
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -60,13 +60,18 @@ const ProductCategoryTable: FC = () => {
             (_, index) => (
               <TableRow key={index}>
                 <TableCell>
-                  <Skeleton className="h-6 w-full" />
+                  <Skeleton className="h-6 w-[40%]" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-6 w-full" />
+                  <Skeleton
+                    className={`h-6 w-[${70 + Math.floor(Math.random() * 20)}%]`}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-6 w-full" />
+                  <div className="flex justify-center gap-8">
+                    <Skeleton className="h-8 w-24 rounded-md" />
+                    <Skeleton className="h-8 w-24 rounded-md" />
+                  </div>
                 </TableCell>
               </TableRow>
             ),

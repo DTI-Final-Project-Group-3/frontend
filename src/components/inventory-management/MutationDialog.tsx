@@ -13,7 +13,7 @@ import {
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import ProductSelection from "../product-management/ProductSelection";
+import ProductSelection from "../product-management/products/ProductSelection";
 import QuantityChange from "../common/QuantityChange";
 import { useSession } from "next-auth/react";
 import { Checkbox } from "../ui/checkbox";

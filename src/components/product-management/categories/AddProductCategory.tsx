@@ -42,7 +42,7 @@ const AddProductCategory = () => {
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button className="h-full" onClick={handleDialog}>
-          Add category
+          Add Category
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">

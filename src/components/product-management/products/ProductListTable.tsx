@@ -5,7 +5,7 @@ import { ADMIN_PRODUCT_PER_PAGE } from "@/constant/productConstant";
 import { Card, CardContent } from "@/components/ui/card";
 import ImageComponent from "@/components/common/ImageComponent";
 import { formatPrice } from "@/utils/formatter";
-import ActionButtons from "@/components/product-management/ActionButtons";
+import ActionButtons from "@/components/product-management/products/ActionButtons";
 import {
   Table,
   TableBody,
@@ -15,6 +15,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Eye, PenSquare, Trash2 } from "lucide-react";
+import Link from "next/link";
+import ViewIcon from "@/components/icon/ViewIcon";
+import EditIcon from "@/components/icon/EditIcon";
+import DeleteIcon from "@/components/icon/DeleteIcon";
 
 const ProductListTable: FC = () => {
   const [page, setPage] = useState<number>(0);
@@ -55,11 +61,56 @@ const ProductListTable: FC = () => {
     </div>
   );
 
-  const renderLoading = () => (
-    <div className="flex h-64 items-center justify-center">
-      <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-black"></div>
-    </div>
-  );
+  const renderLoading = () => {
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[40%]">
+              <Skeleton className="h-8 w-[80%]" />
+            </TableHead>
+            <TableHead className="w-[20%]">
+              <Skeleton className="h-8 w-[90%]" />
+            </TableHead>
+            <TableHead className="w-[10%] text-center">
+              <Skeleton className="mx-auto h-8 w-[60%]" />
+            </TableHead>
+            <TableHead className="w-[15%] text-center">
+              <Skeleton className="mx-auto h-8 w-[60%]" />
+            </TableHead>
+            <TableHead className="w-[15%] text-center">
+              <Skeleton className="mx-auto h-8 w-[60%]" />
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: ADMIN_PRODUCT_PER_PAGE }).map((_, index) => (
+            <TableRow key={index}>
+              <TableCell>
+                <Skeleton className="h-6 w-[60%]" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-6 w-[80%]" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-6 w-[60%]" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-6 w-[80%]" />
+              </TableCell>
+              <TableCell>
+                <div className="flex justify-center gap-8">
+                  <Skeleton className="h-5 w-5 rounded-md" />
+                  <Skeleton className="h-5 w-5 rounded-md" />
+                  <Skeleton className="h-5 w-5 rounded-md" />
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
+  };
 
   const renderMobileView = () => (
     <div className="space-y-4 md:hidden">
@@ -145,8 +196,16 @@ const ProductListTable: FC = () => {
                 </div>
               </TableCell>
               <TableCell className="text-center">
-                <div className="flex justify-center space-x-2">
-                  <ActionButtons productId={product.id} />
+                <div className="flex justify-center gap-4">
+                  <Link href={`/admin/product-management/${product.id}`}>
+                    <ViewIcon />
+                  </Link>
+                  <Link href={`/admin/product-management/form/${product.id}`}>
+                    <EditIcon />
+                  </Link>
+                  <Link href="">
+                    <DeleteIcon />
+                  </Link>
                 </div>
               </TableCell>
             </TableRow>

@@ -1,10 +1,11 @@
 import React, { FC, useState } from "react";
 import AlertDialogComponent from "@/components/common/AlertDialogComponent";
-import { Trash2 } from "lucide-react";
 import { deleteProductCategoryById } from "@/app/api/product/deleteProducts";
 import { ProductCategory } from "@/types/models/products";
 import { useProductAdmin } from "@/store/productAdminStore";
 import { useSession } from "next-auth/react";
+import { toast } from "@/hooks/use-toast";
+import DeleteIcon from "@/components/icon/DeleteIcon";
 
 const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -20,20 +21,23 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
       return;
     }
 
-    deleteProductCategoryById({ id, accessToken: data?.accessToken }).finally(
-      () => {
+    deleteProductCategoryById({ id, accessToken: data?.accessToken })
+      .then(() =>
+        toast({
+          title: "Success",
+          description: "Successfully deleted product",
+          duration: 2000,
+        }),
+      )
+      .finally(() => {
         setOpenAlert(false);
         setUpdateProductCategory(false);
-      },
-    );
+      });
   };
 
   return (
     <>
-      <Trash2
-        className="h-5 w-5 cursor-pointer text-gray-600"
-        onClick={() => setOpenAlert(true)}
-      />
+      <DeleteIcon onClick={() => setOpenAlert(true)} />
       <AlertDialogComponent
         open={openAlert}
         setOpen={setOpenAlert}

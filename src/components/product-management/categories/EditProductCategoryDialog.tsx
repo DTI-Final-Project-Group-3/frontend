@@ -16,6 +16,7 @@ import { useSession } from "next-auth/react";
 import { PenSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useProductAdmin } from "@/store/productAdminStore";
+import EditIcon from "@/components/icon/EditIcon";
 
 const EditProductCategoryDialog: FC<ProductCategory> = ({ id, name }) => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -48,10 +49,7 @@ const EditProductCategoryDialog: FC<ProductCategory> = ({ id, name }) => {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <PenSquare
-          className="h-5 w-5 cursor-pointer text-gray-600"
-          onClick={handleDialog}
-        />
+        <EditIcon onClick={handleDialog} />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="mb-5">

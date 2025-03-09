@@ -4,8 +4,8 @@ import React, { FC, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
-import ProductCategoryTable from "@/components/product-management/ProductCategoryTable";
-import ProductListTable from "@/components/product-management/ProductListTable";
+import ProductCategoryTable from "@/components/product-management/categories/ProductCategoryTable";
+import ProductListTable from "@/components/product-management/products/ProductListTable";
 
 const ProductManagementPage: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);

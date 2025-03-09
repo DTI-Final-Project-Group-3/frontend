@@ -2,7 +2,7 @@
 
 import { getProductDetailById } from "@/app/api/product/getProducts";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
-import ProductFormComponent from "@/components/product-management/ProductForm";
+import ProductFormComponent from "@/components/product-management/products/ProductForm";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { FC } from "react";
