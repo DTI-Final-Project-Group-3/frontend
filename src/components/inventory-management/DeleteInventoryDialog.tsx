@@ -16,6 +16,7 @@ import { Label } from "@radix-ui/react-label";
 import { useSession } from "next-auth/react";
 import { FC, useState } from "react";
 import { Textarea } from "../ui/textarea";
+import DeleteIcon from "@/components/icon/DeleteIcon";
 
 export const DeleteInventoryDialog: FC<{ warehouseInventoryId: number }> = ({
   warehouseInventoryId,
@@ -40,10 +41,7 @@ export const DeleteInventoryDialog: FC<{ warehouseInventoryId: number }> = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" className="h-full w-full">
-          {" "}
-          Delete
-        </Button>
+        <DeleteIcon />
       </AlertDialogTrigger>
       <AlertDialogContent className="gap-7">
         <AlertDialogHeader>

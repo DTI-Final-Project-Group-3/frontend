@@ -77,8 +77,11 @@ const AvailableWarehouseSelection: FC = () => {
               No warehouse available
             </SelectItem>
           ) : (
-            warehouses?.data?.map((warehouse) => (
-              <SelectItem key={warehouse.id} value={warehouse.id.toString()}>
+            warehouses?.data?.map((warehouse, index) => (
+              <SelectItem
+                key={`${index}-available-warehouse`}
+                value={warehouse.id.toString()}
+              >
                 <div className="flex flex-col border-b border-gray-200 p-2">
                   <span className="font-semibold text-gray-800">
                     {warehouse.name}

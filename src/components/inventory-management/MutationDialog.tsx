@@ -13,7 +13,7 @@ import {
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import ProductSelection from "../product/ProductSelection";
+import ProductSelection from "../product-management/products/ProductSelection";
 import QuantityChange from "../common/QuantityChange";
 import { useSession } from "next-auth/react";
 import { Checkbox } from "../ui/checkbox";
@@ -24,6 +24,7 @@ import { toast } from "@/hooks/use-toast";
 import { createProductMutationManual } from "@/app/api/product-mutation/postProductMutation";
 import AvailableWarehouseSelection from "../warehouse/AvailableWarehouseSelection";
 import { cn } from "@/lib/utils";
+import EditIcon from "@/components/icon/EditIcon";
 
 interface ProductMutationProps {
   isProductMutation?: boolean;
@@ -68,9 +69,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
     setSubmitIsLoading(true);
     updateQuantityWarehouseInventoryById(warehouseInventoryId, newMutation)
       .then(() => {
-        setDialogOpen(false);
         setSubmitMutation(true);
-
         toast({
           title: `Update Product Quantity`,
           description: `Successfully update ${ItemQuantity} quantity`,
@@ -78,6 +77,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
         });
       })
       .finally(() => {
+        setDialogOpen(false);
         setSubmitMutation(false);
         setSubmitIsLoading(false);
       });
@@ -87,9 +87,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
     setSubmitIsLoading(true);
     createProductMutationManual(newMutation)
       .then(() => {
-        setDialogOpen(false);
         setSubmitMutation(true);
-
         toast({
           title: "Manual Product Mutation",
           description: "Successfully create new request",
@@ -97,6 +95,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
         });
       })
       .finally(() => {
+        setDialogOpen(false);
         setSubmitMutation(false);
         setSubmitIsLoading(false);
       });
@@ -135,17 +134,26 @@ const MutationDialog: FC<ProductMutationProps> = ({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          onClick={() => {
-            handleOpenChange();
-            if (isProductMutation) setIsMutation(isProductMutation);
-            if (onClick) onClick();
-          }}
-          className={cn(buttonClassName, "h-full")}
-        >
-          {buttonName}
-        </Button>
+        {isProductMutation ? (
+          <Button
+            variant="outline"
+            onClick={() => {
+              handleOpenChange();
+              setIsMutation(isProductMutation);
+              if (onClick) onClick();
+            }}
+            className={cn(buttonClassName, "h-full")}
+          >
+            {buttonName}
+          </Button>
+        ) : (
+          <EditIcon
+            onClick={() => {
+              handleOpenChange();
+              if (onClick) onClick();
+            }}
+          />
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="mb-5">

@@ -32,7 +32,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const ProductMutationGraph: FC = () => {
+const ProductMutationChart: FC = () => {
   const {
     dateRange,
     productMutationTypeId,
@@ -52,11 +52,8 @@ const ProductMutationGraph: FC = () => {
       productMutationStatusId,
       destinationWarehouseId,
     ],
-    queryFn: () => {
-      if (!dateRange.from || !dateRange.to) {
-        return Promise.resolve([]);
-      }
-      return getProductMutationReportDailySummary({
+    queryFn: () =>
+      getProductMutationReportDailySummary({
         startedAt: formatDateHyphen(dateRange.from),
         endedAt: formatDateHyphen(dateRange.to),
         productId,
@@ -64,8 +61,7 @@ const ProductMutationGraph: FC = () => {
         productMutationTypeId,
         productMutationStatusId,
         destinationWarehouseId,
-      });
-    },
+      }),
     enabled: !!dateRange.from && !!dateRange.to,
   });
 
@@ -74,7 +70,7 @@ const ProductMutationGraph: FC = () => {
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle className="text-md font-semibold">
-            Inventory quantity Over Time
+            Inventory Quantity Over Time
           </CardTitle>
           <CardDescription>
             Showing daily changes inventory quantities
@@ -169,4 +165,4 @@ const ProductMutationGraph: FC = () => {
   );
 };
 
-export default ProductMutationGraph;
+export default ProductMutationChart;

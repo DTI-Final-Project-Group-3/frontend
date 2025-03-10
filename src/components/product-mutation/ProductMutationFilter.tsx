@@ -1,12 +1,19 @@
 import { FC } from "react";
 import DatePickerRange from "@/components/common/DatePickerRange";
-import ProductSelection from "@/components/product/ProductSelection";
+import ProductSelection from "@/components/product-management/products/ProductSelection";
 import { useReport } from "@/store/reportStore";
 import ProductMutationTypeSelection from "@/components/product-mutation/ProductMutationTypeSelection";
 import ProductMutationStatusSelection from "@/components/product-mutation/ProductMutationStatusSelection";
-import ProductCategorySelection from "@/components/product/ProductCategorySelection";
+import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
+import CustomerOrderStatusSelection from "@/components/report-analysis/CustomerOrderStatusSelection";
 
-const ProductMutationFilter: FC = () => {
+interface ProductMutationFilterProps {
+  isProductMutation?: boolean;
+}
+
+const ProductMutationFilter: FC<ProductMutationFilterProps> = ({
+  isProductMutation = false,
+}) => {
   const {
     dateRange,
     productId,
@@ -20,7 +27,7 @@ const ProductMutationFilter: FC = () => {
     setProductMutationStatusId,
   } = useReport();
   return (
-    <div className="p-7">
+    <div className="px-7 pt-7">
       <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white md:grid-cols-5">
         <DatePickerRange dateRange={dateRange} setDateRange={setDateRange} />
         <ProductSelection
@@ -33,14 +40,20 @@ const ProductMutationFilter: FC = () => {
           productCategoryId={productCategoryId}
           setProductCategoryId={setProductCategoryId}
         />
-        <ProductMutationTypeSelection
-          productMutationTypeId={productMutationTypeId}
-          setProductMutationTypeId={setProductMutationTypeId}
-        />
-        <ProductMutationStatusSelection
-          productMutationSelectionId={productMutationStatusId}
-          setProductMutationSelectionId={setProductMutationStatusId}
-        />
+        {isProductMutation ? (
+          <>
+            <ProductMutationTypeSelection
+              productMutationTypeId={productMutationTypeId}
+              setProductMutationTypeId={setProductMutationTypeId}
+            />
+            <ProductMutationStatusSelection
+              productMutationSelectionId={productMutationStatusId}
+              setProductMutationSelectionId={setProductMutationStatusId}
+            />
+          </>
+        ) : (
+          <CustomerOrderStatusSelection />
+        )}
       </div>
     </div>
   );

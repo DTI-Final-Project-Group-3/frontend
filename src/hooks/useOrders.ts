@@ -9,7 +9,7 @@ export const useOrders = (
   search?: string,
   startDate?: Date,
   endDate?: Date,
-  warehouseId?: number
+  warehouseId?: number,
 ) => {
   return useQuery({
     queryKey: [
@@ -21,7 +21,7 @@ export const useOrders = (
       search,
       startDate,
       endDate,
-      warehouseId
+      warehouseId,
     ],
     queryFn: () =>
       getAllCustomerOrders(
@@ -32,7 +32,7 @@ export const useOrders = (
         search,
         startDate,
         endDate,
-        warehouseId
+        warehouseId,
       ),
     enabled: !!accessToken,
     staleTime: 1000 * 60 * 2, // Cache results for 2 minutes

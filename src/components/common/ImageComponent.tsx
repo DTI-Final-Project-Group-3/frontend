@@ -11,6 +11,7 @@ interface ImageComponentProps {
   fill?: boolean;
   className?: string;
   sizes?: string;
+  priority?: boolean;
 }
 
 const ImageComponent: FC<ImageComponentProps> = ({
@@ -21,6 +22,7 @@ const ImageComponent: FC<ImageComponentProps> = ({
   fill,
   className,
   sizes,
+  priority,
 }) => {
   const [imageUrl, setImageUrl] = useState<string | undefined>(src);
 
@@ -38,6 +40,7 @@ const ImageComponent: FC<ImageComponentProps> = ({
       className={className}
       onError={handleOnError}
       sizes={sizes}
+      priority={priority}
     />
   );
 };

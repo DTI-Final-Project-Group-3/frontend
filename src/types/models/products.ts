@@ -67,5 +67,9 @@ export interface ProductForm {
   width?: number;
   length?: number;
   images?: ProductImage[];
-  categoryId: number;
+  productCategoryId: number;
+}
+
+export interface PaginatedProductCategoryParams extends PaginationParams {
+  accessToken?: string;
 }

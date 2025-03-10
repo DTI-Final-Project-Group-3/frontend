@@ -12,7 +12,7 @@ import { useReport } from "@/store/reportStore";
 import { useProductMutation } from "@/store/productMutationStore";
 import { formatDateHyphen, formatDateString } from "@/utils/formatter";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
+import { ADMIN_PRODUCT_MUTATION_REPORT_PER_PAGE } from "@/constant/productConstant";
 import { useState } from "react";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { ProductMutationReportResponse } from "@/types/models/productMutation";
@@ -56,7 +56,7 @@ export default function ProductMutationHistoryTable() {
       }
       return await getProductMutationHistory({
         page,
-        limit: ADMIN_PRODUCT_MUTATION,
+        limit: ADMIN_PRODUCT_MUTATION_REPORT_PER_PAGE,
         startedAt: formatDateHyphen(dateRange.from),
         endedAt: formatDateHyphen(dateRange.to),
         productId,

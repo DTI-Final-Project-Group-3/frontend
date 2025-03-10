@@ -1,1 +1,1 @@
-export const INVENTORY_PER_PAGE: number = 7;
+export const INVENTORY_PER_PAGE: number = 10;

@@ -1,7 +1,8 @@
 "use client"
 
-import { formatSpringBootError } from '@/types/models/springBootErrorResponse';
-import axios from 'axios';
+import { toast } from "@/hooks/use-toast";
+import { formatSpringBootError, SpringBootErrorResponse } from '@/types/models/springBootErrorResponse';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -12,20 +13,26 @@ const ResetPasswordRequest = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post(reset_password_request_url, { email });
-    
-            alert("Please check your email for the reset password link.");
+            await axios.post(reset_password_request_url, { email });
+
+            toast({ title: "Success", description: "Please check your email for the reset password link", duration: 2000});
+            alert("Please check your email for the reset password link");
             router.push("/login");
         } catch (error) {
-            if (!error.response) {
-               alert("Unknown error " + error);
+            const axiosError = error as AxiosError; 
+          
+            if (!axiosError.response) {
+              toast({ title: "Error", description: "Unknown error " + axiosError, duration: 2000});
+              alert("Unknown error " + axiosError);
+              
             } else {
-               const response = error.response.data;
-               alert(formatSpringBootError(response));
+                const response = axiosError.response.data as SpringBootErrorResponse;
+                toast({ title: "Error", description: formatSpringBootError(response), duration: 2000});
+                alert(formatSpringBootError(response));
             }
         } finally {
             setLoading(false);
