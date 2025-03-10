@@ -6,6 +6,8 @@ import axios, { AxiosError } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+const reset_password_verify_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/signup/verify`;
+
 export default function ResetPassword() {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -24,7 +26,7 @@ export default function ResetPassword() {
         e.preventDefault();
         setLoading(true);
         try {
-            axios.post('http://localhost:8080/api/v1/signup/verify', {
+            axios.post(reset_password_verify_url, {
                 token,
                 password
             });
