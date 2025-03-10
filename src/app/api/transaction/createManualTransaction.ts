@@ -23,9 +23,19 @@ export const createManualTransaction = async (
     totalPrice,
     cartItems,
   }: ManualTransferPayload,
-  router: ReturnType<typeof useRouter>
+  router: ReturnType<typeof useRouter>,
 ) => {
   try {
+    if (!accessToken) {
+      toast({
+        title: "Authentication Error",
+        description:
+          "You need to be logged in to proceed with the transaction.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Set order items
     const orderItems = cartItems.map((item) => ({
       productId: item.product.id,
@@ -43,11 +53,8 @@ export const createManualTransaction = async (
       orderItems: orderItems,
     };
 
-    console.log("payload", payload);
-
     const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL +
-        "/api/v1/transactions/create-manual",
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/create-manual`,
       {
         method: "POST",
         headers: {
@@ -55,7 +62,7 @@ export const createManualTransaction = async (
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -68,9 +75,7 @@ export const createManualTransaction = async (
     }
 
     const data = await response.json();
-    console.log(data);
     const orderId = data.data.transactionId;
-    console.log(orderId);
 
     // Reset cart items
     useCartStore.getState().resetCart();
