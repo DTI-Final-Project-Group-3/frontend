@@ -9,9 +9,9 @@ import { useUserAddressStore } from "@/store/userAddressStore";
 import { ProductDetail, ProductSummary } from "@/types/models/products";
 import { formatDimension, formatPrice, formatWeight } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import { redirect, useParams } from "next/navigation";
-import { FC, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { redirect, useParams } from "next/navigation";
+import { FC, useState } from "react";
 
 const InventoryPage: FC = () => {
   const session = useSession();

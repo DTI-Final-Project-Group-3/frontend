@@ -1,8 +1,9 @@
 "use client";
 import Logo from "@/components/navbar/components/Logo";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 import { formatSpringBootError, SpringBootErrorResponse } from "@/types/models/springBootErrorResponse";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,7 +36,20 @@ function ImagePlaceholder() {
   );
 }
 
-function SignupForm({ onSubmit, onGoogleLogin }) {
+interface HandleSubmitProps {
+  fullname : string;
+  username : string;
+  email : string;
+  password : string;
+  setSendingRequest : (isSending : boolean) => void;
+}
+
+interface SignupFormProps {
+  onSubmit : ({fullname, username, email, password, setSendingRequest} : HandleSubmitProps) => void;
+  onGoogleLogin : () => void;
+}
+
+function SignupForm({ onSubmit, onGoogleLogin } : SignupFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
@@ -44,10 +58,11 @@ function SignupForm({ onSubmit, onGoogleLogin }) {
   const [agree, setAgree] = useState(false);
   const [sendingRequest, setSendingRequest] = useState(false);
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault(); // Prevent the default form submission
     if (!agree) {
-      alert("You must agree with Privacy Policy and Terms of use")
+      toast({title: "Failed", description: "You must agree with Privacy Policy and Terms of use", duration: 2000});
+      alert("You must agree with Privacy Policy and Terms of use");
       return;
     }
 
@@ -57,7 +72,7 @@ function SignupForm({ onSubmit, onGoogleLogin }) {
     setUsername("");
     setPassword("");
     setShowPassword(showPassword);
-    onSubmit(fullname, username, email, password, setSendingRequest); // Call the onSubmit callback with fullname, username, email, and password
+    onSubmit({ fullname, username, email, password, setSendingRequest });
   };
 
   return (
@@ -90,7 +105,7 @@ function SignupForm({ onSubmit, onGoogleLogin }) {
           </div>
 
           <div className="text-sm md:text-[16px] mt-4 flex md:flex-nowrap gap-2 md:items-center whitespace-nowrap w-full">
-            <input type="checkbox" className="mr-1" onChange={(e) => setAgree(e.target.value)} />
+            <input type="checkbox" className="mr-1" onChange={(e) => setAgree(e.target.checked)} />
             <div className="flex items-center gap-2 flex-wrap">
               <p className="flex items-center gap-2">
                 I agree with
@@ -133,7 +148,7 @@ function SignupForm({ onSubmit, onGoogleLogin }) {
 }
 
 export default function SignupPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   // Redirect to profile if already logged in
@@ -143,7 +158,7 @@ export default function SignupPage() {
     }
   }, [status, router]);
 
-  const handleSubmit = async (fullname, username, email, password, setSendingRequest) => {
+  const handleSubmit = async ({fullname, username, email, password, setSendingRequest} : HandleSubmitProps) => {
     try {
       const response = await axios.post(signup_url, {
         fullname,
@@ -157,20 +172,26 @@ export default function SignupPage() {
       setSendingRequest(false);
 
       if (response.data.success) {
+        toast({title: "Success", description: "Signup succesful, please check your email for verification link", duration: 2000});
         alert("Signup succesful, please check your email for verification link");
         router.push("/login");
       } else {
-        alert("signup response failed :" + response.data.message);
+        toast({title: "Failed", description: "Signup failed :" + response.data.message, duration: 2000});
+        alert("Signup failed :" + response.data.message);
         console.log("Signup response failed:"+ response.data.message);
       }
     } catch (error) {
       setSendingRequest(false);
-      if (error.response === undefined)
-        alert("Unknown error " + error);
-      else {
-        const response = error.response.data as SpringBootErrorResponse;
-        alert(formatSpringBootError(response));
-      }
+        const axiosError = error as AxiosError; 
+        
+        if (!axiosError.response) {
+          toast({ title: "Error", description: "Unknown error " + axiosError, duration: 2000});
+          alert("Unknown error " + axiosError);
+        } else {
+            const response = axiosError.response.data as SpringBootErrorResponse;
+            toast({ title: "Error", description: formatSpringBootError(response), duration: 2000});
+            alert(formatSpringBootError(response));
+        }
     }
   };
 

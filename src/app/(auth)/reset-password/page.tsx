@@ -1,7 +1,8 @@
 'use client';
 
-import { formatSpringBootError } from '@/types/models/springBootErrorResponse';
-import axios from 'axios';
+import { toast } from '@/hooks/use-toast';
+import { formatSpringBootError, SpringBootErrorResponse } from '@/types/models/springBootErrorResponse';
+import axios, { AxiosError } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 export default function ResetPassword() {
@@ -18,7 +19,7 @@ export default function ResetPassword() {
         }
     }, [searchParams]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         setLoading(true);
         try {
@@ -27,15 +28,21 @@ export default function ResetPassword() {
                 password
             });
 
-            alert('Password successfully reset');
+            toast({title: "Success", description: "Password successfully reset", duration: 2000,});
+            alert("Password successfully reset");
             router.push('/login');
         } catch (error) {
-            if (!error.response) {
-                alert("Unknown error " + error);
-             } else {
-                const response = error.response.data;
+            const axiosError = error as AxiosError; 
+                      
+            if (!axiosError.response) {
+              toast({ title: "Error", description: "Unknown error " + axiosError, duration: 2000});
+              alert("Unknown error " + axiosError);
+              
+            } else {
+                const response = axiosError.response.data as SpringBootErrorResponse;
+                toast({ title: "Error", description: formatSpringBootError(response), duration: 2000});
                 alert(formatSpringBootError(response));
-             }
+            }
         } finally {
             setLoading(false);
         }
