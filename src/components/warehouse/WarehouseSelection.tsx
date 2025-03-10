@@ -16,12 +16,14 @@ interface WarehouseSelectionProps {
   captionNoSelection?: string;
   warehouseId: number | undefined;
   setWarehouseId: (id: number | undefined) => void;
+  setPage?: (page: number) => void;
 }
 
 const WarehouseSelection: FC<WarehouseSelectionProps> = ({
   captionNoSelection = "Select Warehouse",
   warehouseId,
   setWarehouseId,
+  setPage,
 }) => {
   const { data } = useSession();
   const { setDestinationWarehouseId } = useProductMutation();
@@ -50,6 +52,9 @@ const WarehouseSelection: FC<WarehouseSelectionProps> = ({
             setWarehouseId(undefined);
           } else {
             setWarehouseId(Number(value));
+          }
+          if (setPage) {
+            setPage(0);
           }
         }}
       >

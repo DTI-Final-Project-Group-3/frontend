@@ -2,7 +2,7 @@
 
 import { getProductDetailById } from "@/app/api/product/getProducts";
 import ProductManagementHeader from "@/components/product-management/ProductManagementHeader";
-import ProductFormComponent from "@/components/product/ProductForm";
+import ProductFormComponent from "@/components/product-management/products/ProductForm";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { FC } from "react";
@@ -16,12 +16,12 @@ const EditProductFormPage: FC = () => {
   });
 
   return (
-    <section className="w-full rounded-2xl bg-white py-4 md:py-7 min-h-[calc(100vh-178px)] shadow-sm">
+    <section className="min-h-[calc(100vh-178px)] w-full space-y-2 rounded-lg shadow-sm md:py-7">
       <ProductManagementHeader />
 
-      <div className="mt-4 md:mt-7 w-full overflow-x-auto flex justify-center px-4 md:px-17 text-gray-600">
+      <div className="md:px-17 flex w-full justify-center overflow-x-auto rounded-lg bg-white px-4 py-5 text-gray-600 md:py-10">
         {data && !isLoading && !isFetching && (
-          <ProductFormComponent props={data}></ProductFormComponent>
+          <ProductFormComponent props={data} />
         )}
       </div>
     </section>

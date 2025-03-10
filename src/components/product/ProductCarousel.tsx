@@ -17,7 +17,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
 }) => {
   const [selectedImagePosition, setSelectedImagePosition] = useState<number>(1);
   const [mainImageUrl, setMainImageUrl] = useState<string>(
-    "/images/no-image-icon.jpg"
+    "/images/no-image-icon.jpg",
   );
   const [imagesUrl, setImagesUrl] = useState<ProductImage[]>([]);
 
@@ -26,7 +26,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
   const handleImageChange = (changePosition: number, directChange: boolean) => {
     const maxPosition = imagesUrl.reduce(
       (max, image) => (image.position > max ? image.position : max),
-      1
+      1,
     );
 
     let newPosition: number;
@@ -43,7 +43,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
 
     setSelectedImagePosition(newPosition);
     const selectedPictureUrl = imagesUrl.find(
-      (image) => image.position === newPosition
+      (image) => image.position === newPosition,
     )?.url;
     setMainImageUrl(selectedPictureUrl ?? "/images/no-image-icon.jpg");
   };
@@ -54,7 +54,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
 
   const handleImagesError = (position: number) => {
     const objIndex = imagesUrl.findIndex(
-      (image) => image.position === position
+      (image) => image.position === position,
     );
     if (objIndex !== -1) {
       const updatedImages = [...imagesUrl];
@@ -92,33 +92,33 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
   }, [images]);
 
   return (
-    <div className="flex flex-col w-full max-w-screen-lg mx-auto">
-      <div className="relative flex items-center justify-center w-full">
+    <div className="mx-auto flex w-full max-w-screen-lg flex-col">
+      <div className="relative flex w-full items-center justify-center">
         <button
           onClick={() => handleImageChange(-1, false)}
-          className="absolute left-2 z-10 bg-white/80 rounded-full p-2.5 shadow-md hover:bg-white transition-colors duration-200 text-gray-700 hover:text-gray-900"
+          className="absolute left-2 z-10 rounded-full bg-white/80 p-2.5 text-gray-700 shadow-md transition-colors duration-200 hover:bg-white hover:text-gray-900"
           aria-label="Previous image"
         >
           ←
         </button>
         <div
-          className="w-full aspect-square relative bg-gray-50"
+          className="relative aspect-square w-full bg-gray-50"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           <Image
             src={mainImageUrl}
             fill
-            style={{ objectFit: "contain" }}
             alt={productName}
             onError={handleMainImageError}
             priority
-            className="p-2"
+            className="object-contain p-2"
+            sizes="500px, 500px"
           />
         </div>
         <button
           onClick={() => handleImageChange(1, false)}
-          className="absolute right-2 z-10 bg-white/80 rounded-full p-2.5 shadow-md hover:bg-white transition-colors duration-200 text-gray-700 hover:text-gray-900"
+          className="absolute right-2 z-10 rounded-full bg-white/80 p-2.5 text-gray-700 shadow-md transition-colors duration-200 hover:bg-white hover:text-gray-900"
           aria-label="Next image"
         >
           →
@@ -126,13 +126,13 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
       </div>
 
       {!isBanner && (
-        <div className="flex gap-3 mt-4 overflow-x-auto px-2 pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div className="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 mt-4 flex gap-3 overflow-x-auto px-2 pb-2">
           {imagesUrl
             .sort((a, b) => a.position - b.position)
             .map((image) => (
               <div
                 key={image.position}
-                className={`relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-colors duration-200 ${
+                className={`relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-colors duration-200 ${
                   selectedImagePosition === image.position
                     ? "border-blue-500"
                     : "border-transparent hover:border-gray-300"
@@ -141,11 +141,12 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
                 <Image
                   src={image.url}
                   fill
-                  style={{ objectFit: "cover" }}
                   alt={productName}
                   onClick={() => handleImageChange(image.position, true)}
                   onError={() => handleImagesError(image.position)}
-                  className="cursor-pointer"
+                  className="cursor-pointer object-cover"
+                  sizes="200px, 200px"
+                  priority
                 />
               </div>
             ))}

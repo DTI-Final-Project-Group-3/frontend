@@ -1,0 +1,127 @@
+import { FC } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { formatPrice } from "@/utils/formatter";
+
+interface AreaChartCardProps {
+  title: string;
+  description: string;
+  data: any[];
+  dataKey: string;
+  config: ChartConfig;
+  height?: string;
+}
+
+const AreaChartCard: FC<AreaChartCardProps> = ({
+  title,
+  description,
+  data,
+  dataKey,
+  config,
+  height = "h-[250px]",
+}) => {
+  return (
+    <Card>
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <div className="grid flex-1 gap-1 text-center sm:text-left">
+          <CardTitle className="text-md font-semibold">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </div>
+      </CardHeader>
+
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+        <ChartContainer
+          config={config}
+          className={`aspect-auto ${height} w-full`}
+        >
+          <AreaChart data={data}>
+            <defs>
+              <linearGradient id={`fill${dataKey}`} x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor={Object.values(config)[0].color}
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={Object.values(config)[0].color}
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+            </defs>
+
+            <CartesianGrid vertical={false} />
+            <YAxis
+              tickFormatter={(value) =>
+                dataKey === "totalValue" ? formatPrice(value) : value
+              }
+            />
+
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={32}
+              tickFormatter={(value) => {
+                const date = new Date(value);
+                return date.toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                });
+              }}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  labelFormatter={(value) => {
+                    return new Date(value).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    });
+                  }}
+                  formatter={(value) => {
+                    const formattedValue =
+                      dataKey === "totalValue" ? formatPrice(value) : value;
+                    const label =
+                      dataKey === "totalValue"
+                        ? "Total value"
+                        : "Total quantity";
+                    return `${label} : ${formattedValue}`;
+                  }}
+                  indicator="dot"
+                />
+              }
+            />
+
+            <Area
+              dataKey={dataKey}
+              type="monotone"
+              fill={`url(#fill${dataKey})`}
+              stroke={Object.values(config)[0].color}
+            />
+
+            <ChartLegend content={<ChartLegendContent />} />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default AreaChartCard;

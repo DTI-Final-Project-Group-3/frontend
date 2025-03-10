@@ -13,12 +13,14 @@ interface ProductCategorySelectionProps {
   captionNoSelection?: string;
   productCategoryId: number | undefined;
   setProductCategoryId: (id: number | undefined) => void;
+  setPage?: (page: number) => void;
 }
 
 const ProductCategorySelection: FC<ProductCategorySelectionProps> = ({
   captionNoSelection = "All Product Category",
   productCategoryId,
   setProductCategoryId,
+  setPage,
 }) => {
   const {
     data: productCategories,
@@ -38,6 +40,9 @@ const ProductCategorySelection: FC<ProductCategorySelectionProps> = ({
             setProductCategoryId(undefined);
           } else {
             setProductCategoryId(Number(value));
+          }
+          if (setPage) {
+            setPage(0);
           }
         }}
       >

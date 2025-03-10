@@ -4,8 +4,11 @@ import WarehouseSelection from "../warehouse/WarehouseSelection";
 import { useProductMutation } from "@/store/productMutationStore";
 
 const ProductMutationHeader: FC = () => {
-  const { destinationWarehouseId, setDestinationWarehouseId } =
-    useProductMutation();
+  const {
+    destinationWarehouseId,
+    setDestinationWarehouseId,
+    setProductMutationPage,
+  } = useProductMutation();
 
   return (
     <div className="z-[40] flex w-full flex-wrap items-center justify-between gap-2 rounded-xl bg-white p-7 md:sticky md:top-[0]">
@@ -17,6 +20,7 @@ const ProductMutationHeader: FC = () => {
           <WarehouseSelection
             warehouseId={destinationWarehouseId}
             setWarehouseId={setDestinationWarehouseId}
+            setPage={setProductMutationPage}
           />
         </div>
         <div className="relative w-full sm:w-auto">

@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../ui/select";
 import {
   getAllProductList,
   getProductExcludeFilter,
@@ -111,7 +111,10 @@ const ProductSelection: FC<ProductSelectionProps> = ({
           ) : (
             data &&
             data.map((product) => (
-              <SelectItem key={product.id} value={product.id.toString()}>
+              <SelectItem
+                key={`${product.id}-product-${product.name}`}
+                value={product.id.toString()}
+              >
                 {product.name}
               </SelectItem>
             ))
