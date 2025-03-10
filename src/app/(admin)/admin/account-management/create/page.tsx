@@ -1,7 +1,9 @@
 "use client";
 
-import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import { formatSpringBootError } from "@/types/models/springBootErrorResponse";
 import { Eye, EyeOff } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,33 +13,50 @@ const admin_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBL
 const CreateAdminPage = () => {
   const router = useRouter();
   const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const { data: session, status } = useSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!session) {
+      return;
+    }
+
     try {
-      const response = await axios.post(admin_url, {
-        fullname,
-        username,
-        email,
-        password,
+      const res = await fetch(admin_url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+        body: JSON.stringify({
+          fullname,
+          email,
+          password,
+        }),
       });
+      const data = await res.json();
 
-      console.log("Signup response:", response.data);
+      console.log("Signup response:", data);
 
-      if (response.data.success) {
+      if (data.success) {
         router.push("/admin/account-management");
       } else {
-        console.error("Signup failed:", response.data.message);
+        console.log("Signup failed:");
+        toast({title: "Failed", description: "Signup failed : " + formatSpringBootError(data), duration: 2000,});
       }
     } catch (error) {
-      console.error("Signup failed", error);
+      console.error("Signup error", error);
+      toast({title: "Error", description: "Signup error", duration: 2000,});
     }
   };
+
+  if (status === "loading") {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
 
   return (
     <section className="max-w-lg mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
@@ -51,16 +70,6 @@ const CreateAdminPage = () => {
             className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
-          />
-        </div>
-
-        <div className="mt-4">
-          <input
-            type="text"
-            placeholder="Your username"
-            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
 

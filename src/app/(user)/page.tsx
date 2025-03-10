@@ -13,16 +13,16 @@ import { useUserAddressStore } from "@/store/userAddressStore";
 import { useSearchStore } from "@/store/searchStore";
 import { ProductSummary } from "@/types/models/products";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
-import ProductCard from "@/components/product/ProductCard";
 import { useSession } from "next-auth/react";
 import { getNearbyProduct } from "../api/product/getProducts";
 import { toast } from "@/hooks/use-toast";
+import ProductCard from "@/components/product/productCard";
 
 export default function Home() {
   const { data: session } = useSession();
 
   const [productCategoryId, setProductCategoryId] = useState<number | null>(
-    null
+    null,
   );
   const [page, setPage] = useState<number>(0);
   const addToCart = useCartStore((state) => state.addToCart);
@@ -39,7 +39,7 @@ export default function Home() {
 
   const handlePageChange = (
     pageChange: number,
-    isDirectPage: boolean = false
+    isDirectPage: boolean = false,
   ) => {
     const pageRequest = isDirectPage ? pageChange : page + pageChange;
     if (pageRequest >= 0 && pageRequest < (products?.totalPages || 0)) {
@@ -89,7 +89,7 @@ export default function Home() {
         if (Array.isArray(parsedCart) && products?.content) {
           const updatedCart: CartItem[] = parsedCart.map((item) => {
             const updatedProduct = products.content.find(
-              (product) => product.id === item.product.id
+              (product) => product.id === item.product.id,
             );
             if (updatedProduct) {
               return { ...item, product: updatedProduct };
@@ -106,14 +106,14 @@ export default function Home() {
         });
       }
     }
-  }, [products]);
+  }, [products, setCartItems]);
 
   return (
     <>
-      <div className="min-h-[calc(100vh-70px)] mt-6 mb-12 w-full">
+      <div className="mb-12 mt-6 min-h-[calc(100vh-70px)] w-full">
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-            <div className="col-span-1 flex flex-col gap-8 md:sticky md:top-24 h-fit">
+            <div className="col-span-1 flex h-fit flex-col gap-8 md:sticky md:top-24">
               <Filtering
                 onFilterChange={(category) => setProductCategoryId(category)}
               />

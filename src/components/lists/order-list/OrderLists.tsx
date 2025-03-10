@@ -42,7 +42,6 @@ const OrderLists: FC = () => {
     warehouseId ? Number(warehouseId) : undefined,
   );
 
-  console.log(session?.userDetail?.role);
   return (
     <div className="min-h-[500px] w-full rounded-xl bg-white md:p-6">
       <div className="flex flex-col gap-6 p-6">

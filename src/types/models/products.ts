@@ -18,6 +18,10 @@ export interface ProductSummary extends Product {
   totalStock: number;
   thumbnail?: string;
   categoryName: string;
+  weight?: number;
+  height?: number;
+  width?: number;
+  length?: number;
 }
 
 // use to display in product detail page

@@ -163,7 +163,7 @@ export default function LoginPage() {
       const role = session?.role;
 
       if (role === "ADMIN_SUPER" || role === "ADMIN_WAREHOUSE")
-        router.push("/admin");
+        router.push("/admin/report-analysis");
       else router.push("/");
     }
   }, [status, router, session]);

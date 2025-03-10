@@ -1,3 +1,4 @@
+import { toast } from "@/hooks/use-toast";
 import { ApiResponse } from "@/types/api/apiResponse";
 import { PaginationResponse } from "@/types/api/pagination";
 import {
@@ -6,6 +7,13 @@ import {
   Order,
 } from "@/types/models/orders/orders";
 import axios from "axios";
+
+const toUTCDateString = (date: Date, isEndDate = false) => {
+  if (isEndDate) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)).toISOString();
+  }
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString();
+};
 
 const customerOrderUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/orders`;
 
@@ -29,14 +37,17 @@ export const getAllCustomerOrders = async (
 
   if (status) params.append("customerOrderStatusId", status.toString());
   if (search) params.append("search", search);
-  if (startDate) params.append("startDate", startDate.toISOString());
-  if (endDate) params.append("endDate", endDate.toISOString());
+  if (startDate) params.append("startDate", toUTCDateString(startDate));
+  if (endDate) params.append("endDate", toUTCDateString(endDate, true));
   if (warehouseId) params.append("warehouseId", warehouseId.toString());
 
-  console.log("whid:", warehouseId);
-
   if (!accessToken) {
-    throw new Error("Access token is missing");
+    toast({
+      title: "Access token is missing",
+      description: "Please sign in with correct account",
+      variant: "destructive",
+      duration: 3000,
+    });
   }
 
   // Fetch the API
@@ -50,9 +61,6 @@ export const getAllCustomerOrders = async (
       },
     },
   );
-  if (!response.data.success) {
-    throw new Error(response.data.message);
-  }
 
   return response.data;
 };
