@@ -24,6 +24,13 @@ export default function ResetPassword() {
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+
+        if (password.length <8) {
+            toast({ title: "Failed", description: "Password length minimum is 8", duration: 2000});
+            alert("Password length minimum is 8");
+            return;
+        }
+
         setLoading(true);
         try {
             await axios.post(reset_password_verify_url, {
