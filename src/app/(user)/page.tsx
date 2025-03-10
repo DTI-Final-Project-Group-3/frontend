@@ -16,7 +16,8 @@ import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import { useSession } from "next-auth/react";
 import { getNearbyProduct } from "../api/product/getProducts";
 import { toast } from "@/hooks/use-toast";
-import ProductCard from "@/components/product/productCard";
+import ProductCard from "@/components/product/ProductCard";
+import DeliveryLocationDialog from "@/components/location/DeliveryLocationDialog";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -30,11 +31,10 @@ export default function Home() {
   const { userAddress } = useUserAddressStore();
   const { searchQuery } = useSearchStore();
 
-  // Verify the user (verified and registred)
   useEffect(() => {
     useCartStore.getState().isUserVerified =
       session?.role === "CUSTOMER_VERIFIED";
-    useCartStore.getState().isUserRegistered = !session; // true if session is null (user is not logged in)
+    useCartStore.getState().isUserRegistered = !session;
   }, [session]);
 
   const handlePageChange = (
@@ -118,10 +118,11 @@ export default function Home() {
                 onFilterChange={(category) => setProductCategoryId(category)}
               />
               <LocationSelector />
+              <DeliveryLocationDialog />
             </div>
 
             <div className="col-span-3">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid min-h-[calc(100vh-150px)] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {productsLoading || productsFetching
                   ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
                       <ProductCardLoading key={index} />

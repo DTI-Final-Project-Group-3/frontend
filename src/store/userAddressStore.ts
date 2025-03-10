@@ -13,6 +13,6 @@ export const useUserAddressStore = create<UserAddressState>()(
       userAddress: null,
       setUserAddress: (address) => set({ userAddress: address }),
     }),
-    { name: "userAddress" }
-  )
+    { name: "user-address" },
+  ),
 );

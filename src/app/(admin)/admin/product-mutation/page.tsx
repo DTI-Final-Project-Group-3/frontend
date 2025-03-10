@@ -116,7 +116,7 @@ const ProductMutation: FC = () => {
   );
 
   const renderSkeletonLoading = () => (
-    <div className="space-y-4">
+    <div className="w-full space-y-4">
       {Array(5)
         .fill(0)
         .map((_, index) => (
@@ -178,7 +178,9 @@ const ProductMutation: FC = () => {
   ) => {
     return (
       <section className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-5 md:px-10">
-        <div className="flex w-full flex-grow items-center justify-center">
+        <div
+          className={`flex w-full flex-grow ${!data || data.content.length === 0 || isLoading || isError ? "items-center justify-center" : "items-start justify-center pt-4"}`}
+        >
           {!destinationWarehouseId
             ? renderWarehouseNotSelected()
             : isLoading
