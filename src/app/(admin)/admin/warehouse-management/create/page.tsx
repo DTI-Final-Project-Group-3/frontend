@@ -57,6 +57,8 @@ export default function CreateAddress() {
             toast({ title: "Success", description: "Create warehouse success", duration: 2000 });
             router.push(origin);
         } else {
+            const data = await response.json();
+            console.log(data);
             toast({title: "Failed", description: "Failed to create warehouse. Please try again.", duration: 2000,});
         }
     };
