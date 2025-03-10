@@ -19,7 +19,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import ViewIcon from "@/components/icon/ViewIcon";
 import EditIcon from "@/components/icon/EditIcon";
-import DeleteIcon from "@/components/icon/DeleteIcon";
 import { useProductAdmin } from "@/store/productAdminStore";
 import { useSession } from "next-auth/react";
 import { userRoles } from "@/constant/userConstant";
@@ -69,9 +68,6 @@ const ProductListTable: FC = () => {
         />
       </svg>
       <h3 className="mt-2 text-lg font-medium">No products found</h3>
-      <p className="mt-1">
-        Try changing your search criteria or add a new product.
-      </p>
     </div>
   );
 
@@ -166,7 +162,7 @@ const ProductListTable: FC = () => {
   );
 
   const renderDesktopTable = () => (
-    <div className="hidden md:block md:min-h-[calc(100vh-300px)]">
+    <div className="hidden w-full md:block md:min-h-[calc(100vh-300px)]">
       <Table>
         <TableHeader>
           <TableRow>
@@ -234,21 +230,23 @@ const ProductListTable: FC = () => {
   );
 
   return (
-    <section className="min-h-[calc(100vh-178px)] w-full rounded-2xl bg-white py-4 shadow-sm md:py-7">
-      <div className="mt-4 px-4 md:mt-7 md:px-10">
-        {productsLoading ? (
-          renderLoading()
-        ) : products?.content.length === 0 ? (
-          renderEmptyState()
-        ) : (
-          <>
-            {renderDesktopTable()}
-            {renderMobileView()}
-          </>
-        )}
+    <section className="w-full space-y-2 rounded-lg shadow-sm">
+      <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-5 md:px-10 md:pt-10">
+        <div className="flex flex-grow items-center justify-center">
+          {productsLoading ? (
+            renderLoading()
+          ) : products?.content.length === 0 ? (
+            renderEmptyState()
+          ) : (
+            <>
+              {renderDesktopTable()}
+              {renderMobileView()}
+            </>
+          )}
+        </div>
 
-        {products && (
-          <div className="mt-6">
+        {products && products.content.length > 0 && (
+          <div className="py-2">
             <PaginationAdmin
               desc="Products"
               page={productPage}

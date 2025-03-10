@@ -88,56 +88,68 @@ const ProductCategoryTable: FC = () => {
 
   const renderContent = () => {
     return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Id</TableHead>
-            <TableHead>Product Category Name</TableHead>
-            {data?.role === userRoles.ADMIN_SUPER && (
-              <TableHead className="text-center">Actions</TableHead>
-            )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {productCategories?.content.map((productCategory) => (
-            <TableRow key={productCategory.id}>
-              <TableCell>{productCategory.id}</TableCell>
-              <TableCell>{productCategory.name}</TableCell>
+      <div className="w-full md:min-h-[calc(100vh-300px)]">
+        <Table className="w-full">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Id</TableHead>
+              <TableHead>Product Category Name</TableHead>
               {data?.role === userRoles.ADMIN_SUPER && (
-                <TableCell>
-                  <div className="flex justify-center gap-8">
-                    <EditProductCategoryDialog
-                      id={productCategory.id}
-                      name={productCategory.name}
-                    />
-                    <DeleteProductCategoryAlert
-                      id={productCategory.id}
-                      name={productCategory.name}
-                    />
-                  </div>
-                </TableCell>
+                <TableHead className="text-center">Actions</TableHead>
               )}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {productCategories?.content.map((productCategory) => (
+              <TableRow key={productCategory.id}>
+                <TableCell>{productCategory.id}</TableCell>
+                <TableCell>{productCategory.name}</TableCell>
+                {data?.role === userRoles.ADMIN_SUPER && (
+                  <TableCell>
+                    <div className="flex justify-center gap-8">
+                      <EditProductCategoryDialog
+                        id={productCategory.id}
+                        name={productCategory.name}
+                      />
+                      <DeleteProductCategoryAlert
+                        id={productCategory.id}
+                        name={productCategory.name}
+                      />
+                    </div>
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     );
   };
 
   return (
-    <section className="w-full px-4 py-4 shadow-sm md:px-10 md:py-7">
-      {isLoading ? renderLoading() : isError ? renderError() : renderContent()}
+    <section className="w-full space-y-2 rounded-lg shadow-sm">
+      <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-5 md:px-10 md:pt-10">
+        <div className="flex flex-grow items-center justify-center">
+          {isLoading
+            ? renderLoading()
+            : isError
+              ? renderError()
+              : renderContent()}
+        </div>
 
-      {productCategories && (
-        <PaginationAdmin
-          desc="Product Category"
-          page={page}
-          setPage={setPage}
-          totalPages={productCategories?.totalPages}
-          totalElements={productCategories?.totalElements}
-          currentPageSize={productCategories?.content.length}
-        />
-      )}
+        {productCategories && productCategories.content.length > 0 && (
+          <div className="py-2">
+            <PaginationAdmin
+              desc="Product Category"
+              page={page}
+              setPage={setPage}
+              totalPages={productCategories?.totalPages}
+              totalElements={productCategories?.totalElements}
+              currentPageSize={productCategories?.content.length}
+            />
+          </div>
+        )}
+      </div>
     </section>
   );
 };

@@ -4,9 +4,9 @@ import { FC } from "react";
 
 const ProductFormPage: FC = () => {
   return (
-    <section className="min-h-[calc(100vh-178px)] w-full rounded-2xl bg-white py-4 shadow-sm md:py-7">
+    <section className="min-h-[calc(100vh-178px)] w-full space-y-2 rounded-lg py-4 shadow-sm md:py-7">
       <ProductManagementHeader />
-      <div className="md:px-17 mt-4 flex w-full justify-center overflow-x-auto px-4 text-gray-600 md:mt-7">
+      <div className="md:px-17 flex w-full justify-center overflow-x-auto rounded-lg bg-white px-4 py-5 text-gray-600 md:py-10">
         <ProductFormComponent />
       </div>
     </section>

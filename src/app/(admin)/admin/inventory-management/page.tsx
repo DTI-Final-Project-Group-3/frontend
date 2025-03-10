@@ -117,12 +117,12 @@ const InventoryManagementPage = () => {
           d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
         />
       </svg>
-      <h3 className="mt-2 text-lg font-medium">No products found</h3>
+      <h3 className="mt-2 text-lg font-medium">No inventories found</h3>
     </div>
   );
 
   const renderDesktopTable = () => (
-    <div className="hidden md:block md:min-h-[calc(100vh-300px)]">
+    <div className="hidden w-full md:block md:min-h-[calc(100vh-300px)]">
       <Table>
         <TableHeader>
           <TableRow>
@@ -240,27 +240,29 @@ const InventoryManagementPage = () => {
   );
 
   return (
-    <section className="min-h-[calc(100vh-178px)] w-full rounded-2xl bg-white py-4 shadow-sm md:py-7">
+    <section className="w-full space-y-2 rounded-lg shadow-sm">
       <InventoryManagementHeader />
 
-      <div className="mt-4 px-4 md:mt-7 md:px-10">
-        {!destinationWarehouseId ? (
-          renderWarehouseNotSelected()
-        ) : inventoriesLoading ? (
-          renderSkeletonLoading()
-        ) : inventoriesError ? (
-          renderError()
-        ) : inventories?.content?.length === 0 ? (
-          renderEmptyState()
-        ) : (
-          <>
-            {renderDesktopTable()}
-            {renderMobileView()}
-          </>
-        )}
+      <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-5 md:px-10 md:pt-10">
+        <div className="flex flex-grow items-center justify-center">
+          {!destinationWarehouseId ? (
+            renderWarehouseNotSelected()
+          ) : inventoriesLoading ? (
+            renderSkeletonLoading()
+          ) : inventoriesError ? (
+            renderError()
+          ) : inventories?.content?.length === 0 ? (
+            renderEmptyState()
+          ) : (
+            <>
+              {renderDesktopTable()}
+              {renderMobileView()}
+            </>
+          )}
+        </div>
 
-        {inventories && (
-          <div className="mt-6">
+        {inventories && inventories?.content.length > 0 && (
+          <div className="py-2">
             <PaginationAdmin
               desc="Inventories"
               page={inventoryPage}

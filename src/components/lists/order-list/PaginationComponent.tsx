@@ -33,7 +33,7 @@ const PaginationComponent: FC<PaginationProps> = ({
   };
 
   return (
-    <Pagination className={cn("my-5", className)}>
+    <Pagination className={cn("my-2", className)}>
       <PaginationContent>
         {/* Previous button */}
         <PaginationItem>
