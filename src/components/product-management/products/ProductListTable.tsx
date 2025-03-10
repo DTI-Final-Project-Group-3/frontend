@@ -23,14 +23,26 @@ import DeleteIcon from "@/components/icon/DeleteIcon";
 import { useProductAdmin } from "@/store/productAdminStore";
 import { useSession } from "next-auth/react";
 import { userRoles } from "@/constant/userConstant";
+import DeleteProductAlert from "@/components/product-management/products/DeleteProductAlert";
 
 const ProductListTable: FC = () => {
-  const { productPage, productCategoryId, searchQuery, setProductPage } =
-    useProductAdmin();
+  const {
+    productPage,
+    productCategoryId,
+    searchQuery,
+    updateProduct,
+    setProductPage,
+  } = useProductAdmin();
   const { data } = useSession();
 
   const { data: products, isLoading: productsLoading } = useQuery({
-    queryKey: ["products-admin", productPage, productCategoryId, searchQuery],
+    queryKey: [
+      "products-admin",
+      productPage,
+      productCategoryId,
+      searchQuery,
+      updateProduct,
+    ],
     queryFn: () =>
       getPaginatedProducts({
         page: productPage,
@@ -209,9 +221,7 @@ const ProductListTable: FC = () => {
                       >
                         <EditIcon />
                       </Link>
-                      <Link href="">
-                        <DeleteIcon />
-                      </Link>
+                      <DeleteProductAlert id={product.id} name={product.name} />
                     </>
                   )}
                 </div>

@@ -4,6 +4,9 @@ type ProductAdminStore = {
   updateProductCategory: boolean;
   setUpdateProductCategory: (productCategory: boolean) => void;
 
+  updateProduct: boolean;
+  setUpdateProduct: (product: boolean) => void;
+
   productPage: number;
   setProductPage: (productPage: number) => void;
 
@@ -18,6 +21,11 @@ export const useProductAdmin = create<ProductAdminStore>((set) => ({
   updateProductCategory: false,
   setUpdateProductCategory: (val: boolean) => {
     set({ updateProductCategory: val });
+  },
+
+  updateProduct: false,
+  setUpdateProduct: (val: boolean) => {
+    set({ updateProduct: val });
   },
 
   productPage: 0,

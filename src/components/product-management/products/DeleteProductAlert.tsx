@@ -1,24 +1,28 @@
 import React, { FC, useState } from "react";
+import DeleteIcon from "@/components/icon/DeleteIcon";
 import AlertDialogComponent from "@/components/common/AlertDialogComponent";
-import { deleteProductCategoryById } from "@/app/api/product/deleteProducts";
-import { ProductCategory } from "@/types/models/products";
 import { useProductAdmin } from "@/store/productAdminStore";
 import { useSession } from "next-auth/react";
-import { toast } from "@/hooks/use-toast";
-import DeleteIcon from "@/components/icon/DeleteIcon";
+import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
 import { getProductMutationHistory } from "@/app/api/product-mutation/getProductMutation";
 import { ProductMutationConstant } from "@/constant/productMutationConstant";
-import { useProductMutation } from "@/store/productMutationStore";
+import { toast } from "@/hooks/use-toast";
+import { deleteProductById } from "@/app/api/product/deleteProducts";
 
-const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
+interface DeleteProductAlertProps {
+  id: number;
+  name: string;
+}
+
+const DeleteProductAlert: FC<DeleteProductAlertProps> = ({ id, name }) => {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
-  const { updateProductCategory, setUpdateProductCategory } = useProductAdmin();
+  const { updateProduct, setUpdateProduct } = useProductAdmin();
   const { data } = useSession();
   const { destinationWarehouseId } = useProductMutation();
 
   const { data: pendingMutation } = useQuery({
-    queryKey: ["pending-mutation", updateProductCategory],
+    queryKey: ["pending-mutation", updateProduct],
     queryFn: async () =>
       getProductMutationHistory({
         page: 0,
@@ -29,38 +33,38 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
   });
 
   const handleConfirmDelete = () => {
-    setUpdateProductCategory(true);
+    setUpdateProduct(true);
 
     if (!id || !data?.accessToken) {
       setOpenAlert(false);
-      setUpdateProductCategory(false);
+      setUpdateProduct(false);
       return;
     }
 
     if (pendingMutation?.content.length !== 0) {
       setOpenAlert(false);
-      setUpdateProductCategory(false);
+      setUpdateProduct(false);
       toast({
         title: "Pending Product Mutation",
         description:
-          "Unable to delete, there's still pending product mutation for this product category.",
+          "Unable to delete, there's still pending product mutation for this product.",
         variant: "destructive",
         duration: 5000,
       });
       return;
     }
 
-    deleteProductCategoryById({ id, accessToken: data?.accessToken })
+    deleteProductById({ id, accessToken: data?.accessToken })
       .then(() =>
         toast({
           title: "Success",
-          description: "Successfully deleted product category",
+          description: "Successfully deleted product",
           duration: 2000,
         }),
       )
       .catch((err) => {
         toast({
-          title: "Error Deleting Product Category",
+          title: "Error Deleting Product",
           description: err.response?.data?.error?.message,
           variant: "destructive",
           duration: 5000,
@@ -68,10 +72,9 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
       })
       .finally(() => {
         setOpenAlert(false);
-        setUpdateProductCategory(false);
+        setUpdateProduct(false);
       });
   };
-
   return (
     <>
       <DeleteIcon onClick={() => setOpenAlert(true)} />
@@ -79,7 +82,7 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
         open={openAlert}
         setOpen={setOpenAlert}
         title="Are You Sure?"
-        description={`All data related to product category ${name} will be deleted from database`}
+        description={`All data related to product ${name} will be deleted from database`}
         onCancel={() => setOpenAlert(false)}
         onConfirm={handleConfirmDelete}
         cancelText="Cancel"
@@ -89,4 +92,4 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
   );
 };
 
-export default DeleteProductCategoryAlert;
+export default DeleteProductAlert;
