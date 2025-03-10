@@ -38,9 +38,10 @@ function ImagePlaceholder() {
 interface LoginFormProps {
   onSubmit: (email: string, password: string) => void;
   onGoogleLogin: () => void;
+  loading : boolean;
 }
 
-function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
+function LoginForm({ onSubmit, onGoogleLogin, loading }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -108,8 +109,8 @@ function LoginForm({ onSubmit, onGoogleLogin }: LoginFormProps) {
             <Link href="/forgot-password"><span className="font-bold cursor-pointer">Forgot Password?</span></Link>
           </div>
 
-          <Button type="submit" className="w-full mt-6 font-semibold">
-            Sign In
+          <Button type="submit" className="w-full mt-6 font-semibold" disabled={loading}>
+            {loading ? "Signing in" : "Sign In"}
           </Button>
 
           <div className="flex items-center my-4">
@@ -157,6 +158,7 @@ function getFriendlyErrorMessage(errorCode: string): string {
 export default function LoginPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -169,6 +171,8 @@ export default function LoginPage() {
   }, [status, router, session]);
 
   const handleSubmit = async (email: string, password: string) => {
+    setLoading(true);
+
     const result = await signIn("credentials", {
       email,
       password,
@@ -195,6 +199,8 @@ export default function LoginPage() {
       });
       router.push("/");
     }
+
+    setLoading(false);
   };
 
   const handleGoogleLogin = async () => {
@@ -204,7 +210,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col md:flex-row h-screen w-full">
       <ImagePlaceholder />
-      <LoginForm onSubmit={handleSubmit} onGoogleLogin={handleGoogleLogin} />
+      <LoginForm onSubmit={handleSubmit} onGoogleLogin={handleGoogleLogin} loading={loading}/>
     </div>
   );
 }

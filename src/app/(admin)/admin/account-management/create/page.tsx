@@ -26,6 +26,12 @@ const CreateAdminPage = () => {
     }
 
     try {
+
+      if (password.length <8) {
+        toast({ title: "Failed", description: "Password length minimum is 8", duration: 2000});
+        return;
+      }
+
       const res = await fetch(admin_url, {
         method: "POST",
         headers: {
