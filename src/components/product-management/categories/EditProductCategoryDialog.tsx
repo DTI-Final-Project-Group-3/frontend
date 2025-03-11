@@ -13,7 +13,6 @@ import { Label } from "@radix-ui/react-label";
 import { ProductCategory } from "@/types/models/products";
 import { updateProductCategoryById } from "@/app/api/product/putProducts";
 import { useSession } from "next-auth/react";
-import { PenSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useProductAdmin } from "@/store/productAdminStore";
 import EditIcon from "@/components/icon/EditIcon";

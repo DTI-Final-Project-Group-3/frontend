@@ -9,7 +9,7 @@ const ReportAnalysisTabs: FC = () => {
 };
 
 export default ReportAnalysisTabs;
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const renderContent = (
   data: PaginationResponse<ProductMutationDetailResponse>,
   isLoading: boolean,

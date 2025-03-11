@@ -1,4 +1,5 @@
 import { UserDetail } from "@/types/models/userDetail";
+import Image from "next/image";
 
 const placeholderImage = "https://dummyimage.com/150x150/cccccc/ffffff&text=No+Image";
 
@@ -14,9 +15,11 @@ export const CustomerCard = ({customer} : Props) => {
     { customer &&
     <div>
         <div className="flex flex-col md:flex-row items-center md:items-start gap-4 mb-3 w-full">
-          <img
+          <Image
             src={customer.profileImageUrl?.trim() ? customer.profileImageUrl : placeholderImage}
             alt={`${customer.fullname}'s profile`}
+            height={96}
+            width={96}
             className="w-24 h-24 rounded-full object-cover"
           />
           <div className="text-center md:text-left">
