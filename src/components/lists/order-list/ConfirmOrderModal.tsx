@@ -95,7 +95,7 @@ const ConfirmOrderModal: FC<ConfirmOrderModalProps> = ({
           </DialogClose>
           <Button
             variant="green"
-            disabled={!isChecked}
+            disabled={!isChecked || handleConfirmOrder.isPending}
             className="px-6"
             onClick={() => handleConfirmOrder.mutate()}
           >
