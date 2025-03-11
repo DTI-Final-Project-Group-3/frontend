@@ -3,12 +3,15 @@ import { toast } from "@/hooks/use-toast";
 import { UserAdminDetail } from "@/types/models/userAdminDetail";
 import axios from "axios";
 import { Session } from "next-auth";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 const placeholderImage = "https://dummyimage.com/150x150/cccccc/ffffff&text=No+Image";
 const admin_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN}`;
 const admin_assign = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_ADMIN_ASSIGN_WAREHOUSE}`;
+const admin_edit = "/admin/account-management/edit";
 
 interface Props {
   admin: UserAdminDetail;
@@ -19,6 +22,7 @@ interface Props {
 export const AdminCard = ({ admin, refresh, session }: Props) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
+  const router = useRouter();
 
   const deleteAdmin = useCallback(async () => {
     if (!session) return;
@@ -72,9 +76,11 @@ export const AdminCard = ({ admin, refresh, session }: Props) => {
   <div className="bg-gray-100 p-5 rounded-xl shadow-md flex flex-col items-start">
     {/* Responsive layout for profile picture and details */}
     <div className="flex flex-col md:flex-row items-center md:items-start gap-4 mb-3 w-full">
-      <img
+      <Image
         src={admin.profileImageUrl?.trim() ? admin.profileImageUrl : placeholderImage}
         alt={`${admin.fullname}'s profile`}
+        height={96}
+        width={96}
         className="w-24 h-24 rounded-full object-cover"
       />
       <div className="text-center md:text-left">
@@ -88,6 +94,9 @@ export const AdminCard = ({ admin, refresh, session }: Props) => {
       <>
         <p className="text-sm font-medium text-blue-600">Warehouse: {admin.warehouseName}</p>
         <p className="text-sm font-medium text-blue-600">Assigner: {admin.userAssignerEmail}</p>
+        <Button variant="grey" className="mt-2" onClick={() => router.push(`${admin_edit}/${admin.id}`)}>
+          Edit profile
+        </Button>
         <Button variant="blue" className="mt-2" onClick={() => setAssignmentDialogOpen(true)}>
           Remove assignment
         </Button>
@@ -95,6 +104,9 @@ export const AdminCard = ({ admin, refresh, session }: Props) => {
     ) : (
       <>
         <p className="text-sm font-medium text-red-500">Not assigned to a warehouse</p>
+        <Button variant="grey" className="mt-2" onClick={() => router.push(`${admin_edit}/${admin.id}`)}>
+          Edit profile
+        </Button>
         <Button variant="destructive" className="mt-2" onClick={() => setDeleteDialogOpen(true)}>
           Delete admin
         </Button>

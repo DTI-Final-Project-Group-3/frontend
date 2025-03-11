@@ -1,9 +1,12 @@
 'use client';
 
-import { formatSpringBootError } from '@/types/models/springBootErrorResponse';
-import axios from 'axios';
+import { toast } from '@/hooks/use-toast';
+import { formatSpringBootError, SpringBootErrorResponse } from '@/types/models/springBootErrorResponse';
+import axios, { AxiosError } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+const reset_password_verify_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/signup/verify`;
 
 export default function ResetPassword() {
     const searchParams = useSearchParams();
@@ -19,24 +22,38 @@ export default function ResetPassword() {
         }
     }, [searchParams]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         setLoading(true);
+
+        if (password.length <8) {
+            toast({ title: "Failed", description: "Password length minimum is 8", duration: 2000});
+            alert("Password length minimum is 8");
+            setLoading(false);
+            return;
+        }
+
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/signup/verify', {
+            axios.post(reset_password_verify_url, {
                 token,
                 password
             });
 
-            alert('Email successfully verified. Please login with the registered email.');
+            toast({ title: "Success", description: "Email successfully verified. Please login with the registered email.", duration: 2000});
+            alert("Email successfully verified. Please login with the registered email.");
             router.push('/login');
         } catch (error) {
-            if (!error.response) {
-                alert("Unknown error " + error);
+            const axiosError = error as AxiosError; 
+                      
+            if (!axiosError.response) {
+              toast({ title: "Error", description: "Unknown error " + axiosError, duration: 2000});
+              alert("Unknown error " + axiosError);
+              
             } else {
-                const response = error.response.data;
+                const response = axiosError.response.data as SpringBootErrorResponse;
+                toast({ title: "Error", description: formatSpringBootError(response), duration: 2000});
                 alert(formatSpringBootError(response));
-             }
+            }
         } finally {
             setLoading(false);
         }

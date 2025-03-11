@@ -122,7 +122,10 @@ const CheckoutSummary: FC<CheckoutSummaryProps> = ({
             )}
           </Button>
         </DialogTrigger>
-        <DialogContent className="p-6 sm:min-w-[400px]">
+        <DialogContent
+          aria-describedby={undefined}
+          className="p-6 sm:min-w-[400px]"
+        >
           <DialogHeader className="flex w-full flex-col gap-2">
             <DialogTitle className="m-0 flex items-center gap-2 p-0 text-3xl font-semibold text-black">
               <ShoppingCart className="black mr-2 h-6 w-6" />

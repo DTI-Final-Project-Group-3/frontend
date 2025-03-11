@@ -29,7 +29,10 @@ const SelectShipping = ({
   );
 
   return (
-    <DialogContent className="max-h-[80vh] overflow-y-auto">
+    <DialogContent
+      aria-describedby={undefined}
+      className="max-h-[80vh] overflow-y-auto"
+    >
       <DialogHeader>
         <DialogTitle>
           <span className="text-xl">Select Shipping Method</span>

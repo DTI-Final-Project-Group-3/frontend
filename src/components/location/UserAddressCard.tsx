@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { UserAddress } from "@/types/models/users";
-import { LocateFixed, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 

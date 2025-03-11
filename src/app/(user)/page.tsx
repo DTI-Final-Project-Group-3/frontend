@@ -17,6 +17,7 @@ import DeliveryLocationDialog from "@/components/location/DeliveryLocationDialog
 import { useProductUser } from "@/store/productUserStore";
 import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
 import ProductCategoryUserSelection from "@/components/product/ProductCategoryUserSelection";
+import LandingPage from "@/components/landing-page/LandingPage";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -95,6 +96,7 @@ export default function Home() {
 
   return (
     <>
+      <LandingPage></LandingPage>
       <div className="mb-12 mt-6 min-h-[calc(100vh-70px)] w-full">
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">

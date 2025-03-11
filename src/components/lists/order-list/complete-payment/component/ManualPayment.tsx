@@ -17,7 +17,7 @@ const ManualPayment: FC<ManualPaymentProps> = ({ createdAt }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const { timeLeft, formattedTime } = useCountdownTimer(createdAt.toString());
+  const { formattedTime } = useCountdownTimer(createdAt.toString());
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -83,7 +83,7 @@ const ManualPayment: FC<ManualPaymentProps> = ({ createdAt }) => {
             className="relative flex h-[300px] w-[300px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition hover:bg-gray-100"
           >
             {previewUrl ? (
-              <div className="mt-2 flex h-full w-full items-center justify-center bg-slate-100">
+              <div className="relative mt-2 flex h-full w-full items-center justify-center bg-slate-100">
                 <Image
                   src={previewUrl}
                   alt="Payment proof image"
@@ -91,6 +91,11 @@ const ManualPayment: FC<ManualPaymentProps> = ({ createdAt }) => {
                   width={300}
                   className="h-[300px] w-[300px] rounded-lg object-cover"
                 />
+                {selectedFile && (
+                  <div className="absolute bottom-2 left-2 right-2 rounded-md bg-black bg-opacity-50 px-2 py-1 text-center text-xs text-white">
+                    {selectedFile.name}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center gap-3">

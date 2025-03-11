@@ -50,8 +50,7 @@ export const createGatewayTransaction = async ({
     };
 
     const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL +
-        "/api/v1/transactions/create-gateway",
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/create-gateway`,
       {
         method: "POST",
         headers: {
@@ -59,7 +58,7 @@ export const createGatewayTransaction = async ({
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -68,7 +67,6 @@ export const createGatewayTransaction = async ({
         description: "Please make sure you're verified and try again.",
         variant: "destructive",
       });
-      throw new Error("Failed to create transaction");
     }
 
     const data = await response.json();
