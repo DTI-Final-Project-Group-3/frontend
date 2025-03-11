@@ -40,8 +40,8 @@ const Search: FC = () => {
         </div>
         <div
           className={cn(
-            "flex items-center gap-2 rounded-full bg-black text-white transition-all duration-100",
-            isFocused ? "bg-black px-4 py-3 text-white" : "p-3",
+            "flex items-center gap-2 rounded-full bg-warehub-green text-white transition-all duration-100",
+            isFocused ? "bg-warehub-green px-4 py-3 text-white" : "p-3",
           )}
         >
           <div className="flex items-center gap-2">
