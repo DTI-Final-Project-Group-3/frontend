@@ -1,5 +1,6 @@
 "use client";
 
+import ChangeEmailDialog from "@/components/user/ChangeEmailDialog";
 import ProfileImage from "@/components/user/ProfileImage";
 import { toast } from "@/hooks/use-toast";
 import { useCartStore } from "@/store/cartStore";
@@ -16,6 +17,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const resetCart = useCartStore((state) => state.resetCart);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -119,9 +121,14 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
               </button>
 
               <button
+                onClick={() => setIsEmailDialogOpen(true)}
+                className="block w-full py-2 px-4 bg-purple-500 text-white rounded hover:bg-purple-600">
+                Change Email
+              </button>
+
+              <button
                 onClick={() => {resetCart();signOut({ callbackUrl: "/login" })}}
-                className="block w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600"
-              >
+                className="block w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">
                 Logout
               </button>
             </nav>
@@ -133,6 +140,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
+      {isEmailDialogOpen && <ChangeEmailDialog onClose={() => setIsEmailDialogOpen(false)} />}
     </div>
   );
 }
