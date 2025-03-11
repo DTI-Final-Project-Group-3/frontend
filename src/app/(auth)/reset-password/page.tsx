@@ -4,11 +4,11 @@ import { toast } from '@/hooks/use-toast';
 import { formatSpringBootError, SpringBootErrorResponse } from '@/types/models/springBootErrorResponse';
 import axios, { AxiosError } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 const reset_password_verify_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/reset-password-verify`;
 
-export default function ResetPassword() {
+function ResetPassword() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [password, setPassword] = useState('');
@@ -82,5 +82,13 @@ export default function ResetPassword() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function ResetPasswordWrapper() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ResetPassword />
+        </Suspense>
     );
 }
