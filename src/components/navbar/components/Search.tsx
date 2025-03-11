@@ -2,16 +2,20 @@
 
 import { cn } from "@/lib/utils";
 import { SearchIcon } from "lucide-react";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useProductUser } from "@/store/productUserStore";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const Search: FC = () => {
   const [isFocused, setIsFocused] = useState(false);
-  const { searchQuery, setSearchQuery } = useProductUser();
+  const [internalSearchQuery, setInternalSearchQuery] = useState<string>("");
+  const { setSearchQuery } = useProductUser();
 
-  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const debouncedSearch = useDebounce(internalSearchQuery, 500);
+
+  useEffect(() => {
+    setSearchQuery(debouncedSearch);
+  }, [debouncedSearch, setSearchQuery]);
 
   return (
     <label
@@ -28,8 +32,8 @@ const Search: FC = () => {
             onBlur={() => setIsFocused(false)}
             id="search-input"
             type="text"
-            value={searchQuery ?? ""}
-            onChange={handleSearchInput}
+            value={internalSearchQuery ?? ""}
+            onChange={(e) => setInternalSearchQuery(e.target.value)}
             placeholder="Search..."
             className="placeholder:text-grey-500 w-full border-none !text-[16px] text-lg font-semibold text-gray-700 outline-none placeholder:text-[16px] focus-visible:ring-transparent focus-visible:ring-offset-0"
           />

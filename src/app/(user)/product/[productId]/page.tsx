@@ -10,8 +10,10 @@ import { ProductDetail, ProductSummary } from "@/types/models/products";
 import { formatDimension, formatPrice, formatWeight } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
 import { redirect, useParams } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const InventoryPage: FC = () => {
   const session = useSession();
@@ -59,42 +61,61 @@ const InventoryPage: FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full min-h-[calc(100vh-70px)] p-5 md:p-0">
-      <div className="mx-auto px-4 md:pt-16 pt-0 max-w-7xl">
+    <div className="flex min-h-[calc(100vh-70px)] w-full flex-col p-5 md:p-0">
+      <div className="mx-auto max-w-7xl px-4 pt-0 md:pt-16">
         {!productDetail || isLoading || isFetching ? (
-          <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 md:min-h-screen">
-            <div className="w-full flex justify-center">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
+            <div className="flex w-full justify-center">
               <div className="w-full max-w-md">
-                <div className="w-full h-64 bg-gray-300 rounded"></div>
+                <Skeleton className="aspect-square w-full rounded-md" />
+                <div className="mt-4 flex justify-center space-x-2">
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} className="h-2 w-16 rounded-full" />
+                  ))}
+                </div>
               </div>
             </div>
+
             <div className="flex flex-col gap-6">
-              <div className="h-8 w-3/4 bg-gray-300 rounded"></div>
-              <div className="h-6 w-full bg-gray-300 rounded"></div>
-              <div className="h-10 w-1/2 bg-gray-300 rounded"></div>
-              <div className="space-y-4">
+              <Skeleton className="h-8 w-3/4 md:h-10" />
+
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+
+              <Skeleton className="h-8 w-1/3 md:h-10" />
+
+              <div className="space-y-6">
                 <div>
-                  <div className="h-4 w-24 bg-gray-300 rounded"></div>
+                  <Skeleton className="mb-2 h-5 w-24" />
+                  <Skeleton className="h-4 w-48" />
                 </div>
                 <div>
-                  <div className="h-4 w-24 bg-gray-300 rounded"></div>
+                  <Skeleton className="mb-2 h-5 w-16" />
+                  <Skeleton className="h-4 w-24" />
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row gap-4 py-6">
-                <div className="flex items-center border border-gray-300 rounded-md h-12 w-full md:w-24"></div>
-                <div className="flex-1 bg-gray-300 h-12 rounded-md"></div>
+
+              <div className="flex flex-col gap-4 py-6 md:flex-row">
+                <Skeleton className="h-12 w-full md:w-32" />
+                <Skeleton className="h-12 w-full" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
-                <div className="h-4 w-24 bg-gray-300 rounded"></div>
-                <div className="h-4 w-24 bg-gray-300 rounded"></div>
-                <div className="h-4 w-24 bg-gray-300 rounded"></div>
-                <div className="h-4 w-24 bg-gray-300 rounded"></div>
+
+              <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-36" />
               </div>
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-            <div className="w-full flex justify-center">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
+            <div className="flex w-full justify-center">
               <div className="w-full max-w-md">
                 {productDetail && (
                   <ProductCarousel
@@ -106,18 +127,18 @@ const InventoryPage: FC = () => {
             </div>
 
             <div className="flex flex-col gap-6">
-              <h1 className="text-2xl md:text-4xl font-poppins font-semibold">
+              <h1 className="font-poppins text-2xl font-semibold md:text-4xl">
                 {productDetail?.name}
               </h1>
-              <p className="text-gray-600 text-base md:text-lg">
+              <p className="text-base text-gray-600 md:text-lg">
                 {productDetail?.description}
               </p>
               <h2
                 className={cn(
-                  "text-2xl md:text-3xl font-poppins font-medium",
+                  "font-poppins text-2xl font-medium md:text-3xl",
                   productDetail.totalStock > 0
                     ? ""
-                    : "text-red-500 font-semibold"
+                    : "font-semibold text-red-500",
                 )}
               >
                 {productDetail.totalStock > 0
@@ -127,7 +148,7 @@ const InventoryPage: FC = () => {
 
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-gray-700 font-semibold mb-1">
+                  <h2 className="mb-1 font-semibold text-gray-700">
                     Dimensions
                   </h2>
                   <div className="flex gap-2">
@@ -138,19 +159,19 @@ const InventoryPage: FC = () => {
                 </div>
 
                 <div>
-                  <h2 className="text-gray-700 font-semibold mb-1">Weight</h2>
+                  <h2 className="mb-1 font-semibold text-gray-700">Weight</h2>
                   <p>{formatWeight(productDetail.weight)}</p>
                 </div>
               </div>
 
               <div className="flex gap-4 py-6">
-                <div className="flex items-center border border-gray-300 rounded-md h-12">
+                <div className="flex h-12 items-center rounded-md border border-gray-300">
                   <button
                     className={cn(
                       "px-4 py-1 text-xl transition-colors",
                       cartQuantity <= 1
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-gray-50"
+                        ? "cursor-not-allowed text-gray-300"
+                        : "text-gray-600 hover:bg-gray-50",
                     )}
                     disabled={cartQuantity <= 1}
                     onClick={(e) => {
@@ -168,15 +189,15 @@ const InventoryPage: FC = () => {
                     type="text"
                     value={cartQuantity}
                     readOnly
-                    className="w-12 text-center border-x border-gray-300 pointer-events-none"
+                    className="pointer-events-none w-12 border-x border-gray-300 text-center"
                   />
 
                   <button
                     className={cn(
                       "px-4 py-1 text-xl transition-colors",
                       cartQuantity >= productDetail.totalStock
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-gray-50"
+                        ? "cursor-not-allowed text-gray-300"
+                        : "text-gray-600 hover:bg-gray-50",
                     )}
                     disabled={cartQuantity >= productDetail.totalStock}
                     onClick={(e) => {
@@ -190,10 +211,7 @@ const InventoryPage: FC = () => {
                     +
                   </button>
                 </div>
-                <button
-                  className={cn(
-                    "flex-1 bg-black text-white rounded-md px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors"
-                  )}
+                <Button
                   onClick={(e) => {
                     e.preventDefault();
                     handleAddToCart(productDetail);
@@ -201,7 +219,7 @@ const InventoryPage: FC = () => {
                   disabled={cartQuantity >= productDetail.totalStock}
                 >
                   Add to Cart
-                </button>
+                </Button>
               </div>
 
               <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">

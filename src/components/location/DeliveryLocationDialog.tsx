@@ -54,7 +54,7 @@ const DeliveryLocationDialog: FC = () => {
       setUserAddress(selectedDetailAddress);
       setProductPage(0);
       toast({
-        title: "Delivery Location Changed !",
+        title: "Delivery Address Changed",
         description: `Location changed to ${selectedDetailAddress.name}`,
         duration: 2000,
       });
@@ -84,11 +84,6 @@ const DeliveryLocationDialog: FC = () => {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           };
-          toast({
-            title: "Location detected",
-            description: "Current location detected",
-            duration: 2000,
-          });
 
           getDetailAddress(location).then((value) => {
             const currentUserAddress: UserAddress = {
@@ -99,6 +94,11 @@ const DeliveryLocationDialog: FC = () => {
               latitude: Number(value.lat),
             };
             setCurrentUserLocation(currentUserAddress);
+            toast({
+              title: "Location detected",
+              description: value.name,
+              duration: 3000,
+            });
           });
 
           return;

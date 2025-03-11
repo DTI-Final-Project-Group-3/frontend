@@ -3,6 +3,7 @@
 import { ProductImage } from "@/types/models/products";
 import Image from "next/image";
 import { FC, useEffect, useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface ProductCarouselProps {
   productName: string;
@@ -77,7 +78,6 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
     const diff = touchStart - touchEnd;
 
     if (Math.abs(diff) > 50) {
-      // Minimum swipe distance
       handleImageChange(diff > 0 ? 1 : -1, false);
     }
     setTouchStart(null);
@@ -99,7 +99,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
           className="absolute left-2 z-10 rounded-full bg-white/80 p-2.5 text-gray-700 shadow-md transition-colors duration-200 hover:bg-white hover:text-gray-900"
           aria-label="Previous image"
         >
-          ←
+          <ArrowLeft />
         </button>
         <div
           className="relative aspect-square w-full bg-gray-50"
@@ -121,7 +121,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
           className="absolute right-2 z-10 rounded-full bg-white/80 p-2.5 text-gray-700 shadow-md transition-colors duration-200 hover:bg-white hover:text-gray-900"
           aria-label="Next image"
         >
-          →
+          <ArrowRight />
         </button>
       </div>
 
@@ -134,7 +134,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
                 key={image.position}
                 className={`relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-colors duration-200 ${
                   selectedImagePosition === image.position
-                    ? "border-blue-500"
+                    ? "border-warehub-green"
                     : "border-transparent hover:border-gray-300"
                 }`}
               >
