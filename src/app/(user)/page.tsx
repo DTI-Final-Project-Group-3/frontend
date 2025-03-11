@@ -112,7 +112,7 @@ export default function Home() {
   return (
     <>
       <LandingPage></LandingPage>
-      <div className="mb-12 mt-6 min-h-[calc(100vh-70px)] w-full">
+      <div className="mb-12 mt-6 min-h-screen w-full">
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
             <div className="col-span-1 flex h-fit flex-col gap-8 md:sticky md:top-24">
@@ -122,8 +122,8 @@ export default function Home() {
               <LocationSelector />
             </div>
 
-            <div className="col-span-3">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="min-h-screen col-span-3">
+              <div className="h-[calc(100vh-70px)] grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {productsLoading || productsFetching
                   ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
                       <ProductCardLoading key={index} />
