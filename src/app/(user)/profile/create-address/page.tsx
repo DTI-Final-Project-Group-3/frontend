@@ -4,11 +4,11 @@ import MapSelector from "@/components/location/MapSelector";
 import { toast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 const user_address_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_ADDRESS}`;
 
-export default function CreateAddress() {
+function CreateAddress() {
     const { data: session, status } = useSession();
     const [name, setName] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
@@ -78,5 +78,13 @@ export default function CreateAddress() {
                 <MapSelector onSelectLocation={setPosition} setDetailAddress={setDetailAddress}/>
             </div>
         </div>
+    );
+}
+
+export default function CreateAddressWrapper() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <CreateAddress />
+        </Suspense>
     );
 }
