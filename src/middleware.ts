@@ -11,7 +11,8 @@ const PUBLIC_PATHS = [
   "/product",
   "/reset-password",
   "/verify-email",
-  "/forgot-password"
+  "/forgot-password",
+  "/change-email"
 ];
 
 const PROTECTED_PATHS = ["/cart", "/order-list", "/admin"];
