@@ -1,10 +1,10 @@
 import { toast } from "@/hooks/use-toast";
 import { UserDetail } from "@/types/models/userDetail";
 import { useSession } from "next-auth/react";
+import NextImage from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import Image from "next/image";
 
 const user_detail_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_USER_DETAIL}`;
 const imgbb_api = `${process.env.NEXT_PUBLIC_IMGBB_API}`;
@@ -156,7 +156,7 @@ export default function ProfileImage() {
     return (
         <>
             <button onClick={() => {setSelectedFile(null) ; setIsDialogOpen(true)}} className="p-0 bg-transparent w-48 h-48">
-                <Image
+                <NextImage
                     src={userData?.profileImageUrl || "/images/no-image-icon.jpg"}
                     height={150}
                     width={150}
