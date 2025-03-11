@@ -1,19 +1,25 @@
 "use client";
 
-import MapSelector from "@/components/location/MapSelector";
+//import MapSelector from "@/components/location/MapSelector";
 import { toast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 const warehouse_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSES}`;
 
-export default function CreateAddress() {
+function CreateWarehouse() {
     const { data: session, status } = useSession();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
     const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+
+    const MapSelector = dynamic(() => import("@/components/location/MapSelector"), {
+        ssr: false,
+        loading: () => <div className="text-center text-gray-500">Loading map...</div>
+    });
     
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -83,5 +89,13 @@ export default function CreateAddress() {
                 <MapSelector onSelectLocation={setPosition} setDetailAddress={setDetailAddress}/>
             </div>
         </div>
+    );
+}
+
+export default function CreateWarehouseWrapper() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <CreateWarehouse />
+        </Suspense>
     );
 }

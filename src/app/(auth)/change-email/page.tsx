@@ -4,11 +4,11 @@ import { toast } from '@/hooks/use-toast';
 import { formatSpringBootError, SpringBootErrorResponse } from '@/types/models/springBootErrorResponse';
 import axios, { AxiosError } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 const verify_email_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/email/verify-change-email-token`;
 
-export default function VerifyChangeEmail() {
+function VerifyChangeEmail() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [token, setToken] = useState('');
@@ -64,5 +64,13 @@ export default function VerifyChangeEmail() {
                 </button>
             </div>
         </div>
+    );
+}
+
+export default function VerifyChangeEmailWrapper() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <VerifyChangeEmail />
+        </Suspense>
     );
 }
