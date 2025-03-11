@@ -1,22 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import ProductCardLoading from "@/components/product/ProductCardLoading";
+import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
+import { useEffect, useState } from "react";
 
-import { CartItem, useCartStore } from "@/store/cartStore";
-import { useQuery } from "@tanstack/react-query";
+import LandingPage from "@/components/landing-page/LandingPage";
 import Pagination from "@/components/pagination/PaginationUser";
 import Filtering from "@/components/product/FilterCategory";
 import LocationSelector from "@/components/product/FilterLocation";
-import { useUserAddressStore } from "@/store/userAddressStore";
-import { useSearchStore } from "@/store/searchStore";
-import { ProductSummary } from "@/types/models/products";
+import ProductCard from "@/components/product/productCard";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
+import { toast } from "@/hooks/use-toast";
+import { CartItem, useCartStore } from "@/store/cartStore";
+import { useSearchStore } from "@/store/searchStore";
+import { useUserAddressStore } from "@/store/userAddressStore";
+import { ProductSummary } from "@/types/models/products";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { getNearbyProduct } from "../api/product/getProducts";
-import { toast } from "@/hooks/use-toast";
-import ProductCard from "@/components/product/productCard";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -110,6 +111,7 @@ export default function Home() {
 
   return (
     <>
+      <LandingPage></LandingPage>
       <div className="mb-12 mt-6 min-h-[calc(100vh-70px)] w-full">
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
