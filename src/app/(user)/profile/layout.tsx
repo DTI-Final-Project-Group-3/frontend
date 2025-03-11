@@ -1,6 +1,7 @@
 "use client";
 
 import ChangeEmailDialog from "@/components/user/ChangeEmailDialog";
+import EmailVerificationButton from "@/components/user/EmailVerificationButton";
 import ProfileImage from "@/components/user/ProfileImage";
 import { toast } from "@/hooks/use-toast";
 import { useCartStore } from "@/store/cartStore";
@@ -109,6 +110,10 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
                     </button>
                   </Link>
                 )}
+
+              {session && session.user && 
+                <EmailVerificationButton email={session.userDetail?.email} role={session.role}>
+                  </EmailVerificationButton>}  
 
               <button
                 onClick={() => {
