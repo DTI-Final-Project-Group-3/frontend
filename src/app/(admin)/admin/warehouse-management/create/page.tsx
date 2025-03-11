@@ -1,8 +1,9 @@
 "use client";
 
-import MapSelector from "@/components/location/MapSelector";
+//import MapSelector from "@/components/location/MapSelector";
 import { toast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
@@ -14,6 +15,11 @@ function CreateWarehouse() {
     const [description, setDescription] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
     const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+
+    const MapSelector = dynamic(() => import("@/components/location/MapSelector"), {
+        ssr: false,
+        loading: () => <div className="text-center text-gray-500">Loading map...</div>
+    });
     
     const router = useRouter();
     const searchParams = useSearchParams();
