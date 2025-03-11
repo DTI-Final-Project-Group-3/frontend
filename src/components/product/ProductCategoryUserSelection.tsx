@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getProductCategory } from "@/app/api/product/getProducts";
 import { useProductUser } from "@/store/productUserStore";
 
-const ProductCategorySelection: FC = () => {
+const ProductCategoryUserSelection: FC = () => {
   const { productCategoryId, setProductCategoryId } = useProductUser();
 
   const {
@@ -63,4 +63,4 @@ const ProductCategorySelection: FC = () => {
   );
 };
 
-export default ProductCategorySelection;
+export default ProductCategoryUserSelection;

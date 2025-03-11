@@ -16,7 +16,7 @@ import ProductCard from "@/components/product/ProductCard";
 import DeliveryLocationDialog from "@/components/location/DeliveryLocationDialog";
 import { useProductUser } from "@/store/productUserStore";
 import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
-import ProductCategorySelection from "@/components/product/ProductCategorySelection";
+import ProductCategoryUserSelection from "@/components/product/ProductCategoryUserSelection";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -99,7 +99,7 @@ export default function Home() {
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
             <div className="col-span-1 flex h-fit flex-col gap-8 md:sticky md:top-24">
-              <ProductCategorySelection />
+              <ProductCategoryUserSelection />
               <div className="w-full">
                 <label
                   htmlFor="address-select"
