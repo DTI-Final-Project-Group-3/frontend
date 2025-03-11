@@ -2,6 +2,7 @@ import { FC } from "react";
 import { UserAddress } from "@/types/models/users";
 import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface UserAddressCardProps extends UserAddress {
   isSelected?: boolean;
@@ -16,7 +17,7 @@ const UserAddressCard: FC<Partial<UserAddressCardProps>> = ({
   return (
     <div
       className={cn(
-        "flex w-full cursor-pointer flex-col gap-2 rounded-lg border-2 px-4 py-2",
+        "flex w-full cursor-pointer flex-col gap-2 rounded-lg border-2 px-4 py-2 md:max-h-24",
         isSelected
           ? "border-warehub-green bg-green-50"
           : "border-gray-200 bg-white",
@@ -24,12 +25,15 @@ const UserAddressCard: FC<Partial<UserAddressCardProps>> = ({
     >
       <div className="flex gap-2">
         <MapPin className="text-gray-800" />
-        <h2 className="font-bold">
-          {name} <span>{primary ? "Primary" : ""}</span>
-        </h2>
+        <div className="flex w-full justify-between">
+          <h2 className="font-semibold">{name}</h2>
+          {primary && <Badge className="bg-warehub-green-light">Primary</Badge>}
+        </div>
       </div>
 
-      <p className="text-sm">{detailAddress}</p>
+      <p className="overflow-hidden text-ellipsis text-sm text-gray-700">
+        {detailAddress}
+      </p>
     </div>
   );
 };

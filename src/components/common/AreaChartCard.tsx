@@ -1,4 +1,3 @@
-import { FC } from "react";
 import {
   Card,
   CardContent,
@@ -17,23 +16,38 @@ import {
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { formatPrice } from "@/utils/formatter";
 
-interface AreaChartCardProps {
+interface AreaChartCardProps<T> {
   title: string;
   description: string;
-  data: any[];
+  data: T[];
   dataKey: string;
   config: ChartConfig;
   height?: string;
 }
 
-const AreaChartCard: FC<AreaChartCardProps> = ({
+const AreaChartCard = <T,>({
   title,
   description,
   data,
   dataKey,
   config,
   height = "h-[250px]",
-}) => {
+}: AreaChartCardProps<T>) => {
+  const formatRupiahPriceShort = (value: number): string => {
+    if (dataKey === "totalValue") {
+      if (value >= 1000000000) {
+        return `Rp${(value / 1000000000).toFixed(1)}M`;
+      } else if (value >= 1000000) {
+        return `Rp${(value / 1000000).toFixed(1)}Jt`;
+      } else if (value >= 1000) {
+        return `Rp${(value / 1000).toFixed(1)}Rb`;
+      } else {
+        return `Rp${value}`;
+      }
+    }
+    return value.toString();
+  };
+
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
@@ -48,7 +62,10 @@ const AreaChartCard: FC<AreaChartCardProps> = ({
           config={config}
           className={`aspect-auto ${height} w-full`}
         >
-          <AreaChart data={data}>
+          <AreaChart
+            data={data}
+            margin={{ left: 10, right: 10, top: 10, bottom: 5 }}
+          >
             <defs>
               <linearGradient id={`fill${dataKey}`} x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -66,9 +83,8 @@ const AreaChartCard: FC<AreaChartCardProps> = ({
 
             <CartesianGrid vertical={false} />
             <YAxis
-              tickFormatter={(value) =>
-                dataKey === "totalValue" ? formatPrice(value) : value
-              }
+              tickFormatter={formatRupiahPriceShort}
+              padding={{ top: 10 }}
             />
 
             <XAxis
@@ -96,8 +112,7 @@ const AreaChartCard: FC<AreaChartCardProps> = ({
                     });
                   }}
                   formatter={(value) => {
-                    const formattedValue =
-                      dataKey === "totalValue" ? formatPrice(value) : value;
+                    const formattedValue = formatPrice(value.toString());
                     const label =
                       dataKey === "totalValue"
                         ? "Total value"

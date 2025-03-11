@@ -8,7 +8,7 @@ import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
 import { cn } from "@/lib/utils";
 import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
@@ -103,9 +103,9 @@ const ProductMutation: FC = () => {
   });
 
   const tabOptions = [
-    { id: 1, value: "journal", label: "Inventory Journal" },
-    { id: 2, value: "inbound", label: "Inbound Mutation" },
-    { id: 3, value: "outbound", label: "Outbound Mutation" },
+    { id: 1, value: "journal", label: "Internal Inventory Journal" },
+    { id: 2, value: "inbound", label: "Inbound Inventory" },
+    { id: 3, value: "outbound", label: "Outbound Inventory" },
   ];
 
   const renderWarehouseNotSelected = () => (

@@ -15,20 +15,17 @@ import UserAddressCard from "@/components/location/UserAddressCard";
 import { useUserAddressStore } from "@/store/userAddressStore";
 import { toast } from "@/hooks/use-toast";
 import { ChevronDown } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const DeliveryLocationDialog: FC = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [selectedUserAddressId, setSelectedUserAddressId] = useState<number>();
-  const { setUserAddress } = useUserAddressStore();
+  const { userAddress, setUserAddress } = useUserAddressStore();
 
   const { data: userAddresses } = useQuery({
     queryKey: ["user-addresses"],
     queryFn: getUserAddress,
   });
-
-  const handleDialog = () => {
-    setDialogOpen(!dialogOpen);
-  };
 
   const handleOnSubmit = () => {
     const selectedDetailAddress = userAddresses?.data.find(
@@ -45,11 +42,20 @@ const DeliveryLocationDialog: FC = () => {
     setDialogOpen(false);
   };
 
+  const handleOpenChange = (val: boolean) => {
+    setDialogOpen(val);
+    if (userAddress?.id) {
+      setSelectedUserAddressId(userAddress.id);
+    }
+  };
+
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={(val) => handleOpenChange(val)}>
       <DialogTrigger asChild>
-        <button className="flex justify-between rounded-lg p-2">
-          <span>Select Delivery Address</span>
+        <button className="flex justify-between rounded-lg border-2 border-gray-200 p-2">
+          <span>
+            {userAddress ? userAddress?.name : "Select Delivery Address"}
+          </span>
           <ChevronDown className="text-gray-600" />
         </button>
       </DialogTrigger>
@@ -61,23 +67,25 @@ const DeliveryLocationDialog: FC = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <div>
-          {userAddresses &&
-            userAddresses.data.map((userAddress) => (
-              <div
-                onClick={() => setSelectedUserAddressId(userAddress.id)}
-                key={`user-address-selected-${userAddress.id}`}
-              >
-                <UserAddressCard
-                  id={userAddress.id}
-                  name={userAddress.name}
-                  detailAddress={userAddress.detailAddress}
-                  primary={userAddress.primary}
-                  isSelected={selectedUserAddressId === userAddress.id}
-                />
-              </div>
-            ))}
-        </div>
+        <ScrollArea className="h-80 w-full">
+          <div className="flex flex-col gap-3">
+            {userAddresses &&
+              userAddresses.data.map((userAddress) => (
+                <div
+                  onClick={() => setSelectedUserAddressId(userAddress.id)}
+                  key={`user-address-selected-${userAddress.id}`}
+                >
+                  <UserAddressCard
+                    id={userAddress.id}
+                    name={userAddress.name}
+                    detailAddress={userAddress.detailAddress}
+                    primary={userAddress.primary}
+                    isSelected={selectedUserAddressId === userAddress.id}
+                  />
+                </div>
+              ))}
+          </div>
+        </ScrollArea>
 
         <DialogFooter>
           <Button
