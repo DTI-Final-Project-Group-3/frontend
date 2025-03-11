@@ -154,14 +154,14 @@ const ManualPatmentPage = () => {
 
             {/* Payment details */}
             <div className="mt-6 flex w-full flex-col rounded-xl border p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex md:flex-row flex-col items-center justify-between">
                 <span>Total payment</span>
                 <span className="text-lg font-bold">
                   {formatPrice(String(data?.data.totalAmount))}
                 </span>
               </div>
               <Separator className="my-3" />
-              <div className="flex items-center justify-between">
+              <div className="flex md:flex-row flex-col items-center justify-between">
                 <span>Invoice code</span>
                 <span className="text-lg font-bold">
                   {data?.data.invoiceCode}

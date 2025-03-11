@@ -8,7 +8,7 @@ import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
 import { cn } from "@/lib/utils";
 import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
