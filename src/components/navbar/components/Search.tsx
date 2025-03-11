@@ -1,43 +1,47 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useSearchStore } from "@/store/searchStore";
 import { SearchIcon } from "lucide-react";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
+import { useProductUser } from "@/store/productUserStore";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const Search: FC = () => {
   const [isFocused, setIsFocused] = useState(false);
-  const { searchQuery, setSearchQuery } = useSearchStore();
+  const [internalSearchQuery, setInternalSearchQuery] = useState<string>("");
+  const { setSearchQuery } = useProductUser();
 
-  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const debouncedSearch = useDebounce(internalSearchQuery, 500);
+
+  useEffect(() => {
+    setSearchQuery(debouncedSearch);
+  }, [debouncedSearch, setSearchQuery]);
 
   return (
     <label
       htmlFor="search-input"
       className={cn(
-        "hidden md:block border-[1px] w-full md:max-w-lg py-2 px-2 rounded-full shadow-sm hover:shadow-md transition cursor-pointer md:mr-3 mr-3 flex-1",
-        isFocused ? "shadow-md border-neutral-300" : ""
+        "mr-3 hidden w-full flex-1 cursor-pointer rounded-full border-[1px] px-2 py-2 shadow-sm transition hover:shadow-md md:mr-3 md:block md:max-w-lg",
+        isFocused ? "border-neutral-300 shadow-md" : "",
       )}
     >
       <div className="flex flex-row items-center justify-between">
-        <div className="text-lg pl-4 pr-6 w-full outline-none">
+        <div className="w-full pl-4 pr-6 text-lg outline-none">
           <input
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             id="search-input"
             type="text"
-            value={searchQuery}
-            onChange={handleSearchInput}
+            value={internalSearchQuery ?? ""}
+            onChange={(e) => setInternalSearchQuery(e.target.value)}
             placeholder="Search..."
-            className="w-full outline-none text-gray-700 text-lg font-semibold focus-visible:ring-offset-0 placeholder:text-grey-500 placeholder:text-[16px] !text-[16px] border-none focus-visible:ring-transparent"
+            className="placeholder:text-grey-500 w-full border-none !text-[16px] text-lg font-semibold text-gray-700 outline-none placeholder:text-[16px] focus-visible:ring-transparent focus-visible:ring-offset-0"
           />
         </div>
         <div
           className={cn(
-            "flex items-center gap-2 transition-all duration-100 bg-black text-white rounded-full",
-            isFocused ? "px-4 py-3 bg-black text-white" : "p-3"
+            "flex items-center gap-2 rounded-full bg-black text-white transition-all duration-100",
+            isFocused ? "bg-black px-4 py-3 text-white" : "p-3",
           )}
         >
           <div className="flex items-center gap-2">

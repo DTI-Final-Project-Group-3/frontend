@@ -60,7 +60,7 @@ const InventoryManagementPage = () => {
   });
 
   const renderSkeletonLoading = () => (
-    <div className="space-y-4">
+    <div className="w-full space-y-4">
       {Array(5)
         .fill(0)
         .map((_, index) => (

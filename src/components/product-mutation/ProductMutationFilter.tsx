@@ -1,11 +1,11 @@
 import { FC } from "react";
-import DatePickerRange from "@/components/common/DatePickerRange";
 import ProductSelection from "@/components/product-management/products/ProductSelection";
 import { useReport } from "@/store/reportStore";
 import ProductMutationTypeSelection from "@/components/product-mutation/ProductMutationTypeSelection";
 import ProductMutationStatusSelection from "@/components/product-mutation/ProductMutationStatusSelection";
 import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
 import CustomerOrderStatusSelection from "@/components/report-analysis/CustomerOrderStatusSelection";
+import DateRangeSelection from "@/components/common/DateRangeSelection";
 
 interface ProductMutationFilterProps {
   isProductMutation?: boolean;
@@ -29,7 +29,7 @@ const ProductMutationFilter: FC<ProductMutationFilterProps> = ({
   return (
     <div className="px-7 pt-7">
       <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white md:grid-cols-5">
-        <DatePickerRange dateRange={dateRange} setDateRange={setDateRange} />
+        <DateRangeSelection dateRange={dateRange} setDateRange={setDateRange} />
         <ProductSelection
           captionNoSelection="All Products"
           filter={"show-all"}
