@@ -1,8 +1,13 @@
+export interface ValidationError {
+    field: string;
+    defaultMessage: string;
+}
+
 export interface SpringBootErrorResponse {
     status: number; // HTTP status code
     error: string;  // Short error description (e.g., "Bad Request")
     message: string; // Detailed error message
-    errors?: Record<string, string[]>; // Optional field for validation errors (e.g., { "email": ["Invalid format"] })
+    errors?: ValidationError[]; // Optional field for validation errors
 }
 
 export const formatSpringBootError = (error: SpringBootErrorResponse): string => {
@@ -10,7 +15,7 @@ export const formatSpringBootError = (error: SpringBootErrorResponse): string =>
 
     if (Array.isArray(error.errors)) {
         errorDetails = error.errors
-            .map((err: any) => err.defaultMessage) // Extract only `defaultMessage`
+            .map((err: ValidationError) => err.defaultMessage) // Extract only `defaultMessage`
             .filter(Boolean) // Remove undefined/null values
             .join("\n"); // Join messages with new lines
     } else {
