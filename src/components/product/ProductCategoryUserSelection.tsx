@@ -1,13 +1,10 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getProductCategory } from "@/app/api/product/getProducts";
+import { useProductUser } from "@/store/productUserStore";
 
-interface FilterCategoryProps {
-  onFilterChange: (category: number | null) => void;
-}
-
-const FilterCategory: FC<FilterCategoryProps> = ({ onFilterChange }) => {
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+const ProductCategoryUserSelection: FC = () => {
+  const { productCategoryId, setProductCategoryId } = useProductUser();
 
   const {
     data: categoriesResponse,
@@ -17,40 +14,32 @@ const FilterCategory: FC<FilterCategoryProps> = ({ onFilterChange }) => {
     queryKey: ["categories"],
     queryFn: getProductCategory,
   });
-
   const categories = categoriesResponse?.data;
 
-  const handleCategoryChange = (categoryId: number | null) => {
-    setSelectedCategory(categoryId);
-    onFilterChange(categoryId);
-  };
-
   return (
-    <div className="font-inter">
+    <div>
       <div className="h-[320px] overflow-y-auto">
         <h1 className="mb-4 text-xl font-bold">Categories</h1>
 
         {isLoading ? (
-          <div className="flex flex-col gap-5 p-3 animate-pulse">
+          <div className="flex animate-pulse flex-col gap-5 p-3">
             {Array.from({ length: 10 }).map((_, index) => (
               <div key={index} className="rounded-md bg-gray-200 p-4"></div>
             ))}
           </div>
         ) : error ? (
           <div className="p-3 text-red-500">
-            {error instanceof Error
-              ? error.message
-              : "Error loading categories"}
+            {error ? error.message : "Error loading categories"}
           </div>
         ) : (
           <div className="space-y-2">
             <button
               className={`w-full rounded-md p-2 text-left transition-colors ${
-                selectedCategory === null
+                !productCategoryId
                   ? "font-medium text-black"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
-              onClick={() => handleCategoryChange(null)}
+              onClick={() => setProductCategoryId(undefined)}
             >
               All Categories
             </button>
@@ -58,11 +47,11 @@ const FilterCategory: FC<FilterCategoryProps> = ({ onFilterChange }) => {
               <button
                 key={category.id}
                 className={`w-full rounded-md p-2 text-left transition-colors ${
-                  selectedCategory === category.id
+                  productCategoryId === category.id
                     ? "font-medium text-black"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
-                onClick={() => handleCategoryChange(category.id)}
+                onClick={() => setProductCategoryId(category.id)}
               >
                 {category.name}
               </button>
@@ -74,4 +63,4 @@ const FilterCategory: FC<FilterCategoryProps> = ({ onFilterChange }) => {
   );
 };
 
-export default FilterCategory;
+export default ProductCategoryUserSelection;

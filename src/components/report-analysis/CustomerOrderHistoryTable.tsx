@@ -16,7 +16,11 @@ import {
 } from "@/components/ui/table";
 import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import { CustomerOrderHistoryResponse } from "@/types/models/orders/orders";
-import { formatDateHyphen, formatDateString } from "@/utils/formatter";
+import {
+  formatDateHyphen,
+  formatDateString,
+  formatPrice,
+} from "@/utils/formatter";
 
 const CustomerOrderHistoryTable: FC = () => {
   const [page, setPage] = useState<number>(0);
@@ -101,7 +105,9 @@ const CustomerOrderHistoryTable: FC = () => {
                       <TableCell>{customerOrder.productName}</TableCell>
                       <TableCell>{customerOrder.productCategoryName}</TableCell>
                       <TableCell>{customerOrder.quantity}</TableCell>
-                      <TableCell>{customerOrder.unitPrice}</TableCell>
+                      <TableCell>
+                        {formatPrice(customerOrder.unitPrice.toString())}
+                      </TableCell>
                     </TableRow>
                   ),
                 )}
