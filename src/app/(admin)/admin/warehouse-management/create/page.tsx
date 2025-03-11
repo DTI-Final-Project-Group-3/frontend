@@ -1,11 +1,11 @@
 "use client";
 
-//import MapSelector from "@/components/location/MapSelector";
+//import MapSelectorDynamic from "@/components/location/MapSelectorDynamic";
 import { toast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 const warehouse_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSES}`;
 
@@ -15,11 +15,16 @@ function CreateWarehouse() {
     const [description, setDescription] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
     const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+    const [address, setAddress] = useState<string>("");
 
-    const MapSelector = dynamic(() => import("@/components/location/MapSelector"), {
-        ssr: false,
-        loading: () => <div className="text-center text-gray-500">Loading map...</div>
-    });
+    const MapSelectorDynamic = useMemo (
+        () =>
+            dynamic(() => import("@/components/location/MapSelectorDynamic"), {
+                ssr: false,
+                loading: () => <p>Loading map...</p>,
+            }),
+        []
+    );
     
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -86,7 +91,7 @@ function CreateWarehouse() {
             </button>
 
             <div className="bg-white p-6 rounded-lg shadow-lg w-full md:h-[600px] mt-4">
-                <MapSelector onSelectLocation={setPosition} setDetailAddress={setDetailAddress}/>
+                <MapSelectorDynamic position={position} setPosition={setPosition} address={address} setAddress={setAddress} setCopiedAddress={setDetailAddress}/>
             </div>
         </div>
     );
