@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { UserAddress } from "@/types/models/users";
-import { MapPin } from "lucide-react";
+import { LocateFixed, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -27,7 +27,11 @@ const UserAddressCard: FC<Partial<UserAddressCardProps>> = ({
         <MapPin className="text-gray-800" />
         <div className="flex w-full justify-between">
           <h2 className="font-semibold">{name}</h2>
-          {primary && <Badge className="bg-warehub-green-light">Primary</Badge>}
+          {primary && (
+            <Badge className="hover-text-white bg-warehub-green-light hover:bg-warehub-green-light">
+              Primary
+            </Badge>
+          )}
         </div>
       </div>
 

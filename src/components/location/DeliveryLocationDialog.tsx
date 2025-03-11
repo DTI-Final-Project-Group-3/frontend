@@ -14,25 +14,45 @@ import { getUserAddress } from "@/app/api/user/getUsers";
 import UserAddressCard from "@/components/location/UserAddressCard";
 import { useUserAddressStore } from "@/store/userAddressStore";
 import { toast } from "@/hooks/use-toast";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LocateFixed, RotateCcw } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSession } from "next-auth/react";
+import { useProductUser } from "@/store/productUserStore";
+import { getDetailAddress } from "@/app/api/common/getLocation";
+import { UserAddress } from "@/types/models/users";
+import { cn } from "@/lib/utils";
 
 const DeliveryLocationDialog: FC = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [selectedUserAddressId, setSelectedUserAddressId] = useState<number>();
+  const [currentUserLocation, setCurrentUserLocation] = useState<UserAddress>();
   const { userAddress, setUserAddress } = useUserAddressStore();
+  const { data } = useSession();
+  const { setProductPage } = useProductUser();
 
   const { data: userAddresses } = useQuery({
     queryKey: ["user-addresses"],
     queryFn: getUserAddress,
+    enabled: !!data?.accessToken,
   });
 
   const handleOnSubmit = () => {
     const selectedDetailAddress = userAddresses?.data.find(
       (userAddress) => userAddress.id === selectedUserAddressId,
     );
+
+    if (
+      selectedUserAddressId &&
+      currentUserLocation &&
+      selectedUserAddressId < 0
+    ) {
+      setDialogOpen(false);
+      return setUserAddress(currentUserLocation);
+    }
+
     if (selectedDetailAddress) {
       setUserAddress(selectedDetailAddress);
+      setProductPage(0);
       toast({
         title: "Delivery Location Changed !",
         description: `Location changed to ${selectedDetailAddress.name}`,
@@ -47,12 +67,65 @@ const DeliveryLocationDialog: FC = () => {
     if (userAddress?.id) {
       setSelectedUserAddressId(userAddress.id);
     }
+    if (userAddresses && !userAddress) {
+      const primaryAddressId = userAddresses?.data.find(
+        (userAddress) => userAddress.primary === true,
+      )?.id;
+
+      setSelectedUserAddressId(primaryAddressId);
+    }
+  };
+
+  const getCurrentLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          toast({
+            title: "Location detected",
+            description: "Current location detected",
+            duration: 2000,
+          });
+
+          getDetailAddress(location).then((value) => {
+            const currentUserAddress: UserAddress = {
+              id: -1,
+              name: "Current Location",
+              detailAddress: value.display_name,
+              longitude: Number(value.lon),
+              latitude: Number(value.lat),
+            };
+            setCurrentUserLocation(currentUserAddress);
+          });
+
+          return;
+        },
+        () => {
+          toast({
+            title: "Error",
+            description: "Unable to get your location. Please try again.",
+            variant: "destructive",
+            duration: 3000,
+          });
+        },
+      );
+    } else {
+      toast({
+        title: "Error",
+        description: "Geolocation is not supported by your browser",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
   };
 
   return (
     <Dialog open={dialogOpen} onOpenChange={(val) => handleOpenChange(val)}>
       <DialogTrigger asChild>
-        <button className="flex justify-between rounded-lg border-2 border-gray-200 p-2">
+        <button className="flex w-full justify-between rounded-lg border-2 border-gray-200 p-2">
           <span>
             {userAddress ? userAddress?.name : "Select Delivery Address"}
           </span>
@@ -67,8 +140,42 @@ const DeliveryLocationDialog: FC = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="h-80 w-full">
+        <ScrollArea className="h-96 w-full p-3">
           <div className="flex flex-col gap-3">
+            <div
+              className={cn(
+                "flex w-full flex-col gap-2 rounded-lg border-2 px-4 py-2 md:max-h-24",
+                selectedUserAddressId === -1
+                  ? "cursor-default border-warehub-green bg-green-50"
+                  : "cursor-pointer border-gray-200 bg-white",
+              )}
+              onClick={() => {
+                setSelectedUserAddressId(-1);
+                if (!currentUserLocation) {
+                  getCurrentLocation();
+                }
+              }}
+            >
+              <div className="flex gap-2">
+                <LocateFixed className="text-gray-800" />
+                <div className="flex w-full justify-between">
+                  <h2 className="font-semibold">Use Current Location</h2>
+                  {currentUserLocation && (
+                    <RotateCcw
+                      className="cursor-pointer"
+                      onClick={getCurrentLocation}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {currentUserLocation && (
+                <p className="overflow-hidden text-ellipsis text-sm text-gray-700">
+                  {currentUserLocation?.detailAddress}
+                </p>
+              )}
+            </div>
+
             {userAddresses &&
               userAddresses.data.map((userAddress) => (
                 <div

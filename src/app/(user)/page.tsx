@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import ProductCardLoading from "@/components/product/ProductCardLoading";
 
 import { CartItem, useCartStore } from "@/store/cartStore";
 import { useQuery } from "@tanstack/react-query";
-import Pagination from "@/components/pagination/PaginationUser";
-import Filtering from "@/components/product/FilterCategory";
-import LocationSelector from "@/components/product/FilterLocation";
 import { useUserAddressStore } from "@/store/userAddressStore";
-import { useSearchStore } from "@/store/searchStore";
 import { ProductSummary } from "@/types/models/products";
 import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import { useSession } from "next-auth/react";
@@ -18,34 +14,23 @@ import { getNearbyProduct } from "../api/product/getProducts";
 import { toast } from "@/hooks/use-toast";
 import ProductCard from "@/components/product/ProductCard";
 import DeliveryLocationDialog from "@/components/location/DeliveryLocationDialog";
+import { useProductUser } from "@/store/productUserStore";
+import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
+import ProductCategorySelection from "@/components/product/ProductCategorySelection";
 
 export default function Home() {
   const { data: session } = useSession();
-
-  const [productCategoryId, setProductCategoryId] = useState<number | null>(
-    null,
-  );
-  const [page, setPage] = useState<number>(0);
   const addToCart = useCartStore((state) => state.addToCart);
   const { setCartItems } = useCartStore();
   const { userAddress } = useUserAddressStore();
-  const { searchQuery } = useSearchStore();
+  const { productPage, searchQuery, productCategoryId, setProductPage } =
+    useProductUser();
 
   useEffect(() => {
     useCartStore.getState().isUserVerified =
       session?.role === "CUSTOMER_VERIFIED";
     useCartStore.getState().isUserRegistered = !session;
   }, [session]);
-
-  const handlePageChange = (
-    pageChange: number,
-    isDirectPage: boolean = false,
-  ) => {
-    const pageRequest = isDirectPage ? pageChange : page + pageChange;
-    if (pageRequest >= 0 && pageRequest < (products?.totalPages || 0)) {
-      setPage(pageRequest);
-    }
-  };
 
   const handleAddToCart = (product: ProductSummary) => {
     const cartItem: CartItem = {
@@ -62,14 +47,14 @@ export default function Home() {
   } = useQuery({
     queryKey: [
       "nearby-products",
-      page,
+      productPage,
       productCategoryId,
       searchQuery,
       userAddress,
     ],
     queryFn: () =>
       getNearbyProduct({
-        page,
+        page: productPage,
         limit: INVENTORY_PER_PAGE,
         longitude: userAddress?.longitude,
         latitude: userAddress?.latitude,
@@ -114,11 +99,16 @@ export default function Home() {
         <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
             <div className="col-span-1 flex h-fit flex-col gap-8 md:sticky md:top-24">
-              <Filtering
-                onFilterChange={(category) => setProductCategoryId(category)}
-              />
-              <LocationSelector />
-              <DeliveryLocationDialog />
+              <ProductCategorySelection />
+              <div className="w-full">
+                <label
+                  htmlFor="address-select"
+                  className="mb-2 block text-lg font-semibold"
+                >
+                  Delivery Address
+                </label>
+                <DeliveryLocationDialog />
+              </div>
             </div>
 
             <div className="col-span-3">
@@ -140,13 +130,14 @@ export default function Home() {
                       </div>
                     ))}
               </div>
-              <Pagination
-                currentPage={page}
-                totalPages={products?.totalPages || 0}
-                onPageChange={handlePageChange}
-                hasNext={products?.hasNext || false}
-                hasPrev={products?.hasPrev || false}
-              />
+
+              {products && (
+                <PaginationComponent
+                  page={productPage}
+                  totalPages={products?.totalPages}
+                  setPage={setProductPage}
+                />
+              )}
             </div>
           </div>
         </main>
