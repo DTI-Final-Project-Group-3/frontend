@@ -2,6 +2,7 @@ import { ProductCategory, ProductForm } from "@/types/models/products";
 import axios from "axios";
 import { ApiResponse } from "@/types/api/apiResponse";
 import { toast } from "@/hooks/use-toast";
+import { getSession } from "next-auth/react";
 
 const productUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}`;
 const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}${process.env.NEXT_PUBLIC_PRODUCT_CATEGORY}`;
@@ -10,9 +11,18 @@ export const updateProductById = async (
   productId: number,
   values: ProductForm,
 ): Promise<ApiResponse<ProductForm>> => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axios.put<ApiResponse<ProductForm>>(
     `${productUrl}/${productId}`,
     values,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
   );
 
   return response.data;

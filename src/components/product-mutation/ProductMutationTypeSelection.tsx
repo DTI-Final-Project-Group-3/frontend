@@ -9,6 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { ProductMutationType } from "@/types/models/productMutation";
 import { getAllProductMutationType } from "@/app/api/product-mutation/getProductMutationType";
+import { useSession } from "next-auth/react";
 
 interface ProductMutationTypeSelectionProps {
   captionNoSelection?: string;
@@ -21,6 +22,7 @@ const ProductMutationTypeSelection: FC<ProductMutationTypeSelectionProps> = ({
   productMutationTypeId,
   setProductMutationTypeId,
 }) => {
+  const { data } = useSession();
   const {
     data: productMutationTypes,
     isLoading,
@@ -28,6 +30,7 @@ const ProductMutationTypeSelection: FC<ProductMutationTypeSelectionProps> = ({
   } = useQuery({
     queryKey: ["product-mutation-types"],
     queryFn: getAllProductMutationType,
+    enabled: !!data?.accessToken,
   });
 
   return (

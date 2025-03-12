@@ -25,10 +25,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useInventoryAdmin } from "@/store/inventoryAdminStore";
+import { useSession } from "next-auth/react";
 
 const InventoryManagementPage = () => {
   const [searchQuery] = useState<string>();
   const { inventoryPage, setInventoryPage } = useInventoryAdmin();
+  const { data } = useSession();
 
   const {
     destinationWarehouseId,
@@ -56,7 +58,7 @@ const InventoryManagementPage = () => {
         warehouseId: destinationWarehouseId,
         searchQuery,
       }),
-    enabled: !!destinationWarehouseId,
+    enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const renderSkeletonLoading = () => (

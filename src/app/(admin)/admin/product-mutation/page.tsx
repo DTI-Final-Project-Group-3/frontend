@@ -16,9 +16,11 @@ import { PaginationResponse } from "@/types/api/pagination";
 import { ProductMutationConstant } from "@/constant/productMutationConstant";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useSession } from "next-auth/react";
 
 const ProductMutation: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
+  const { data } = useSession();
   const {
     destinationWarehouseId,
     submitMutation,
@@ -49,7 +51,7 @@ const ProductMutation: FC = () => {
           ProductMutationConstant.TYPE_DELETE_INVENTORY,
         ],
       }),
-    enabled: !!destinationWarehouseId,
+    enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const {
@@ -74,7 +76,7 @@ const ProductMutation: FC = () => {
           ProductMutationConstant.TYPE_AUTO_MUTATION,
         ],
       }),
-    enabled: !!destinationWarehouseId,
+    enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const {
@@ -99,7 +101,7 @@ const ProductMutation: FC = () => {
           ProductMutationConstant.TYPE_AUTO_MUTATION,
         ],
       }),
-    enabled: !!destinationWarehouseId,
+    enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const tabOptions = [

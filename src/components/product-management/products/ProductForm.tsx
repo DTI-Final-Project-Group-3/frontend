@@ -13,6 +13,7 @@ import { updateProductById } from "@/app/api/product/putProducts";
 import { useParams, useRouter } from "next/navigation";
 import { createProduct } from "@/app/api/product/createProduct";
 import AlertDialogComponent from "@/components/common/AlertDialogComponent";
+import { useSession } from "next-auth/react";
 
 interface ProductFormProps {
   props?: ProductDetail;
@@ -26,6 +27,7 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const { productId } = useParams();
   const router = useRouter();
+  const { data } = useSession();
 
   const initialValues: ProductForm = {
     name: props?.name ?? "",
@@ -93,9 +95,10 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
         },
       );
 
+      if (!data?.accessToken) return;
+
       const responses = await Promise.all(uploadPromise);
       values.images = responses.map((response) => response);
-
       if (productId) {
         const response = await updateProductById(Number(productId), values);
         if (response.success) {

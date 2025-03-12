@@ -17,6 +17,7 @@ import {
 } from "@/app/api/product/getProducts";
 import { useProductMutation } from "@/store/productMutationStore";
 import { ProductBasic } from "@/types/models/products";
+import { useSession } from "next-auth/react";
 
 interface ProductSelectionProps {
   captionNoSelection?: string;
@@ -32,6 +33,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
   setProductId,
 }) => {
   const { destinationWarehouseId } = useProductMutation();
+  const { data } = useSession();
 
   const {
     data: excludeProducts,
@@ -45,7 +47,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
       }
       return getProductExcludeFilter(destinationWarehouseId);
     },
-    enabled: !!destinationWarehouseId,
+    enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const {
@@ -60,7 +62,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
       }
       return getProductIncludeFilter(destinationWarehouseId);
     },
-    enabled: !!destinationWarehouseId,
+    enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const {
@@ -70,6 +72,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
   } = useQuery({
     queryKey: ["all-products"],
     queryFn: getAllProductList,
+    enabled: !!data?.accessToken,
   });
 
   const renderContent = (

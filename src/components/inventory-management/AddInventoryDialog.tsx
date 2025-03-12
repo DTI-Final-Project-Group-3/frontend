@@ -18,6 +18,7 @@ import { useProductMutation } from "@/store/productMutationStore";
 import { createWarehouseInventory } from "@/app/api/warehouse-inventories/postWarehouseInventories";
 import { Textarea } from "../ui/textarea";
 import { useSession } from "next-auth/react";
+import { toast } from "@/hooks/use-toast";
 
 const AddInventoryDialog: FC = () => {
   const { data } = useSession();
@@ -46,7 +47,13 @@ const AddInventoryDialog: FC = () => {
       destinationWarehouseId,
     })
       .then(() => {})
-      .catch(() => {
+      .catch((error) => {
+        toast({
+          title: "Error creating product category",
+          description: error.response.data.message,
+          variant: "destructive",
+          duration: 5000,
+        });
         setSubmitMutation(false);
       })
       .finally(() => {

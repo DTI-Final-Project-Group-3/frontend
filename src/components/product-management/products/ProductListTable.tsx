@@ -49,6 +49,7 @@ const ProductListTable: FC = () => {
         productCategoryId,
         searchQuery,
       }),
+    enabled: !!data?.accessToken,
   });
 
   const renderEmptyState = () => (

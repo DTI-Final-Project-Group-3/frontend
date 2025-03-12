@@ -76,6 +76,14 @@ const MutationDialog: FC<ProductMutationProps> = ({
           duration: 5000,
         });
       })
+      .catch((error) => {
+        toast({
+          title: "Error creating product category",
+          description: error.response.data.message,
+          variant: "destructive",
+          duration: 5000,
+        });
+      })
       .finally(() => {
         setDialogOpen(false);
         setSubmitMutation(false);
@@ -91,6 +99,14 @@ const MutationDialog: FC<ProductMutationProps> = ({
         toast({
           title: "Manual Product Mutation",
           description: "Successfully create new request",
+          duration: 5000,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error creating product category",
+          description: error.response.data.message,
+          variant: "destructive",
           duration: 5000,
         });
       })

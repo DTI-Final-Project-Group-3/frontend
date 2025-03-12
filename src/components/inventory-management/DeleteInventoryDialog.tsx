@@ -16,6 +16,7 @@ import { useSession } from "next-auth/react";
 import { FC, useState } from "react";
 import { Textarea } from "../ui/textarea";
 import DeleteIcon from "@/components/icon/DeleteIcon";
+import { toast } from "@/hooks/use-toast";
 
 export const DeleteInventoryDialog: FC<{ warehouseInventoryId: number }> = ({
   warehouseInventoryId,
@@ -34,7 +35,16 @@ export const DeleteInventoryDialog: FC<{ warehouseInventoryId: number }> = ({
       warehouseInventoryId,
       userId: requesterId,
       notes,
-    }).finally(() => setSubmitMutation(false));
+    })
+      .catch((error) => {
+        toast({
+          title: "Error creating product category",
+          description: error.response.data.message,
+          variant: "destructive",
+          duration: 5000,
+        });
+      })
+      .finally(() => setSubmitMutation(false));
   };
 
   return (
