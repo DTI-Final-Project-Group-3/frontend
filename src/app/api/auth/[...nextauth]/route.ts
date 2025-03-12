@@ -147,6 +147,9 @@ const handler = NextAuth({
               email: profile.email,
               name: profile.name,
               profilePictureUrl: profile.picture,
+              accessToken: account.access_token,
+              provider : account.provider,
+              providerUserId : account.providerAccountId
             }),
           });
 
