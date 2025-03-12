@@ -29,8 +29,8 @@ export interface ProductMutationManualResponse {
 export interface ProductMutationParams {
   page: number;
   limit: number;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: string;
+  endDate?: string;
   isRequest: boolean;
   productId?: number;
   productCategoryId?: number;

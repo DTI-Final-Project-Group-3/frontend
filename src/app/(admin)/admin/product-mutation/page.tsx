@@ -19,6 +19,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useSession } from "next-auth/react";
 import ProductMutationFilterSelection from "@/components/product-mutation/ProductMutationFilterSelection";
 import { useProductMutationFilter } from "@/store/productMutationFilterStore";
+import { formatDateHyphen } from "@/utils/formatter";
 
 const ProductMutation: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
@@ -62,8 +63,8 @@ const ProductMutation: FC = () => {
       getPaginatedProductMutation({
         page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
-        startDate: dateRange.from,
-        endDate: dateRange.to,
+        startDate: formatDateHyphen(dateRange.from),
+        endDate: formatDateHyphen(dateRange.to),
         isRequest: false,
         productId,
         productCategoryId,
@@ -99,8 +100,8 @@ const ProductMutation: FC = () => {
       getPaginatedProductMutation({
         page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
-        startDate: dateRange.from,
-        endDate: dateRange.to,
+        startDate: formatDateHyphen(dateRange.from),
+        endDate: formatDateHyphen(dateRange.to),
         isRequest,
         productId,
         productCategoryId,
@@ -136,8 +137,8 @@ const ProductMutation: FC = () => {
       getPaginatedProductMutation({
         page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
-        startDate: dateRange.from,
-        endDate: dateRange.to,
+        startDate: formatDateHyphen(dateRange.from),
+        endDate: formatDateHyphen(dateRange.to),
         isRequest,
         productId,
         productCategoryId,
