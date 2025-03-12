@@ -17,7 +17,7 @@ import { useProductUser } from "@/store/productUserStore";
 import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
 import ProductCategoryUserSelection from "@/components/product/ProductCategoryUserSelection";
 import LandingPage from "@/components/landing-page/LandingPage";
-import ProductCard from "@/components/product/ProductCard";
+import ProductCard from "@/components/product/productCard";
 
 export default function Home() {
   const { data: session } = useSession();
