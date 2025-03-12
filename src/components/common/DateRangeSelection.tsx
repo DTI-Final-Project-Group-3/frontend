@@ -12,20 +12,23 @@ import "react-day-picker/dist/style.css";
 interface DateRangeSelectionProps {
   dateRange: DateRange;
   setDateRange: (val: DateRange | undefined) => void;
+  preSelect?: boolean;
 }
 
 const DateRangeSelection: FC<DateRangeSelectionProps> = ({
   dateRange,
   setDateRange,
+  preSelect = true,
 }) => {
   useEffect(() => {
+    if (!preSelect) return;
     if (dateRange.from === undefined && dateRange.to === undefined) {
       const today = new Date();
       const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       const latestRange = { from: startOfMonth, to: today };
       setDateRange(latestRange);
     }
-  }, [dateRange, setDateRange]);
+  }, [dateRange, preSelect, setDateRange]);
 
   return (
     <div className="h-full w-full">
@@ -39,7 +42,9 @@ const DateRangeSelection: FC<DateRangeSelectionProps> = ({
                 {dateRange.to ? format(dateRange.to, "dd MMM yyyy") : "..."}
               </span>
             ) : (
-              <span className="line-clamp-1">Select dates</span>
+              <span className="line-clamp-1 text-sm text-gray-600">
+                Select dates
+              </span>
             )}
           </button>
         </PopoverTrigger>

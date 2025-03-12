@@ -24,17 +24,24 @@ import { ProductMutationConstant } from "@/constant/productMutationConstant";
 interface ProductMutationCardProps {
   productMutation: ProductMutationDetailResponse;
   isInbound: boolean;
+  isRequest: boolean;
 }
 
 const ProductMutationCard: FC<ProductMutationCardProps> = ({
   productMutation,
   isInbound,
+  isRequest = false,
 }) => {
   return (
     <div className="flex w-full flex-col gap-4 rounded-xl border border-slate-200 bg-white px-4 py-6 transition-all duration-300 hover:border-blue-200 hover:shadow-lg sm:px-6 lg:px-8">
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div className="flex w-full items-center justify-between sm:w-auto">
-          {productMutation.productMutationTypeId <= 2 && (
+          {(productMutation.productMutationTypeId ===
+            ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION ||
+            productMutation.productMutationTypeId ===
+              ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION ||
+            productMutation.productMutationTypeId ===
+              ProductMutationConstant.TYPE_AUTO_MUTATION) && (
             <div className="flex flex-row items-center gap-2">
               {isInbound
                 ? productMutation?.originWarehouseName && (
@@ -129,7 +136,9 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
             {(productMutation?.productMutationTypeId ===
               ProductMutationConstant.TYPE_AUTO_MUTATION ||
               productMutation?.productMutationTypeId ===
-                ProductMutationConstant.TYPE_MANUAL_MUTATION) && (
+                ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION ||
+              productMutation?.productMutationTypeId ===
+                ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION) && (
               <ArrowLeftRight size={14} className="text-indigo-600" />
             )}
 
@@ -172,9 +181,10 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           )}
         </div>
 
-        {productMutation.productMutationTypeId <= 2 &&
-          productMutation.productMutationStatusId === 1 &&
-          !isInbound && (
+        {isRequest &&
+          !isInbound &&
+          productMutation.productMutationTypeId ===
+            ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION && (
             <div className="mt-3 flex w-full justify-center gap-3 sm:mt-0 sm:w-auto sm:justify-end">
               <ProductMutationReviewDialog
                 isApprove={false}

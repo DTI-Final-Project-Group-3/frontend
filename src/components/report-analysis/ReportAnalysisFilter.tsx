@@ -11,7 +11,7 @@ interface ProductMutationFilterProps {
   isProductMutation?: boolean;
 }
 
-const ProductMutationFilter: FC<ProductMutationFilterProps> = ({
+const ReportAnalysisFilter: FC<ProductMutationFilterProps> = ({
   isProductMutation = false,
 }) => {
   const {
@@ -59,4 +59,4 @@ const ProductMutationFilter: FC<ProductMutationFilterProps> = ({
   );
 };
 
-export default ProductMutationFilter;
+export default ReportAnalysisFilter;

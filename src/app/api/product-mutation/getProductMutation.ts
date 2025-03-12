@@ -22,9 +22,15 @@ const axiosInstance = axios.create({
 export const getPaginatedProductMutation = async ({
   page,
   limit,
+  startDate,
+  endDate,
+  isRequest,
+  productId,
+  productCategoryId,
   originWarehouseId,
   destinationWarehouseId,
   productMutationTypeId,
+  productMutationStatusId,
 }: ProductMutationParams): Promise<
   PaginationResponse<ProductMutationDetailResponse>
 > => {
@@ -41,9 +47,15 @@ export const getPaginatedProductMutation = async ({
     params: {
       page,
       limit,
+      startDate,
+      endDate,
+      isRequest,
+      productId,
+      productCategoryId,
       originWarehouseId,
       destinationWarehouseId,
       productMutationTypeId,
+      productMutationStatusId,
     },
   });
   return response.data.data;

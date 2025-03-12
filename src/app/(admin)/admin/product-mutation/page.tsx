@@ -17,9 +17,19 @@ import { ProductMutationConstant } from "@/constant/productMutationConstant";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useSession } from "next-auth/react";
+import ProductMutationFilterSelection from "@/components/product-mutation/ProductMutationFilterSelection";
+import { useProductMutationFilter } from "@/store/productMutationFilterStore";
 
 const ProductMutation: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
+  const {
+    dateRange,
+    productId,
+    productCategoryId,
+    productMutationTypeId,
+    productMutationStatusId,
+    setIsRequest,
+  } = useProductMutationFilter();
   const { data } = useSession();
   const {
     destinationWarehouseId,
@@ -27,6 +37,8 @@ const ProductMutation: FC = () => {
     productMutationPage,
     setProductMutationPage,
   } = useProductMutation();
+
+  const { isRequest } = useProductMutationFilter();
 
   const {
     data: adjustmentJournals,
@@ -39,11 +51,22 @@ const ProductMutation: FC = () => {
       selectedTab,
       productMutationPage,
       submitMutation,
+      isRequest,
+      dateRange,
+      productId,
+      productCategoryId,
+      productMutationTypeId,
+      productMutationStatusId,
     ],
     queryFn: () =>
       getPaginatedProductMutation({
         page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
+        startDate: dateRange.from,
+        endDate: dateRange.to,
+        isRequest: false,
+        productId,
+        productCategoryId,
         destinationWarehouseId: destinationWarehouseId,
         productMutationTypeId: [
           ProductMutationConstant.TYPE_CREATE_INVENTORY,
@@ -65,16 +88,28 @@ const ProductMutation: FC = () => {
       selectedTab,
       productMutationPage,
       submitMutation,
+      isRequest,
+      dateRange,
+      productId,
+      productCategoryId,
+      productMutationTypeId,
+      productMutationStatusId,
     ],
     queryFn: () =>
       getPaginatedProductMutation({
         page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
+        startDate: dateRange.from,
+        endDate: dateRange.to,
+        isRequest,
+        productId,
+        productCategoryId,
         destinationWarehouseId: destinationWarehouseId,
         productMutationTypeId: [
-          ProductMutationConstant.TYPE_MANUAL_MUTATION,
+          ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION,
           ProductMutationConstant.TYPE_AUTO_MUTATION,
         ],
+        productMutationStatusId: productMutationStatusId,
       }),
     enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
@@ -90,24 +125,36 @@ const ProductMutation: FC = () => {
       selectedTab,
       productMutationPage,
       submitMutation,
+      isRequest,
+      dateRange,
+      productId,
+      productCategoryId,
+      productMutationTypeId,
+      productMutationStatusId,
     ],
     queryFn: () =>
       getPaginatedProductMutation({
         page: productMutationPage,
         limit: ADMIN_PRODUCT_MUTATION,
+        startDate: dateRange.from,
+        endDate: dateRange.to,
+        isRequest,
+        productId,
+        productCategoryId,
         originWarehouseId: destinationWarehouseId,
         productMutationTypeId: [
-          ProductMutationConstant.TYPE_MANUAL_MUTATION,
+          ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION,
           ProductMutationConstant.TYPE_AUTO_MUTATION,
         ],
+        productMutationStatusId: productMutationStatusId,
       }),
     enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const tabOptions = [
-    { id: 1, value: "journal", label: "Internal Inventory Journal" },
-    { id: 2, value: "inbound", label: "Inbound Inventory" },
-    { id: 3, value: "outbound", label: "Outbound Inventory" },
+    { id: 1, value: "journal", label: "Manual Adjustment" },
+    { id: 2, value: "inbound", label: "Inbound" },
+    { id: 3, value: "outbound", label: "Outbound" },
   ];
 
   const renderWarehouseNotSelected = () => (
@@ -179,7 +226,7 @@ const ProductMutation: FC = () => {
     isInbound: boolean,
   ) => {
     return (
-      <section className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-5 md:px-10">
+      <section className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-2 md:px-10">
         <div
           className={`flex w-full flex-grow ${!data || data.content.length === 0 || isLoading || isError ? "items-center justify-center" : "items-start justify-center pt-4"}`}
         >
@@ -199,6 +246,7 @@ const ProductMutation: FC = () => {
                               key={item.productMutationId}
                               productMutation={item}
                               isInbound={isInbound}
+                              isRequest={isRequest && selectedTab !== 1}
                             />
                           ),
                         )}
@@ -240,12 +288,15 @@ const ProductMutation: FC = () => {
                 onClick={() => {
                   setProductMutationPage(0);
                   setSelectedTab(tab.id);
+                  setIsRequest(true);
                 }}
               >
                 <span>{tab.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>
+
+          <ProductMutationFilterSelection selectedTab={selectedTab} />
 
           <div className="w-full rounded-xl bg-white shadow-sm">
             <TabsContent value="journal" className="p-4 sm:p-6">
