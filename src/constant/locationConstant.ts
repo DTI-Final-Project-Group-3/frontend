@@ -1,1 +1,1 @@
-export const LOCATION_RADIUS: number = 100000;
+export const LOCATION_RADIUS = undefined;
