@@ -11,7 +11,7 @@ const Navbar: FC = () => {
   const { data: session } = useSession();
 
   return (
-    <header className="h-[70px] w-full sticky top-0 bg-white border-b-[1px] border-gray-100 z-10">
+    <header className="h-[70px] w-full sticky top-0 bg-white border-b-[1px] border-gray-100 z-[20]">
       <nav className="flex justify-between items-center h-full md:max-w-4xl lg:max-w-[1388px] mx-auto w-full px-6 ">
         <Logo />
         <Search />
