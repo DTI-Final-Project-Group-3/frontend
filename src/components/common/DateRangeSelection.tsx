@@ -34,7 +34,7 @@ const DateRangeSelection: FC<DateRangeSelectionProps> = ({
     <div className="h-full w-full">
       <Popover>
         <PopoverTrigger asChild>
-          <button className="flex h-full w-full items-center justify-start gap-3 rounded-lg border border-gray-300 bg-white px-2 text-gray-400 shadow-sm transition-all hover:border-green-500 focus:border-2 focus:border-warehub-green">
+          <button className="flex h-auto w-full items-center justify-start gap-3 rounded-lg border border-gray-300 bg-white px-2 py-2 text-gray-400 shadow-sm transition-all hover:border-green-500 focus:border-2 focus:border-warehub-green">
             <CalendarIcon size={20} />
             {dateRange.from ? (
               <span className="line-clamp-1 text-sm text-gray-600">

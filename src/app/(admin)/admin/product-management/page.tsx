@@ -7,6 +7,7 @@ import ProductManagementHeader from "@/components/product-management/ProductMana
 import ProductCategoryTable from "@/components/product-management/categories/ProductCategoryTable";
 import ProductListTable from "@/components/product-management/products/ProductListTable";
 import { useProductAdmin } from "@/store/productAdminStore";
+import ProductManagementFilterSelection from "@/components/product-management/ProductManagementFilterSelection";
 
 const ProductManagementPage: FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(1);
@@ -44,6 +45,7 @@ const ProductManagementPage: FC = () => {
 
           <div className="w-full rounded-xl bg-white shadow-sm">
             <TabsContent value="products">
+              <ProductManagementFilterSelection />
               <ProductListTable />
             </TabsContent>
 

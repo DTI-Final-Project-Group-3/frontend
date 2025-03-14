@@ -159,6 +159,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
               if (onClick) onClick();
             }}
             className={cn(buttonClassName, "h-full")}
+            disabled={!destinationWarehouseId}
           >
             {buttonName}
           </Button>
@@ -204,6 +205,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
                   filter="include"
                   productId={productId}
                   setProductId={setProductId}
+                  showIcon={false}
                 />
               </div>
             </div>

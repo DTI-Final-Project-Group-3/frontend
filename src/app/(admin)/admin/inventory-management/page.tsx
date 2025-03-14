@@ -26,6 +26,7 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useInventoryAdmin } from "@/store/inventoryAdminStore";
 import { useSession } from "next-auth/react";
+import InventoryManagementFilterSelection from "@/components/inventory-management/IventoryManagementFilterSelection";
 
 const InventoryManagementPage = () => {
   const { inventoryPage, productCategoryId, searchQuery, setInventoryPage } =
@@ -246,37 +247,39 @@ const InventoryManagementPage = () => {
   return (
     <section className="w-full space-y-2 rounded-lg shadow-sm">
       <InventoryManagementHeader />
+      <div>
+        <InventoryManagementFilterSelection />
+        <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-2 md:px-10">
+          <div className="flex flex-grow items-center justify-center">
+            {!destinationWarehouseId ? (
+              renderWarehouseNotSelected()
+            ) : inventoriesLoading ? (
+              renderSkeletonLoading()
+            ) : inventoriesError ? (
+              renderError()
+            ) : inventories?.content?.length === 0 ? (
+              renderEmptyState()
+            ) : (
+              <>
+                {renderDesktopTable()}
+                {renderMobileView()}
+              </>
+            )}
+          </div>
 
-      <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-5 md:px-10 md:pt-10">
-        <div className="flex flex-grow items-center justify-center">
-          {!destinationWarehouseId ? (
-            renderWarehouseNotSelected()
-          ) : inventoriesLoading ? (
-            renderSkeletonLoading()
-          ) : inventoriesError ? (
-            renderError()
-          ) : inventories?.content?.length === 0 ? (
-            renderEmptyState()
-          ) : (
-            <>
-              {renderDesktopTable()}
-              {renderMobileView()}
-            </>
+          {inventories && inventories?.content.length > 0 && (
+            <div className="py-2">
+              <PaginationAdmin
+                desc="Inventories"
+                page={inventoryPage}
+                setPage={setInventoryPage}
+                totalPages={inventories.totalPages}
+                totalElements={inventories.totalElements}
+                currentPageSize={inventories.content.length}
+              />
+            </div>
           )}
         </div>
-
-        {inventories && inventories?.content.length > 0 && (
-          <div className="py-2">
-            <PaginationAdmin
-              desc="Inventories"
-              page={inventoryPage}
-              setPage={setInventoryPage}
-              totalPages={inventories.totalPages}
-              totalElements={inventories.totalElements}
-              currentPageSize={inventories.content.length}
-            />
-          </div>
-        )}
       </div>
     </section>
   );

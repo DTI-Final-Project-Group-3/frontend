@@ -73,8 +73,9 @@ const AddInventoryDialog: FC = () => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="h-full bg-warehub-green text-white hover:bg-warehub-green-light hover:text-gray-50"
+          className="h-full w-full bg-warehub-green text-white hover:bg-warehub-green-light hover:text-gray-50"
           onClick={handleDialog}
+          disabled={!destinationWarehouseId}
         >
           Add Inventory
         </Button>
@@ -97,6 +98,7 @@ const AddInventoryDialog: FC = () => {
                 filter="exclude"
                 productId={productId}
                 setProductId={setProductId}
+                showIcon={false}
               />
             </div>
           </div>

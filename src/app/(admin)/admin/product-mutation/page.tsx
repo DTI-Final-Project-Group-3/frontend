@@ -4,7 +4,10 @@ import { getPaginatedProductMutation } from "@/app/api/product-mutation/getProdu
 import ProductMutationCard from "@/components/product-mutation/ProductMutationCard";
 import ProductMutationHeader from "@/components/product-mutation/ProductMutationHeader";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ADMIN_PRODUCT_MUTATION } from "@/constant/productConstant";
+import {
+  ADMIN_PRODUCT_MUTATION,
+  ADMIN_PRODUCT_MUTATION_REPORT_PER_PAGE,
+} from "@/constant/productConstant";
 import { cn } from "@/lib/utils";
 import { useProductMutation } from "@/store/productMutationStore";
 import { useQuery } from "@tanstack/react-query";
@@ -157,11 +160,11 @@ const ProductMutation: FC = () => {
   );
 
   const renderSkeletonLoading = () => (
-    <div className="w-full space-y-4">
-      {Array(5)
+    <div className="flex w-full flex-col items-center justify-center gap-8">
+      {Array(ADMIN_PRODUCT_MUTATION_REPORT_PER_PAGE)
         .fill(0)
         .map((_, index) => (
-          <div key={index} className="flex flex-col space-y-3">
+          <div key={index} className="flex w-[80%] flex-col space-y-3">
             <div className="flex items-center space-x-4">
               <Skeleton className="h-16 w-16 rounded-md" />
               <div className="space-y-2">
@@ -220,7 +223,7 @@ const ProductMutation: FC = () => {
     return (
       <section className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-2 md:px-10">
         <div
-          className={`flex w-full flex-grow ${!data || data.content.length === 0 || isLoading || isError ? "items-center justify-center" : "items-start justify-center pt-4"}`}
+          className={`flex w-full flex-grow ${!data || data.content.length === 0 || isLoading || isError ? "items-center justify-center" : "items-start justify-center"}`}
         >
           {!destinationWarehouseId
             ? renderWarehouseNotSelected()
@@ -265,7 +268,7 @@ const ProductMutation: FC = () => {
       <ProductMutationHeader />
 
       <Tabs defaultValue="journal" className="w-full">
-        <div>
+        <div className="space-y-2">
           <TabsList className="grid h-12 w-full grid-cols-3 rounded-lg bg-white shadow-sm sm:h-14">
             {tabOptions.map((tab) => (
               <TabsTrigger
@@ -286,10 +289,10 @@ const ProductMutation: FC = () => {
             ))}
           </TabsList>
 
-          <ProductMutationFilterSelection selectedTab={selectedTab} />
-
           <div className="w-full rounded-xl bg-white shadow-sm">
-            <TabsContent value="journal" className="p-4 sm:p-6">
+            <ProductMutationFilterSelection selectedTab={selectedTab} />
+
+            <TabsContent value="journal">
               {renderContent(
                 adjustmentJournals,
                 isLoadingJournals,
@@ -298,7 +301,7 @@ const ProductMutation: FC = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="inbound" className="p-4 sm:p-6">
+            <TabsContent value="inbound">
               {renderContent(
                 inboundMutation,
                 isLoadingInbound,
@@ -307,7 +310,7 @@ const ProductMutation: FC = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="outbound" className="p-4 sm:p-6">
+            <TabsContent value="outbound">
               {renderContent(
                 outboundMutation,
                 isLoadingOutbound,

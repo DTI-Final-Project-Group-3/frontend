@@ -5,18 +5,11 @@ import WarehouseSelection from "../warehouse/WarehouseSelection";
 import { useProductMutation } from "@/store/productMutationStore";
 import AddInventoryDialog from "./AddInventoryDialog";
 import { useInventoryAdmin } from "@/store/inventoryAdminStore";
-import SearchBarAdminComponent from "@/components/common/SearchBarAdminComponent";
-import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
 
 const InventoryManagementHeader: FC = () => {
   const { destinationWarehouseId, setDestinationWarehouseId } =
     useProductMutation();
-  const {
-    productCategoryId,
-    setProductCategoryId,
-    setSearchQuery,
-    setInventoryPage,
-  } = useInventoryAdmin();
+  const { setInventoryPage } = useInventoryAdmin();
 
   return (
     <div className="z-[40] flex w-full flex-wrap items-center justify-between gap-2 rounded-xl bg-white p-7 md:sticky md:top-[0]">
@@ -24,21 +17,18 @@ const InventoryManagementHeader: FC = () => {
         Inventory Management
       </h2>
 
-      <div className="grid grid-cols-4 flex-col gap-3">
-        <SearchBarAdminComponent setSearchQuery={setSearchQuery} />
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="md:col-span-2">
+          <WarehouseSelection
+            warehouseId={destinationWarehouseId}
+            setWarehouseId={setDestinationWarehouseId}
+            setPage={setInventoryPage}
+          />
+        </div>
 
-        <ProductCategorySelection
-          productCategoryId={productCategoryId}
-          setProductCategoryId={setProductCategoryId}
-        />
-
-        <WarehouseSelection
-          warehouseId={destinationWarehouseId}
-          setWarehouseId={setDestinationWarehouseId}
-          setPage={setInventoryPage}
-        />
-
-        <AddInventoryDialog />
+        <div className="w-40 md:col-span-1">
+          <AddInventoryDialog />
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,15 @@
 import { FC, useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Input } from "@/components/ui/input";
 
 interface SearchBarAdminComponentProps {
   setSearchQuery: (searchQuery: string | undefined) => void;
+  placeholder?: string;
 }
 
 const SearchBarAdminComponent: FC<SearchBarAdminComponentProps> = ({
   setSearchQuery,
+  placeholder = "Search Products...",
 }) => {
   const [internalSearchQuery, setInternalSearchQuery] = useState<string>("");
 
@@ -18,10 +21,10 @@ const SearchBarAdminComponent: FC<SearchBarAdminComponentProps> = ({
 
   return (
     <div className="relative h-full w-full sm:w-auto">
-      <input
+      <Input
         type="text"
-        placeholder="Search products..."
-        className="h-full w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 sm:w-auto"
+        placeholder={placeholder}
+        className="w-full rounded-lg border border-gray-300 py-2 pl-10"
         value={internalSearchQuery}
         onChange={(e) => setInternalSearchQuery(e.target.value)}
       />

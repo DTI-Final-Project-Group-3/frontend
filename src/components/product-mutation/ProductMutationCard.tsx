@@ -34,7 +34,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
   return (
     <div className="flex w-full flex-col gap-4 rounded-xl border border-slate-200 bg-white px-4 py-6 transition-all duration-300 hover:border-blue-200 hover:shadow-lg sm:px-6 lg:px-8">
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-        <div className="flex w-full items-center justify-between sm:w-auto md:gap-8">
+        <div className="grid grid-cols-2 items-center justify-between sm:w-auto md:gap-8">
           {(productMutation.productMutationTypeId ===
             ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION ||
             productMutation.productMutationTypeId ===
@@ -46,7 +46,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
                 ? productMutation?.originWarehouseName && (
                     <div className="flex items-center gap-2">
                       <ArrowLeftFromLine size={18} />
-                      <span className="line-clamp-1 text-base font-medium sm:text-lg">
+                      <span className="line-clamp-1 text-base font-medium">
                         <span className="text-slate-800">
                           {productMutation?.originWarehouseName}
                         </span>
@@ -56,7 +56,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
                 : productMutation.destinationWarehouseId && (
                     <div className="flex items-center gap-2">
                       <ArrowRightFromLine size={18} />
-                      <span className="line-clamp-1 text-base font-medium sm:text-lg">
+                      <span className="line-clamp-1 text-base font-medium">
                         <span className="text-slate-800">
                           {productMutation?.destinationWarehouseName}
                         </span>
@@ -65,18 +65,14 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
                   )}
             </div>
           )}
-
-          {productMutation.mutationCode ||
-            (productMutation.invoiceCode && (
-              <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2">
-                <Edit3 size={15} className="text-sm text-slate-800" />
-                <p className="text-sm text-slate-800">
-                  {productMutation.invoiceCode
-                    ? productMutation.invoiceCode
-                    : productMutation.mutationCode}
-                </p>
-              </div>
-            ))}
+          {(productMutation.mutationCode || productMutation.invoiceCode) && (
+            <div className="flex items-center gap-2">
+              <Edit3 size={15} className="text-sm text-slate-800" />
+              <p className="rounded-xl bg-slate-50 p-2 text-sm text-slate-800">
+                {productMutation.mutationCode || productMutation.invoiceCode}
+              </p>
+            </div>
+          )}
 
           <div className="sm:hidden">
             <StatusComponent
@@ -146,7 +142,9 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               productMutation?.productMutationTypeId ===
                 ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION ||
               productMutation?.productMutationTypeId ===
-                ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION) && (
+                ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION ||
+              productMutation.productMutationTypeId ===
+                ProductMutationConstant.TYPE_OUTBOUND_AUTO_MUTATION) && (
               <ArrowLeftRight size={14} className="text-indigo-600" />
             )}
 

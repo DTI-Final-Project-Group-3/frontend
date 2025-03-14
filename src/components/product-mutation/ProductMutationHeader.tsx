@@ -15,8 +15,8 @@ const ProductMutationHeader: FC = () => {
       <h2 className="text-xl font-semibold text-gray-800 md:text-2xl">
         Product Mutation & Journal
       </h2>
-      <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-        <div className="w-60">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="col-span-2">
           <WarehouseSelection
             warehouseId={destinationWarehouseId}
             setWarehouseId={setDestinationWarehouseId}
@@ -24,11 +24,13 @@ const ProductMutationHeader: FC = () => {
           />
         </div>
 
-        <MutationDialog
-          isProductMutation={true}
-          buttonName="New Mutation"
-          buttonClassName="bg-warehub-green text-white hover:bg-warehub-green-light hover:text-gray-100"
-        ></MutationDialog>
+        <div className="w-40 md:col-span-1">
+          <MutationDialog
+            isProductMutation={true}
+            buttonName="New Mutation"
+            buttonClassName="bg-warehub-green text-white hover:bg-warehub-green-light hover:text-gray-100"
+          />
+        </div>
       </div>
     </div>
   );
