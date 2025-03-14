@@ -35,7 +35,9 @@ const ConfirmOrderModal: FC<ConfirmOrderModalProps> = ({
     mutationFn: () => confirmOrder(orderId, accessToken),
     onSuccess: () => {
       setIsOpen(false);
-      // window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     },
   });
 
