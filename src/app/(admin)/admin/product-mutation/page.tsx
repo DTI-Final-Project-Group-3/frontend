@@ -29,7 +29,6 @@ const ProductMutation: FC = () => {
     productCategoryId,
     productMutationTypeId,
     productMutationStatusId,
-    setIsRequest,
   } = useProductMutationFilter();
   const { data } = useSession();
   const {
@@ -38,8 +37,6 @@ const ProductMutation: FC = () => {
     productMutationPage,
     setProductMutationPage,
   } = useProductMutation();
-
-  const { isRequest } = useProductMutationFilter();
 
   const {
     data: adjustmentJournals,
@@ -52,7 +49,6 @@ const ProductMutation: FC = () => {
       selectedTab,
       productMutationPage,
       submitMutation,
-      isRequest,
       dateRange,
       productId,
       productCategoryId,
@@ -65,7 +61,6 @@ const ProductMutation: FC = () => {
         limit: ADMIN_PRODUCT_MUTATION,
         startDate: formatDateHyphen(dateRange.from),
         endDate: formatDateHyphen(dateRange.to),
-        isRequest: false,
         productId,
         productCategoryId,
         destinationWarehouseId: destinationWarehouseId,
@@ -89,7 +84,6 @@ const ProductMutation: FC = () => {
       selectedTab,
       productMutationPage,
       submitMutation,
-      isRequest,
       dateRange,
       productId,
       productCategoryId,
@@ -102,13 +96,12 @@ const ProductMutation: FC = () => {
         limit: ADMIN_PRODUCT_MUTATION,
         startDate: formatDateHyphen(dateRange.from),
         endDate: formatDateHyphen(dateRange.to),
-        isRequest,
         productId,
         productCategoryId,
         destinationWarehouseId: destinationWarehouseId,
         productMutationTypeId: [
           ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION,
-          ProductMutationConstant.TYPE_AUTO_MUTATION,
+          ProductMutationConstant.TYPE_INBOUND_AUTO_MUTATION,
         ],
         productMutationStatusId: productMutationStatusId,
       }),
@@ -126,7 +119,6 @@ const ProductMutation: FC = () => {
       selectedTab,
       productMutationPage,
       submitMutation,
-      isRequest,
       dateRange,
       productId,
       productCategoryId,
@@ -139,13 +131,12 @@ const ProductMutation: FC = () => {
         limit: ADMIN_PRODUCT_MUTATION,
         startDate: formatDateHyphen(dateRange.from),
         endDate: formatDateHyphen(dateRange.to),
-        isRequest,
         productId,
         productCategoryId,
         originWarehouseId: destinationWarehouseId,
         productMutationTypeId: [
           ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION,
-          ProductMutationConstant.TYPE_AUTO_MUTATION,
+          ProductMutationConstant.TYPE_OUTBOUND_AUTO_MUTATION,
         ],
         productMutationStatusId: productMutationStatusId,
       }),
@@ -247,7 +238,6 @@ const ProductMutation: FC = () => {
                               key={item.productMutationId}
                               productMutation={item}
                               isInbound={isInbound}
-                              isRequest={isRequest && selectedTab !== 1}
                             />
                           ),
                         )}
@@ -289,7 +279,6 @@ const ProductMutation: FC = () => {
                 onClick={() => {
                   setProductMutationPage(0);
                   setSelectedTab(tab.id);
-                  setIsRequest(true);
                 }}
               >
                 <span>{tab.label}</span>

@@ -31,7 +31,6 @@ export interface ProductMutationParams {
   limit: number;
   startDate?: string;
   endDate?: string;
-  isRequest: boolean;
   productId?: number;
   productCategoryId?: number;
   originWarehouseId?: number;
@@ -66,6 +65,7 @@ export interface ProductMutationDetailResponse {
   productMutationStatusId: number;
   productMutationStatusName: string;
   invoiceCode: string | null;
+  mutationCode: string | null;
   createdAt: string;
   reviewedAt: string | null;
 }

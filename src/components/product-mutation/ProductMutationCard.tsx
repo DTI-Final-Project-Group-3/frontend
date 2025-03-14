@@ -18,37 +18,36 @@ import {
   Pen,
   ArrowRightFromLine,
   ArrowLeftFromLine,
+  Edit3,
 } from "lucide-react";
 import { ProductMutationConstant } from "@/constant/productMutationConstant";
 
 interface ProductMutationCardProps {
   productMutation: ProductMutationDetailResponse;
   isInbound: boolean;
-  isRequest: boolean;
 }
 
 const ProductMutationCard: FC<ProductMutationCardProps> = ({
   productMutation,
   isInbound,
-  isRequest = false,
 }) => {
   return (
     <div className="flex w-full flex-col gap-4 rounded-xl border border-slate-200 bg-white px-4 py-6 transition-all duration-300 hover:border-blue-200 hover:shadow-lg sm:px-6 lg:px-8">
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-        <div className="flex w-full items-center justify-between sm:w-auto">
+        <div className="flex w-full items-center justify-between sm:w-auto md:gap-8">
           {(productMutation.productMutationTypeId ===
             ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION ||
             productMutation.productMutationTypeId ===
               ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION ||
             productMutation.productMutationTypeId ===
-              ProductMutationConstant.TYPE_AUTO_MUTATION) && (
+              ProductMutationConstant.TYPE_INBOUND_AUTO_MUTATION) && (
             <div className="flex flex-row items-center gap-2">
               {isInbound
                 ? productMutation?.originWarehouseName && (
                     <div className="flex items-center gap-2">
-                      <ArrowLeftFromLine size={18} className="text-blue-600" />
+                      <ArrowLeftFromLine size={18} />
                       <span className="line-clamp-1 text-base font-medium sm:text-lg">
-                        <span className="text-blue-600">
+                        <span className="text-slate-800">
                           {productMutation?.originWarehouseName}
                         </span>
                       </span>
@@ -56,12 +55,9 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
                   )
                 : productMutation.destinationWarehouseId && (
                     <div className="flex items-center gap-2">
-                      <ArrowRightFromLine
-                        size={18}
-                        className="text-green-600"
-                      />
+                      <ArrowRightFromLine size={18} />
                       <span className="line-clamp-1 text-base font-medium sm:text-lg">
-                        <span className="text-green-700">
+                        <span className="text-slate-800">
                           {productMutation?.destinationWarehouseName}
                         </span>
                       </span>
@@ -69,6 +65,18 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
                   )}
             </div>
           )}
+
+          {productMutation.mutationCode ||
+            (productMutation.invoiceCode && (
+              <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2">
+                <Edit3 size={15} className="text-sm text-slate-800" />
+                <p className="text-sm text-slate-800">
+                  {productMutation.invoiceCode
+                    ? productMutation.invoiceCode
+                    : productMutation.mutationCode}
+                </p>
+              </div>
+            ))}
 
           <div className="sm:hidden">
             <StatusComponent
@@ -95,7 +103,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               />
             </div>
             <div className="flex flex-col gap-2">
-              <strong className="flex items-center gap-2 text-base text-slate-800 sm:text-lg">
+              <strong className="flex items-center gap-1 text-gray-600 sm:text-lg">
                 <Package size={16} className="text-slate-600" />
                 {productMutation?.productName}
               </strong>
@@ -134,7 +142,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               <Pen size={14} className="text-indigo-600" />
             )}
             {(productMutation?.productMutationTypeId ===
-              ProductMutationConstant.TYPE_AUTO_MUTATION ||
+              ProductMutationConstant.TYPE_INBOUND_AUTO_MUTATION ||
               productMutation?.productMutationTypeId ===
                 ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION ||
               productMutation?.productMutationTypeId ===
@@ -170,21 +178,22 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               {productMutation?.requesterName}
             </span>
           </span>
-          {productMutation?.reviewedAt && (
+          {productMutation?.reviewerName && (
             <span className="flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1 text-xs text-slate-500">
               <User size={12} className="text-green-500" />
               Reviewed by:{" "}
               <span className="ml-1 font-medium text-slate-700">
-                {productMutation?.requesterName}
+                {productMutation?.reviewerName}
               </span>
             </span>
           )}
         </div>
 
-        {isRequest &&
-          !isInbound &&
+        {!isInbound &&
           productMutation.productMutationTypeId ===
-            ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION && (
+            ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION &&
+          productMutation.productMutationStatusId ===
+            ProductMutationConstant.STATUS_PENDING && (
             <div className="mt-3 flex w-full justify-center gap-3 sm:mt-0 sm:w-auto sm:justify-end">
               <ProductMutationReviewDialog
                 isApprove={false}

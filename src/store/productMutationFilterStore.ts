@@ -8,14 +8,12 @@ type ReportStoreProps = {
   dateRange: DateRange;
   productMutationTypeId?: number;
   productMutationStatusId?: number;
-  isRequest: boolean;
 
   setProductId: (val: number | undefined) => void;
   setProductCategoryId: (val: number | undefined) => void;
   setDateRange: (val: DateRange | undefined) => void;
   setProductMutationTypeId: (val: number | undefined) => void;
   setProductMutationStatusId: (val: number | undefined) => void;
-  setIsRequest: (val: boolean | undefined) => void;
 };
 
 export const useProductMutationFilter = create<ReportStoreProps>((set) => ({
@@ -26,8 +24,7 @@ export const useProductMutationFilter = create<ReportStoreProps>((set) => ({
     to: undefined,
   },
   productMutationTypeId: undefined,
-  productMutationStatusId: ProductMutationConstant.STATUS_PENDING,
-  isRequest: true,
+  productMutationStatusId: undefined,
 
   setProductId: (val) => set({ productId: val }),
 
@@ -43,8 +40,5 @@ export const useProductMutationFilter = create<ReportStoreProps>((set) => ({
   },
   setProductMutationTypeId: (val) => {
     set({ productMutationTypeId: val });
-  },
-  setIsRequest: (val) => {
-    set({ isRequest: val });
   },
 }));
