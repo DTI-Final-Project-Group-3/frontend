@@ -13,6 +13,7 @@ export const getPaginatedWarehouseInventories = async ({
   page,
   limit,
   warehouseId,
+  productCategoryId,
   searchQuery,
 }: WarehouseInventoryParams): Promise<
   PaginationResponse<WarehouseInventoryPagination>
@@ -27,7 +28,7 @@ export const getPaginatedWarehouseInventories = async ({
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-    params: { page, limit, warehouseId, searchQuery },
+    params: { page, limit, warehouseId, productCategoryId, searchQuery },
   });
 
   if (!response.data || !response.data) {

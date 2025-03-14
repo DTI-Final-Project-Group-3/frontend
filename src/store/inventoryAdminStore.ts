@@ -5,7 +5,10 @@ type InventoryAdminStore = {
   setInventoryPage: (val: number) => void;
 
   productCategoryId: number | undefined;
-  setProductCategoryId: (val: number) => void;
+  setProductCategoryId: (val: number | undefined) => void;
+
+  searchQuery: string | undefined;
+  setSearchQuery: (searchQuery: string | undefined) => void;
 };
 
 export const useInventoryAdmin = create<InventoryAdminStore>((set) => ({
@@ -16,7 +19,12 @@ export const useInventoryAdmin = create<InventoryAdminStore>((set) => ({
     set({ inventoryPage: val });
   },
 
-  setProductCategoryId: (val: number) => {
+  setProductCategoryId: (val: number | undefined) => {
     set({ productCategoryId: val });
+  },
+
+  searchQuery: "",
+  setSearchQuery: (val: string | undefined) => {
+    set({ searchQuery: val });
   },
 }));

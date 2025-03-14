@@ -28,8 +28,8 @@ import { useInventoryAdmin } from "@/store/inventoryAdminStore";
 import { useSession } from "next-auth/react";
 
 const InventoryManagementPage = () => {
-  const [searchQuery] = useState<string>();
-  const { inventoryPage, setInventoryPage } = useInventoryAdmin();
+  const { inventoryPage, productCategoryId, searchQuery, setInventoryPage } =
+    useInventoryAdmin();
   const { data } = useSession();
 
   const {
@@ -49,6 +49,7 @@ const InventoryManagementPage = () => {
       inventoryPage,
       searchQuery,
       submitMutation,
+      productCategoryId,
       destinationWarehouseId,
     ],
     queryFn: () =>
@@ -56,6 +57,7 @@ const InventoryManagementPage = () => {
         page: inventoryPage,
         limit: INVENTORY_PER_PAGE,
         warehouseId: destinationWarehouseId,
+        productCategoryId,
         searchQuery,
       }),
     enabled: !!destinationWarehouseId && !!data?.accessToken,
