@@ -151,7 +151,6 @@ const CheckoutPage: FC = () => {
       setUserAddress(userAddress);
       setMainAddress(mainAddress);
       fetchShippingAddress(mainAddress);
-      console.log(mainAddress);
     }
   }, [session, fetchShippingAddress]);
 
