@@ -19,8 +19,6 @@ const ProductCategoryUserSelection: FC = () => {
   return (
     <div>
       <div className="h-[320px] overflow-y-auto">
-        <h1 className="mb-4 text-xl font-bold">Categories</h1>
-
         {isLoading ? (
           <div className="flex animate-pulse flex-col gap-5 p-3">
             {Array.from({ length: 10 }).map((_, index) => (
