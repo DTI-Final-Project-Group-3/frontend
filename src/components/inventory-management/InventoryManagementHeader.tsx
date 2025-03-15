@@ -12,12 +12,12 @@ const InventoryManagementHeader: FC = () => {
   const { setInventoryPage } = useInventoryAdmin();
 
   return (
-    <div className="z-[40] flex w-full flex-wrap items-center justify-between gap-2 rounded-xl bg-white p-7 md:sticky md:top-[0]">
+    <div className="z-[40] grid grid-cols-1 gap-3 rounded-xl bg-white p-7 md:sticky md:top-[0] md:grid-cols-3">
       <h2 className="text-xl font-semibold text-gray-800 md:text-2xl">
         Inventory Management
       </h2>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:col-start-3 md:grid-cols-3">
         <div className="md:col-span-2">
           <WarehouseSelection
             warehouseId={destinationWarehouseId}
@@ -26,7 +26,7 @@ const InventoryManagementHeader: FC = () => {
           />
         </div>
 
-        <div className="w-40 md:col-span-1">
+        <div className="md:col-span-1">
           <AddInventoryDialog />
         </div>
       </div>

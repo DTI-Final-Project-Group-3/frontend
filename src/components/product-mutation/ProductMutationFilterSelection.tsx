@@ -34,6 +34,7 @@ const ProductMutationFilterSelection: FC<
           <DateRangeSelection
             dateRange={dateRange}
             setDateRange={setDateRange}
+            preSelect={false}
           />
         </div>
         <div className="space-y-2">

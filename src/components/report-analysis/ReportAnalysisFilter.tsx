@@ -30,14 +30,14 @@ const ReportAnalysisFilter: FC<ProductMutationFilterProps> = ({
   return (
     <div className="px-7 pt-7">
       <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white md:grid-cols-5">
-        <div className="space-y-2">
+        <div className="md:space-y-2">
           <Label className="text-xs text-slate-500">Date Range</Label>
           <DateRangeSelection
             dateRange={dateRange}
             setDateRange={setDateRange}
           />
         </div>
-        <div className="space-y-2">
+        <div className="md:space-y-2">
           <Label className="text-xs text-slate-500">Product</Label>
           <ProductSelection
             captionNoSelection="All Products"
@@ -47,7 +47,7 @@ const ReportAnalysisFilter: FC<ProductMutationFilterProps> = ({
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="md:space-y-2">
           <Label className="text-xs text-slate-500">Product Category</Label>
           <ProductCategorySelection
             productCategoryId={productCategoryId}
@@ -57,7 +57,7 @@ const ReportAnalysisFilter: FC<ProductMutationFilterProps> = ({
 
         {isProductMutation ? (
           <>
-            <div className="space-y-2">
+            <div className="md:space-y-2">
               <Label className="text-xs text-slate-500">
                 Product Mutation Type
               </Label>
@@ -66,7 +66,7 @@ const ReportAnalysisFilter: FC<ProductMutationFilterProps> = ({
                 setProductMutationTypeId={setProductMutationTypeId}
               />
             </div>
-            <div className="space-y-2">
+            <div className="md:space-y-2">
               <Label className="text-xs text-slate-500">
                 Product Mutation Status
               </Label>
@@ -77,7 +77,7 @@ const ReportAnalysisFilter: FC<ProductMutationFilterProps> = ({
             </div>
           </>
         ) : (
-          <div className="space-y-2">
+          <div className="md:space-y-2">
             <Label className="text-xs text-slate-500">Order Status</Label>
             <CustomerOrderStatusSelection />
           </div>

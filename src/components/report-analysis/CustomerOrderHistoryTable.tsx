@@ -114,14 +114,16 @@ const CustomerOrderHistoryTable: FC = () => {
               </TableBody>
             </Table>
 
-            <PaginationAdmin
-              desc="History"
-              page={page}
-              setPage={setPage}
-              totalPages={customerOrders.totalPages}
-              totalElements={customerOrders.totalElements}
-              currentPageSize={customerOrders.content.length}
-            />
+            {customerOrders && customerOrders.content.length > 0 && (
+              <PaginationAdmin
+                desc="History"
+                page={page}
+                setPage={setPage}
+                totalPages={customerOrders.totalPages}
+                totalElements={customerOrders.totalElements}
+                currentPageSize={customerOrders.content.length}
+              />
+            )}
           </>
         )
       )}

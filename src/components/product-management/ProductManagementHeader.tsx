@@ -4,7 +4,6 @@ import Link from "next/link";
 import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import AddProductCategory from "@/components/product-management/categories/AddProductCategory";
-import { useProductAdmin } from "@/store/productAdminStore";
 import { useSession } from "next-auth/react";
 import { userRoles } from "@/constant/userConstant";
 
@@ -15,7 +14,6 @@ interface ProductManagementHeaderProps {
 const ProductManagementHeader: FC<ProductManagementHeaderProps> = ({
   selectedTab,
 }) => {
-  const {} = useProductAdmin();
   const { data } = useSession();
 
   return (

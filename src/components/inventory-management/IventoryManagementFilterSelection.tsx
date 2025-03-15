@@ -9,8 +9,8 @@ const InventoryManagementFilterSelection: FC = () => {
     useInventoryAdmin();
 
   return (
-    <div className="space-y-3 rounded-b-lg bg-white px-10 pt-7">
-      <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white md:grid-cols-5">
+    <div className="space-y-3 rounded-t-lg bg-white px-7 pt-7">
+      <div className="grid w-full grid-cols-1 gap-3 bg-white md:grid-cols-5">
         <div className="col-span-1 md:space-y-2">
           <Label className="text-xs text-slate-500">Product Category</Label>
           <ProductCategorySelection

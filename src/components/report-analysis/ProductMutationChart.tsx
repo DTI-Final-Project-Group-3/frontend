@@ -24,11 +24,11 @@ import { useSession } from "next-auth/react";
 
 const chartConfig = {
   added: {
-    label: "In",
+    label: "Added",
     color: "#4CAF50",
   },
   reduced: {
-    label: "Out",
+    label: "Reduced",
     color: "#F44336",
   },
 } satisfies ChartConfig;

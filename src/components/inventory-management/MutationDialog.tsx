@@ -158,7 +158,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
               setIsMutation(isProductMutation);
               if (onClick) onClick();
             }}
-            className={cn(buttonClassName, "h-full")}
+            className={cn(buttonClassName, "h-full w-full")}
             disabled={!destinationWarehouseId}
           >
             {buttonName}

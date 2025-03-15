@@ -223,7 +223,14 @@ const ProductMutation: FC = () => {
     return (
       <section className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-2 md:px-10">
         <div
-          className={`flex w-full flex-grow ${!data || data.content.length === 0 || isLoading || isError ? "items-center justify-center" : "items-start justify-center"}`}
+          className={
+            (cn(
+              !data || data.content.length === 0 || isLoading || isError
+                ? "items-center justify-center"
+                : "items-start justify-center",
+            ),
+            "flex w-full flex-grow")
+          }
         >
           {!destinationWarehouseId
             ? renderWarehouseNotSelected()

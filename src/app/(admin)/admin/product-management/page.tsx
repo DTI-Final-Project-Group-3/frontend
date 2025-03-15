@@ -19,7 +19,7 @@ const ProductManagementPage: FC = () => {
   ];
 
   return (
-    <div className="space-y-2">
+    <div className="w-full space-y-2">
       <ProductManagementHeader selectedTab={selectedTab} />
       <Tabs defaultValue="products" className="w-full">
         <div>

@@ -194,7 +194,7 @@ const InventoryManagementPage = () => {
   );
 
   const renderMobileView = () => (
-    <div className="space-y-4 md:hidden">
+    <div className="w-full space-y-4 md:hidden">
       {inventories?.content.map((inventory) => (
         <Card key={inventory.id}>
           <CardContent className="p-4">
@@ -247,12 +247,14 @@ const InventoryManagementPage = () => {
   return (
     <section className="w-full space-y-2 rounded-lg shadow-sm">
       <InventoryManagementHeader />
-      <div>
+      <div className="w-full">
         <InventoryManagementFilterSelection />
-        <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-2 md:px-10">
+        <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-b-lg bg-white px-7 pt-2 md:px-10">
           <div className="flex flex-grow items-center justify-center">
             {!destinationWarehouseId ? (
-              renderWarehouseNotSelected()
+              <div className="flex flex-grow items-center justify-center">
+                renderWarehouseNotSelected()
+              </div>
             ) : inventoriesLoading ? (
               renderSkeletonLoading()
             ) : inventoriesError ? (
