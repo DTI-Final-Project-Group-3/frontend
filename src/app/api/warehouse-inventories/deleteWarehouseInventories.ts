@@ -2,6 +2,7 @@ import { toast } from "@/hooks/use-toast";
 import { ApiResponse } from "@/types/api/apiResponse";
 import { ProductMutationProcessRequest } from "@/types/models/productMutation";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
 const warehouseInventoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_WAREHOUSE_INVENTORIES}`;
 
@@ -15,6 +16,10 @@ export const deleteWarehouseInventoryById = async ({
   notes,
   warehouseInventoryId,
 }: DeleteWarehouseInventoryRequest): Promise<ApiResponse<void>> => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   try {
     const response = await axios.delete<ApiResponse<void>>(
       `${warehouseInventoryUrl}/${warehouseInventoryId}`,
@@ -22,6 +27,9 @@ export const deleteWarehouseInventoryById = async ({
         data: {
           userId,
           notes,
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
       },
     );

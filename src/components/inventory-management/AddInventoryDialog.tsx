@@ -18,6 +18,7 @@ import { useProductMutation } from "@/store/productMutationStore";
 import { createWarehouseInventory } from "@/app/api/warehouse-inventories/postWarehouseInventories";
 import { Textarea } from "../ui/textarea";
 import { useSession } from "next-auth/react";
+import { toast } from "@/hooks/use-toast";
 
 const AddInventoryDialog: FC = () => {
   const { data } = useSession();
@@ -46,7 +47,13 @@ const AddInventoryDialog: FC = () => {
       destinationWarehouseId,
     })
       .then(() => {})
-      .catch(() => {
+      .catch((error) => {
+        toast({
+          title: "Error creating product category",
+          description: error.response.data.message,
+          variant: "destructive",
+          duration: 5000,
+        });
         setSubmitMutation(false);
       })
       .finally(() => {
@@ -66,13 +73,14 @@ const AddInventoryDialog: FC = () => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="h-full bg-warehub-green text-white hover:bg-warehub-green-light hover:text-gray-50"
+          className="h-full w-full bg-warehub-green text-white hover:bg-warehub-green-light hover:text-gray-50"
           onClick={handleDialog}
+          disabled={!destinationWarehouseId}
         >
           Add Inventory
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
         <DialogHeader className="mb-5">
           <DialogTitle>Create New Inventory</DialogTitle>
           <DialogDescription>
@@ -90,6 +98,7 @@ const AddInventoryDialog: FC = () => {
                 filter="exclude"
                 productId={productId}
                 setProductId={setProductId}
+                showIcon={false}
               />
             </div>
           </div>

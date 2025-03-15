@@ -17,12 +17,15 @@ import {
 } from "@/app/api/product/getProducts";
 import { useProductMutation } from "@/store/productMutationStore";
 import { ProductBasic } from "@/types/models/products";
+import { useSession } from "next-auth/react";
+import { Box } from "lucide-react";
 
 interface ProductSelectionProps {
   captionNoSelection?: string;
   filter: string;
   productId: number | undefined;
   setProductId: (val: number | undefined) => void;
+  showIcon?: boolean;
 }
 
 const ProductSelection: FC<ProductSelectionProps> = ({
@@ -30,8 +33,10 @@ const ProductSelection: FC<ProductSelectionProps> = ({
   filter,
   productId,
   setProductId,
+  showIcon = true,
 }) => {
   const { destinationWarehouseId } = useProductMutation();
+  const { data } = useSession();
 
   const {
     data: excludeProducts,
@@ -45,7 +50,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
       }
       return getProductExcludeFilter(destinationWarehouseId);
     },
-    enabled: !!destinationWarehouseId,
+    enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const {
@@ -60,7 +65,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
       }
       return getProductIncludeFilter(destinationWarehouseId);
     },
-    enabled: !!destinationWarehouseId,
+    enabled: !!destinationWarehouseId && !!data?.accessToken,
   });
 
   const {
@@ -70,6 +75,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({
   } = useQuery({
     queryKey: ["all-products"],
     queryFn: getAllProductList,
+    enabled: !!data?.accessToken,
   });
 
   const renderContent = (
@@ -89,12 +95,15 @@ const ProductSelection: FC<ProductSelectionProps> = ({
         }}
       >
         <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-600 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
-          <SelectValue>
-            {allProducts?.find((product) => product.id == productId)?.name ||
-              captionNoSelection}
-          </SelectValue>
+          <div className="flex gap-2">
+            {showIcon && <Box className="h-5 w-5 text-gray-400" />}
+            <SelectValue className="line-clamp-1">
+              {allProducts?.find((product) => product.id == productId)?.name ||
+                captionNoSelection}
+            </SelectValue>
+          </div>
         </SelectTrigger>
-        <SelectContent className="max-h-56 w-72">
+        <SelectContent className="max-h-56">
           <SelectItem value="all">{captionNoSelection}</SelectItem>
           {isLoading ? (
             <SelectItem value="loading" disabled>

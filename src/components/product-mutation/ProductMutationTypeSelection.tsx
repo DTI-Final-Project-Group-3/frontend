@@ -9,6 +9,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { ProductMutationType } from "@/types/models/productMutation";
 import { getAllProductMutationType } from "@/app/api/product-mutation/getProductMutationType";
+import { useSession } from "next-auth/react";
+import { ArrowUpDown } from "lucide-react";
 
 interface ProductMutationTypeSelectionProps {
   captionNoSelection?: string;
@@ -21,6 +23,7 @@ const ProductMutationTypeSelection: FC<ProductMutationTypeSelectionProps> = ({
   productMutationTypeId,
   setProductMutationTypeId,
 }) => {
+  const { data } = useSession();
   const {
     data: productMutationTypes,
     isLoading,
@@ -28,6 +31,7 @@ const ProductMutationTypeSelection: FC<ProductMutationTypeSelectionProps> = ({
   } = useQuery({
     queryKey: ["product-mutation-types"],
     queryFn: getAllProductMutationType,
+    enabled: !!data?.accessToken,
   });
 
   return (
@@ -43,7 +47,10 @@ const ProductMutationTypeSelection: FC<ProductMutationTypeSelectionProps> = ({
         }}
       >
         <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-500 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
-          <SelectValue placeholder="Select Warehouse" />
+          <div className="flex gap-2">
+            <ArrowUpDown className="h-5 w-5 text-gray-400" />
+            <SelectValue placeholder="Select Product Mutation Type" />
+          </div>
         </SelectTrigger>
         <SelectContent className="max-h-56">
           <SelectItem value="all">{captionNoSelection}</SelectItem>

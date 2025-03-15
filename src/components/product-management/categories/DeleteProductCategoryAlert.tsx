@@ -26,6 +26,7 @@ const DeleteProductCategoryAlert: FC<ProductCategory> = ({ id, name }) => {
         productMutationStatusId: ProductMutationConstant.STATUS_PENDING,
         destinationWarehouseId,
       }),
+    enabled: !!data?.accessToken,
   });
 
   const handleConfirmDelete = () => {

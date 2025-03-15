@@ -29,9 +29,14 @@ export interface ProductMutationManualResponse {
 export interface ProductMutationParams {
   page: number;
   limit: number;
+  startDate?: string;
+  endDate?: string;
+  productId?: number;
+  productCategoryId?: number;
   originWarehouseId?: number;
   destinationWarehouseId?: number;
   productMutationTypeId: number[];
+  productMutationStatusId?: number;
 }
 
 export interface ProductMutationProcessRequest {
@@ -60,6 +65,7 @@ export interface ProductMutationDetailResponse {
   productMutationStatusId: number;
   productMutationStatusName: string;
   invoiceCode: string | null;
+  mutationCode: string | null;
   createdAt: string;
   reviewedAt: string | null;
 }

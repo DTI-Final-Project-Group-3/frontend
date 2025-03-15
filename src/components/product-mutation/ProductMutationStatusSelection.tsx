@@ -9,6 +9,8 @@ import { ProductMutationType } from "@/types/models/productMutation";
 import React, { FC } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProductMutationStatus } from "@/app/api/product-mutation/getProductMutationStatus";
+import { useSession } from "next-auth/react";
+import { Clock } from "lucide-react";
 
 interface ProductMutationStatusSelectionProps {
   captionNoSelection?: string;
@@ -23,6 +25,7 @@ const ProductMutationStatusSelection: FC<
   productMutationSelectionId,
   setProductMutationSelectionId,
 }) => {
+  const { data } = useSession();
   const {
     data: productMutationStatuses,
     isLoading,
@@ -30,6 +33,7 @@ const ProductMutationStatusSelection: FC<
   } = useQuery({
     queryKey: ["product-mutation-statuses"],
     queryFn: getAllProductMutationStatus,
+    enabled: !!data?.accessToken,
   });
 
   return (
@@ -49,7 +53,10 @@ const ProductMutationStatusSelection: FC<
         }}
       >
         <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-500 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
-          <SelectValue placeholder="Select Warehouse" />
+          <div className="flex gap-2">
+            <Clock className="h-5 w-5 text-gray-400" />
+            <SelectValue placeholder="Select Product Mutation Staus" />
+          </div>
         </SelectTrigger>
         <SelectContent className="max-h-56">
           <SelectItem value="all">{captionNoSelection}</SelectItem>

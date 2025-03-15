@@ -85,7 +85,7 @@ const ProductMutationReviewDialog: FC<ProductMutationReviewDialogProps> = ({
           {isApprove ? "Approve" : "Decline"}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
         <DialogHeader className="mb-5">
           <DialogTitle>
             {isApprove ? "Approve Mutation" : "Decline Mutation"}
@@ -112,7 +112,9 @@ const ProductMutationReviewDialog: FC<ProductMutationReviewDialogProps> = ({
             onClick={handleOnSubmit}
             disabled={submitMutation}
             className={
-              isApprove ? "" : "border-2 border-slate-300 bg-white text-black"
+              isApprove
+                ? ""
+                : "border-2 border-slate-300 bg-white text-black hover:bg-slate-50 hover:text-black"
             }
           >
             {submitMutation ? "Submitting..." : "Submit"}

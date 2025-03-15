@@ -75,7 +75,7 @@ const CustomerOrderChart: FC = () => {
           <h3 className="text-sm text-gray-500">Total Quantity</h3>
           <p className="text-2xl font-bold">{accTotalQuantity}</p>
         </div>
-        <div className="grid-cols-1 rounded bg-blue-50 p-4">
+        <div className="col-span-2 rounded bg-blue-50 p-4 md:col-span-1">
           <h3 className="text-sm text-gray-500">Total Value</h3>
           <p className="text-2xl font-bold">
             {formatPrice(accTotalValue.toString())}
