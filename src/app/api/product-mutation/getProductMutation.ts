@@ -9,6 +9,7 @@ import {
   ProductMutationReportTotalResponse,
 } from "@/types/models/productMutation";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
 const productMutationUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT_MUTATIONS}`;
 
@@ -21,21 +22,38 @@ const axiosInstance = axios.create({
 export const getPaginatedProductMutation = async ({
   page,
   limit,
+  startDate,
+  endDate,
+  productId,
+  productCategoryId,
   originWarehouseId,
   destinationWarehouseId,
   productMutationTypeId,
+  productMutationStatusId,
 }: ProductMutationParams): Promise<
   PaginationResponse<ProductMutationDetailResponse>
 > => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axiosInstance.get<
     ApiResponse<PaginationResponse<ProductMutationDetailResponse>>
   >(productMutationUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     params: {
       page,
       limit,
+      startDate,
+      endDate,
+      productId,
+      productCategoryId,
       originWarehouseId,
       destinationWarehouseId,
       productMutationTypeId,
+      productMutationStatusId,
     },
   });
   return response.data.data;
@@ -54,9 +72,16 @@ export const getProductMutationHistory = async ({
 }: ProductMutationHistoryParams): Promise<
   PaginationResponse<ProductMutationReportResponse>
 > => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axios.get<
     ApiResponse<PaginationResponse<ProductMutationReportResponse>>
   >(`${productMutationUrl}/history`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     params: {
       page,
       limit,
@@ -83,9 +108,16 @@ export const getProductMutationReportTotal = async ({
 }: ProductMutationHistoryParams): Promise<
   ApiResponse<ProductMutationReportTotalResponse>
 > => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axios.get<
     ApiResponse<ProductMutationReportTotalResponse>
   >(`${productMutationUrl}/total`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     params: {
       startedAt,
       endedAt,
@@ -110,9 +142,16 @@ export const getProductMutationReportDailySummary = async ({
 }: ProductMutationHistoryParams): Promise<
   ProductMutationReportDailySummaryResponse[]
 > => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axios.get<
     ApiResponse<ProductMutationReportDailySummaryResponse[]>
   >(`${productMutationUrl}/daily`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     params: {
       startedAt,
       endedAt,

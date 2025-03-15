@@ -15,6 +15,7 @@ export interface WarehouseInventoryParams {
   limit: number;
   page: number;
   warehouseId?: number;
+  productCategoryId?: number;
   searchQuery?: string;
 }
 

@@ -8,6 +8,7 @@ const userAddressUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT
 export const getUserAddress = async (): Promise<ApiResponse<UserAddress[]>> => {
   const session = await getSession();
   const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
 
   const response = await axios.get<ApiResponse<UserAddress[]>>(userAddressUrl, {
     headers: {

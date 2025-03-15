@@ -20,14 +20,15 @@ import {
   ChartTooltipContent,
 } from "../ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { useSession } from "next-auth/react";
 
 const chartConfig = {
   added: {
-    label: "In",
+    label: "Added",
     color: "#4CAF50",
   },
   reduced: {
-    label: "Out",
+    label: "Reduced",
     color: "#F44336",
   },
 } satisfies ChartConfig;
@@ -41,6 +42,7 @@ const ProductMutationChart: FC = () => {
     productCategoryId,
   } = useReport();
   const { destinationWarehouseId } = useProductMutation();
+  const { data } = useSession();
 
   const { data: mutationDailySummary } = useQuery({
     queryKey: [
@@ -62,7 +64,7 @@ const ProductMutationChart: FC = () => {
         productMutationStatusId,
         destinationWarehouseId,
       }),
-    enabled: !!dateRange.from && !!dateRange.to,
+    enabled: !!dateRange.from && !!dateRange.to && !!data?.accessToken,
   });
 
   return (

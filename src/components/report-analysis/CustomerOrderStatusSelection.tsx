@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useReport } from "@/store/reportStore";
+import { Clock } from "lucide-react";
 
 const CustomerOrderStatusSelection: FC = () => {
   const { customerOrderStatusId, setCustomerOrderStatusId } = useReport();
@@ -24,7 +25,10 @@ const CustomerOrderStatusSelection: FC = () => {
         }}
       >
         <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-500 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
-          <SelectValue placeholder="Select Warehouse" />
+          <div className="flex gap-2">
+            <Clock className="h-5 w-5 text-gray-400" />
+            <SelectValue placeholder="Select Order Status" />
+          </div>
         </SelectTrigger>
         <SelectContent className="max-h-56">
           <SelectItem value="all">All Status</SelectItem>

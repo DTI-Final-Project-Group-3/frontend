@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import ProductMutationHistoryTable from "@/components/report-analysis/ProductMutationHistoryTable";
 import ProductMutationTotal from "@/components/report-analysis/ProductMutationTotal";
 import ProductMutationChart from "@/components/report-analysis/ProductMutationChart";
-import ProductMutationFilter from "@/components/product-mutation/ProductMutationFilter";
+import ReportAnalysisFilter from "@/components/report-analysis/ReportAnalysisFilter";
 import CustomerOrderHistoryTable from "@/components/report-analysis/CustomerOrderHistoryTable";
 import CustomerOrderChart from "@/components/report-analysis/CustomerOrderChart";
 
@@ -42,7 +42,7 @@ const ReportAnalysisPage = () => {
           </TabsList>
 
           <div className="rounded-xl bg-white shadow-sm">
-            <ProductMutationFilter isProductMutation={selectedTab === 2} />
+            <ReportAnalysisFilter isProductMutation={selectedTab === 2} />
             <TabsContent value="order" className="p-4 sm:p-6">
               <CustomerOrderChart />
               <CustomerOrderHistoryTable />

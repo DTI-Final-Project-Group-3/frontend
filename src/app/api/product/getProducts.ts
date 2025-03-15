@@ -10,6 +10,7 @@ import {
   ProductSummary,
 } from "@/types/models/products";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
 const productUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}`;
 const productCategoryUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCTS}${process.env.NEXT_PUBLIC_PRODUCT_CATEGORY}`;
@@ -104,9 +105,16 @@ export const getPaginatedProducts = async ({
   productCategoryId,
   searchQuery,
 }: PaginatedProductParams): Promise<PaginationResponse<ProductSummary>> => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axios.get<
     ApiResponse<PaginationResponse<ProductSummary>>
   >(productUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     params: {
       page,
       limit,
@@ -120,8 +128,17 @@ export const getPaginatedProducts = async ({
 };
 
 export const getAllProductList = async (): Promise<ProductBasic[]> => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axios.get<ApiResponse<ProductBasic[]>>(
     `${productUrl}/all`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
   );
   return response.data.data;
 };
@@ -129,9 +146,16 @@ export const getAllProductList = async (): Promise<ProductBasic[]> => {
 export const getProductIncludeFilter = async (
   warehouseId: number,
 ): Promise<ProductBasic[]> => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axios.get<ApiResponse<ProductBasic[]>>(
     `${productUrl}/filter/include`,
     {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       params: {
         warehouseId,
       },
@@ -143,9 +167,16 @@ export const getProductIncludeFilter = async (
 export const getProductExcludeFilter = async (
   warehouseId: number,
 ): Promise<ProductBasic[]> => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   const response = await axios.get<ApiResponse<ProductBasic[]>>(
     `${productUrl}/filter/exclude`,
     {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       params: {
         warehouseId,
       },

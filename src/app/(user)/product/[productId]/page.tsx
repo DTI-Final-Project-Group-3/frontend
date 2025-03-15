@@ -227,8 +227,12 @@ const InventoryPage: FC = () => {
                 <p>{productDetail.totalStock}</p>
                 <p className="text-gray-600">Category</p>
                 <p>{productDetail.category.name}</p>
-                <p className="text-gray-600">Send from</p>
-                <p>{productDetail.nearestWarehouse.name}</p>
+                {productDetail.nearestWarehouse && (
+                  <>
+                    <p className="text-gray-600">Send from</p>
+                    <p>{productDetail.nearestWarehouse.name}</p>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -76,6 +76,14 @@ const MutationDialog: FC<ProductMutationProps> = ({
           duration: 5000,
         });
       })
+      .catch((error) => {
+        toast({
+          title: "Error creating product category",
+          description: error.response.data.message,
+          variant: "destructive",
+          duration: 5000,
+        });
+      })
       .finally(() => {
         setDialogOpen(false);
         setSubmitMutation(false);
@@ -91,6 +99,14 @@ const MutationDialog: FC<ProductMutationProps> = ({
         toast({
           title: "Manual Product Mutation",
           description: "Successfully create new request",
+          duration: 5000,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error creating product category",
+          description: error.response.data.message,
+          variant: "destructive",
           duration: 5000,
         });
       })
@@ -142,7 +158,8 @@ const MutationDialog: FC<ProductMutationProps> = ({
               setIsMutation(isProductMutation);
               if (onClick) onClick();
             }}
-            className={cn(buttonClassName, "h-full")}
+            className={cn(buttonClassName, "h-full w-full")}
+            disabled={!destinationWarehouseId}
           >
             {buttonName}
           </Button>
@@ -155,7 +172,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
           />
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
         <DialogHeader className="mb-5">
           <DialogTitle>Inventory Quantity</DialogTitle>
           <DialogDescription>
@@ -188,6 +205,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
                   filter="include"
                   productId={productId}
                   setProductId={setProductId}
+                  showIcon={false}
                 />
               </div>
             </div>

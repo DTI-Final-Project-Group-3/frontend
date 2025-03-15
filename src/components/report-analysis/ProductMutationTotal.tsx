@@ -4,6 +4,7 @@ import { useReport } from "@/store/reportStore";
 import { useProductMutation } from "@/store/productMutationStore";
 import { getProductMutationReportTotal } from "@/app/api/product-mutation/getProductMutation";
 import { formatDateHyphen } from "@/utils/formatter";
+import { useSession } from "next-auth/react";
 
 const ProductMutationTotal: FC = () => {
   const {
@@ -15,6 +16,7 @@ const ProductMutationTotal: FC = () => {
   } = useReport();
 
   const { destinationWarehouseId } = useProductMutation();
+  const { data } = useSession();
 
   const {
     data: mutationTotal,
@@ -44,7 +46,7 @@ const ProductMutationTotal: FC = () => {
         destinationWarehouseId,
       });
     },
-    enabled: !!dateRange.from && !!dateRange.to,
+    enabled: !!dateRange.from && !!dateRange.to && !!data?.accessToken,
   });
 
   if (isLoading) {

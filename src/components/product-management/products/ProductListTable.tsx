@@ -49,6 +49,7 @@ const ProductListTable: FC = () => {
         productCategoryId,
         searchQuery,
       }),
+    enabled: !!data?.accessToken,
   });
 
   const renderEmptyState = () => (
@@ -123,7 +124,7 @@ const ProductListTable: FC = () => {
   };
 
   const renderMobileView = () => (
-    <div className="space-y-4 md:hidden">
+    <div className="w-full space-y-4 md:hidden">
       {products?.content.map((product) => (
         <Card key={product.id}>
           <CardContent className="p-4">
@@ -231,7 +232,7 @@ const ProductListTable: FC = () => {
 
   return (
     <section className="w-full space-y-2 rounded-lg shadow-sm">
-      <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-5 md:px-10 md:pt-10">
+      <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-7 pt-5 md:pt-10">
         <div className="flex flex-grow items-center justify-center">
           {productsLoading ? (
             renderLoading()

@@ -11,6 +11,7 @@ import { getAllWarehouses } from "@/app/api/warehouse/getWarehouses";
 import { useSession } from "next-auth/react";
 import { useProductMutation } from "@/store/productMutationStore";
 import { userRoles } from "@/constant/userConstant";
+import { Warehouse } from "lucide-react";
 
 interface WarehouseSelectionProps {
   captionNoSelection?: string;
@@ -59,7 +60,10 @@ const WarehouseSelection: FC<WarehouseSelectionProps> = ({
         }}
       >
         <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-500 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
-          <SelectValue placeholder="Select Warehouse" />
+          <div className="flex items-center justify-center gap-2">
+            <Warehouse className="h-5 w-5 text-gray-400" />
+            <SelectValue placeholder="Select Warehouse" />
+          </div>
         </SelectTrigger>
         <SelectContent className="max-h-56">
           <SelectItem value="all">{captionNoSelection}</SelectItem>
@@ -78,7 +82,11 @@ const WarehouseSelection: FC<WarehouseSelectionProps> = ({
             </SelectItem>
           ) : (
             warehouses?.data?.map((warehouse) => (
-              <SelectItem key={warehouse.id} value={warehouse.id.toString()}>
+              <SelectItem
+                key={warehouse.id}
+                value={warehouse.id.toString()}
+                className="line-clamp-1"
+              >
                 {warehouse.name}
               </SelectItem>
             ))

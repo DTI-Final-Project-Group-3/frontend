@@ -38,7 +38,7 @@ export const useProductAdmin = create<ProductAdminStore>((set) => ({
     set({ productCategoryId: val });
   },
 
-  searchQuery: undefined,
+  searchQuery: "",
   setSearchQuery: (val: string | undefined) => {
     set({ searchQuery: val });
   },

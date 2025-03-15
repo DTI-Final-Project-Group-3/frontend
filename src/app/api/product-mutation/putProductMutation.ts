@@ -5,6 +5,7 @@ import {
   ProductMutationProcessRequest,
 } from "@/types/models/productMutation";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
 const productMutationUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT_MUTATIONS}`;
 
@@ -19,13 +20,25 @@ export const approveManualProductMutation = async ({
 }: ProcessMutationRequest): Promise<
   ApiResponse<ProductMutationDetailResponse>
 > => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   try {
     const response = await axios.put<
       ApiResponse<ProductMutationDetailResponse>
-    >(`${productMutationUrl}/manual/approve/${productMutationId}`, {
-      userId,
-      notes,
-    });
+    >(
+      `${productMutationUrl}/manual/approve/${productMutationId}`,
+      {
+        userId,
+        notes,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
     toast({
       title: "Approve Mutation success",
       description: "Successfully move product",
@@ -45,13 +58,25 @@ export const declineManualProductMutation = async ({
 }: ProcessMutationRequest): Promise<
   ApiResponse<ProductMutationDetailResponse>
 > => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   try {
     const response = await axios.put<
       ApiResponse<ProductMutationDetailResponse>
-    >(`${productMutationUrl}/manual/decline/${productMutationId}`, {
-      userId,
-      notes,
-    });
+    >(
+      `${productMutationUrl}/manual/decline/${productMutationId}`,
+      {
+        userId,
+        notes,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
 
     return response.data;
   } catch (error) {

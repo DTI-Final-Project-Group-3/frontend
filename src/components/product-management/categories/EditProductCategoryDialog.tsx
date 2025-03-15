@@ -16,6 +16,7 @@ import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { useProductAdmin } from "@/store/productAdminStore";
 import EditIcon from "@/components/icon/EditIcon";
+import { toast } from "@/hooks/use-toast";
 
 const EditProductCategoryDialog: FC<ProductCategory> = ({ id, name }) => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -39,10 +40,18 @@ const EditProductCategoryDialog: FC<ProductCategory> = ({ id, name }) => {
       id,
       name: productCategoryName,
       accessToken: data?.accessToken,
-    }).finally(() => {
-      setDialogOpen(false);
-      setUpdateProductCategory(false);
-    });
+    })
+      .catch((e) => {
+        toast({
+          title: "Error Updating Product Category",
+          description: e.response.data.message,
+          duration: 5000,
+        });
+      })
+      .finally(() => {
+        setDialogOpen(false);
+        setUpdateProductCategory(false);
+      });
   };
 
   return (

@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getNearbyWarehouseByProduct } from "@/app/api/warehouse/getWarehouses";
 import { formatDistance } from "@/utils/formatter";
 import { useProductMutation } from "@/store/productMutationStore";
+import { useSession } from "next-auth/react";
 
 const AvailableWarehouseSelection: FC = () => {
   const {
@@ -19,6 +20,7 @@ const AvailableWarehouseSelection: FC = () => {
     setOriginWarehouseId,
     setOriginWarehouseQuantity,
   } = useProductMutation();
+  const { data } = useSession();
 
   const {
     data: warehouses,
@@ -32,7 +34,7 @@ const AvailableWarehouseSelection: FC = () => {
       }
       return Promise.reject("Invalid product or warehouse ID");
     },
-    enabled: !!destinationWarehouseId && !!productId,
+    enabled: !!destinationWarehouseId && !!productId && !!data?.accessToken,
   });
 
   const handleValueChange = (value: string) => {

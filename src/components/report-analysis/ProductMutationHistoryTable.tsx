@@ -125,14 +125,16 @@ export default function ProductMutationHistoryTable() {
               </TableBody>
             </Table>
 
-            <PaginationAdmin
-              desc="History"
-              page={page}
-              setPage={setPage}
-              totalPages={mutationHistory.totalPages}
-              totalElements={mutationHistory.totalElements}
-              currentPageSize={mutationHistory.content.length}
-            />
+            {mutationHistory && mutationHistory.content.length > 0 && (
+              <PaginationAdmin
+                desc="History"
+                page={page}
+                setPage={setPage}
+                totalPages={mutationHistory.totalPages}
+                totalElements={mutationHistory.totalElements}
+                currentPageSize={mutationHistory.content.length}
+              />
+            )}
           </>
         )
       )}
