@@ -194,7 +194,7 @@ const InventoryManagementPage = () => {
   );
 
   const renderMobileView = () => (
-    <div className="w-full space-y-4 md:hidden">
+    <div className="w-full space-y-4 pt-7 md:hidden">
       {inventories?.content.map((inventory) => (
         <Card key={inventory.id}>
           <CardContent className="p-4">
@@ -250,24 +250,28 @@ const InventoryManagementPage = () => {
       <div className="w-full">
         <InventoryManagementFilterSelection />
         <div className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-b-lg bg-white px-7 pt-2 md:px-10">
-          <div className="flex flex-grow items-center justify-center">
-            {!destinationWarehouseId ? (
-              <div className="flex flex-grow items-center justify-center">
-                renderWarehouseNotSelected()
-              </div>
-            ) : inventoriesLoading ? (
-              renderSkeletonLoading()
-            ) : inventoriesError ? (
-              renderError()
-            ) : inventories?.content?.length === 0 ? (
-              renderEmptyState()
-            ) : (
-              <>
-                {renderDesktopTable()}
-                {renderMobileView()}
-              </>
-            )}
-          </div>
+          {!destinationWarehouseId ? (
+            <div className="flex flex-grow items-center justify-center">
+              {renderWarehouseNotSelected()}
+            </div>
+          ) : inventoriesLoading ? (
+            <div className="flex flex-grow items-center justify-center">
+              {renderSkeletonLoading()}
+            </div>
+          ) : inventoriesError ? (
+            <div className="flex flex-grow items-center justify-center">
+              {renderError()}
+            </div>
+          ) : inventories?.content?.length === 0 ? (
+            <div className="flex flex-grow items-center justify-center">
+              {renderEmptyState()}
+            </div>
+          ) : (
+            <div className="flex flex-col">
+              {renderDesktopTable()}
+              {renderMobileView()}
+            </div>
+          )}
 
           {inventories && inventories?.content.length > 0 && (
             <div className="py-2">

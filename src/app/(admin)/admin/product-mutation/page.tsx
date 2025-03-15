@@ -147,7 +147,7 @@ const ProductMutation: FC = () => {
   });
 
   const tabOptions = [
-    { id: 1, value: "journal", label: "Manual Adjustment" },
+    { id: 1, value: "journal", label: "Adjustment" },
     { id: 2, value: "inbound", label: "Inbound" },
     { id: 3, value: "outbound", label: "Outbound" },
   ];
@@ -221,16 +221,9 @@ const ProductMutation: FC = () => {
     isInbound: boolean,
   ) => {
     return (
-      <section className="flex min-h-[calc(100vh-155px)] flex-col justify-between rounded-lg bg-white px-4 pt-2 md:px-10">
+      <section className="flex min-h-[calc(100vh-155px)] w-full flex-col justify-between rounded-lg bg-white px-4 pt-2 md:px-7">
         <div
-          className={
-            (cn(
-              !data || data.content.length === 0 || isLoading || isError
-                ? "items-center justify-center"
-                : "items-start justify-center",
-            ),
-            "flex w-full flex-grow")
-          }
+          className={`flex w-full flex-grow ${!data || data.content.length === 0 || isLoading || isError ? "items-center justify-center" : "items-start justify-center"}`}
         >
           {!destinationWarehouseId
             ? renderWarehouseNotSelected()
@@ -282,7 +275,7 @@ const ProductMutation: FC = () => {
                 key={tab.id}
                 value={tab.value}
                 className={cn(
-                  "relative h-full rounded-none font-medium",
+                  "relative line-clamp-1 h-full rounded-none font-medium",
                   "data-[state=active]:border-b-2 data-[state=active]:border-warehub-green data-[state=active]:text-emerald-700",
                   "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
                 )}

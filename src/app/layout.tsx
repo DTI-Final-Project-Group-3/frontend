@@ -36,7 +36,7 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <TanstackQueryProvider>
           <SessionProviderWrapper>
-            <main className="w-screen">{children}</main>
+            <main>{children}</main>
           </SessionProviderWrapper>
         </TanstackQueryProvider>
       </body>

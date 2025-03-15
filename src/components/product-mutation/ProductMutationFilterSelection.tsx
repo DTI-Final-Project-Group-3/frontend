@@ -27,9 +27,9 @@ const ProductMutationFilterSelection: FC<
   } = useProductMutationFilter();
 
   return (
-    <div className="space-y-3 rounded-b-lg bg-white px-10 py-7">
+    <div className="space-y-3 rounded-b-lg bg-white px-7 py-7">
       <div className="grid w-full grid-cols-1 gap-3 rounded-xl bg-white md:grid-cols-5">
-        <div className="space-y-2">
+        <div className="md:space-y-2">
           <Label className="text-xs text-slate-500">Date Range</Label>
           <DateRangeSelection
             dateRange={dateRange}
@@ -37,7 +37,7 @@ const ProductMutationFilterSelection: FC<
             preSelect={false}
           />
         </div>
-        <div className="space-y-2">
+        <div className="md:space-y-2">
           <Label className="text-xs text-slate-500">Product</Label>
           <ProductSelection
             captionNoSelection="All Products"
@@ -47,7 +47,7 @@ const ProductMutationFilterSelection: FC<
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="md:space-y-2">
           <Label className="text-xs text-slate-500">Product Category</Label>
           <ProductCategorySelection
             productCategoryId={productCategoryId}
@@ -55,7 +55,7 @@ const ProductMutationFilterSelection: FC<
           />
         </div>
         {selectedTab !== 1 && (
-          <div className="space-y-2">
+          <div className="md:space-y-2">
             <Label className="text-xs text-slate-500">
               Product Mutation Status
             </Label>
