@@ -33,7 +33,9 @@ const CancelOrderModal: FC<CancelOrderModalProps> = ({
     mutationFn: () => cancelOrder(orderId),
     onSuccess: () => {
       setIsOpen(false);
-      // window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     },
   });
 
