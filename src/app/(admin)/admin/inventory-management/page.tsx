@@ -10,7 +10,7 @@ import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
 import { useProductMutation } from "@/store/productMutationStore";
 import { formatPrice } from "@/utils/formatter";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React from "react";
 
 import {
   Table,

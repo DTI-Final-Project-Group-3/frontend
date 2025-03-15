@@ -13,7 +13,6 @@ import { PaginationAdmin } from "@/components/pagination/PaginationAdmin";
 import React, { FC, useState } from "react";
 import { ProductMutationDetailResponse } from "@/types/models/productMutation";
 import { PaginationResponse } from "@/types/api/pagination";
-import ImageComponent from "@/components/common/ImageComponent";
 
 type ProductMutationType = "adjustment" | "inbound" | "outbound";
 
