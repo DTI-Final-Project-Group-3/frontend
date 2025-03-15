@@ -172,7 +172,7 @@ const MutationDialog: FC<ProductMutationProps> = ({
           />
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
         <DialogHeader className="mb-5">
           <DialogTitle>Inventory Quantity</DialogTitle>
           <DialogDescription>

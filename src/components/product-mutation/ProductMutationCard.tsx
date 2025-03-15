@@ -33,10 +33,8 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
 }) => {
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-200 bg-white px-3 py-4 transition-all duration-300 hover:border-blue-200 hover:shadow-lg sm:px-4 sm:py-6">
-      {/* Card Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-          {/* Origin/Destination Warehouse */}
           {(productMutation.productMutationTypeId ===
             ProductMutationConstant.TYPE_INBOUND_MANUAL_MUTATION ||
             productMutation.productMutationTypeId ===
@@ -64,7 +62,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
             </div>
           )}
 
-          {/* Mutation/Invoice Code */}
           {(productMutation.mutationCode || productMutation.invoiceCode) && (
             <div className="flex items-center gap-1 text-sm sm:text-base">
               <Edit3 size={14} className="flex-shrink-0 text-slate-800" />
@@ -75,16 +72,14 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           )}
         </div>
 
-        {/* Status Component */}
-        <StatusComponent name={productMutation?.productMutationStatusName} />
+        <div>
+          <StatusComponent name={productMutation?.productMutationStatusName} />
+        </div>
       </div>
 
-      {/* Card Body */}
       <div className="flex w-full flex-col gap-4 sm:flex-row">
-        {/* Product Information */}
         <div className="w-full sm:w-2/3 sm:border-r sm:border-slate-200 sm:pr-4">
           <div className="flex items-start gap-3">
-            {/* Product Image */}
             <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-50 p-1 shadow-sm sm:h-20 sm:w-20 md:h-24 md:w-24">
               <ImageComponent
                 src={productMutation.productThumbnail}
@@ -95,7 +90,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               />
             </div>
 
-            {/* Product Details */}
             <div className="flex flex-col gap-1 sm:gap-2">
               <strong className="flex items-center gap-1 text-sm text-gray-600 sm:text-base">
                 <Package size={14} className="flex-shrink-0 text-slate-600" />
@@ -104,7 +98,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
                 </span>
               </strong>
 
-              {/* Quantity */}
               <div className="flex w-fit items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs sm:text-sm">
                 <Tag size={12} className="flex-shrink-0" />
                 <span className="font-medium text-slate-700">
@@ -113,7 +106,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
                 <span className="text-slate-600">units</span>
               </div>
 
-              {/* Notes */}
               {productMutation?.requesterNotes && (
                 <p className="mt-1 line-clamp-2 flex items-start gap-1 rounded-md border-l-2 border-amber-300 bg-amber-50 p-2 text-xs text-slate-600 sm:text-sm">
                   <MessageSquare
@@ -127,9 +119,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           </div>
         </div>
 
-        {/* Mutation Details */}
-        <div className="flex flex-col gap-2 sm:w-1/3">
-          {/* Mutation Type */}
+        <div className="flex flex-col gap-2">
           <span className="flex items-center gap-1 whitespace-nowrap rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
             {productMutation?.productMutationTypeId ===
               ProductMutationConstant.TYPE_UPDATE_INVENTORY && (
@@ -161,7 +151,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
             </span>
           </span>
 
-          {/* Timestamps */}
           <div className="mt-1 flex items-start gap-1 text-xs text-slate-500">
             <Clock size={12} className="mt-0.5 flex-shrink-0" />
             <div className="flex flex-col">
@@ -178,9 +167,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
         </div>
       </div>
 
-      {/* Card Footer */}
       <div className="mt-2 flex w-full flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:justify-between">
-        {/* User Information */}
         <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
           <span className="flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1 text-xs text-slate-500">
             <User size={10} className="flex-shrink-0 text-slate-400" />
@@ -201,7 +188,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           )}
         </div>
 
-        {/* Action Buttons */}
         {!isInbound &&
           productMutation.productMutationTypeId ===
             ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION &&

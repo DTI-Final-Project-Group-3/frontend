@@ -52,7 +52,7 @@ export const DeleteInventoryDialog: FC<{ warehouseInventoryId: number }> = ({
       <AlertDialogTrigger asChild>
         <DeleteIcon />
       </AlertDialogTrigger>
-      <AlertDialogContent className="gap-7">
+      <AlertDialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>

@@ -160,24 +160,27 @@ const ProductMutation: FC = () => {
   );
 
   const renderSkeletonLoading = () => (
-    <div className="flex w-full flex-col items-center justify-center gap-8">
+    <div className="flex w-full flex-col items-center justify-center gap-4 sm:gap-8">
       {Array(ADMIN_PRODUCT_MUTATION_REPORT_PER_PAGE)
         .fill(0)
         .map((_, index) => (
-          <div key={index} className="flex w-[80%] flex-col space-y-3">
-            <div className="flex items-center space-x-4">
-              <Skeleton className="h-16 w-16 rounded-md" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-3 w-[150px]" />
-                <Skeleton className="h-6 w-[100px] rounded-full" />
+          <div
+            key={index}
+            className="flex w-[95%] flex-col space-y-2 sm:w-[90%] sm:space-y-3 md:w-[80%]"
+          >
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              <Skeleton className="h-12 w-12 rounded-md sm:h-16 sm:w-16" />
+              <div className="space-y-1 sm:space-y-2">
+                <Skeleton className="h-3 w-[180px] sm:h-4 sm:w-[250px]" />
+                <Skeleton className="h-2 w-[120px] sm:h-3 sm:w-[150px]" />
+                <Skeleton className="h-5 w-[80px] rounded-full sm:h-6 sm:w-[100px]" />
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <Skeleton className="h-4 w-[80px]" />
-              <div className="flex space-x-2">
-                <Skeleton className="h-9 w-20 rounded-md" />
-                <Skeleton className="h-9 w-20 rounded-md" />
+              <Skeleton className="h-3 w-[60px] sm:h-4 sm:w-[80px]" />
+              <div className="flex space-x-1 sm:space-x-2">
+                <Skeleton className="h-7 w-16 rounded-md sm:h-9 sm:w-20" />
+                <Skeleton className="h-7 w-16 rounded-md sm:h-9 sm:w-20" />
               </div>
             </div>
           </div>

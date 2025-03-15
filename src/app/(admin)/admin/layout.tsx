@@ -3,7 +3,6 @@ import { Toaster } from "@/components/ui/toaster";
 import Sidebar from "@/components/admin/sidebar/Sidebar";
 import "../../globals.css";
 import { ReactNode } from "react";
-import Header from "@/components/admin/header/Header";
 
 export const metadata: Metadata = {
   title: "Warehub - Admin",
@@ -25,8 +24,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
   return (
     <main className="flex min-h-screen">
       <Sidebar />
-      <div className="flex w-full flex-col gap-6 bg-slate-100 p-6">
-        {/*<Header />*/}
+      <div className="flex w-full flex-col gap-6 bg-slate-100 p-6 pt-24 md:pt-5">
         {children}
       </div>
       <Toaster />

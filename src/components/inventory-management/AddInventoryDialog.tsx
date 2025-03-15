@@ -80,7 +80,7 @@ const AddInventoryDialog: FC = () => {
           Add Inventory
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
         <DialogHeader className="mb-5">
           <DialogTitle>Create New Inventory</DialogTitle>
           <DialogDescription>
