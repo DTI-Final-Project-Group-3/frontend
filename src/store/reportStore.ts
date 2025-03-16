@@ -28,7 +28,7 @@ export const useReport = create<ReportStoreProps>((set) => ({
     to: new Date(),
   },
   productMutationTypeId: undefined,
-  productMutationStatusId: undefined,
+  productMutationStatusId: ProductMutationConstant.STATUS_COMPLETED,
 
   customerOrderStatusId: 5,
 
