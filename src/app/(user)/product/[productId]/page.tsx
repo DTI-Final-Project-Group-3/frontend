@@ -216,7 +216,7 @@ const InventoryPage: FC = () => {
                     e.preventDefault();
                     handleAddToCart(productDetail);
                   }}
-                  disabled={cartQuantity >= productDetail.totalStock}
+                  disabled={cartQuantity > productDetail.totalStock}
                 >
                   Add to Cart
                 </Button>
