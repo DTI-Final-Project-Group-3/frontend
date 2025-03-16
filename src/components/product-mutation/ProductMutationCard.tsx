@@ -40,7 +40,9 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
             productMutation.productMutationTypeId ===
               ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION ||
             productMutation.productMutationTypeId ===
-              ProductMutationConstant.TYPE_INBOUND_AUTO_MUTATION) && (
+              ProductMutationConstant.TYPE_INBOUND_AUTO_MUTATION ||
+            productMutation.productMutationTypeId ===
+              ProductMutationConstant.TYPE_OUTBOUND_AUTO_MUTATION) && (
             <div className="flex items-center gap-1 text-sm sm:text-base">
               {isInbound
                 ? productMutation?.originWarehouseName && (
@@ -160,29 +162,26 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-          <div className={"md:col-span-2"}>
-            <ProductMutationDetailDialog
-              id={productMutation.productMutationId}
-            />
+        <div className="grid grid-cols-2">
+          <ProductMutationDetailDialog id={productMutation.productMutationId} />
+          <div>
+            {!isInbound &&
+              productMutation.productMutationTypeId ===
+                ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION &&
+              productMutation.productMutationStatusId ===
+                ProductMutationConstant.STATUS_PENDING && (
+                <div className="order-first mt-2 flex justify-end gap-2 sm:mt-0 md:order-first">
+                  <ProductMutationReviewDialog
+                    isApprove={false}
+                    productMutationId={productMutation.productMutationId}
+                  />
+                  <ProductMutationReviewDialog
+                    isApprove={true}
+                    productMutationId={productMutation.productMutationId}
+                  />
+                </div>
+              )}
           </div>
-
-          {!isInbound &&
-            productMutation.productMutationTypeId ===
-              ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION &&
-            productMutation.productMutationStatusId ===
-              ProductMutationConstant.STATUS_PENDING && (
-              <div className="order-first mt-2 flex justify-end gap-2 sm:mt-0 md:order-first">
-                <ProductMutationReviewDialog
-                  isApprove={false}
-                  productMutationId={productMutation.productMutationId}
-                />
-                <ProductMutationReviewDialog
-                  isApprove={true}
-                  productMutationId={productMutation.productMutationId}
-                />
-              </div>
-            )}
         </div>
       </div>
     </div>
