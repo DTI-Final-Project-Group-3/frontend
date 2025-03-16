@@ -22,7 +22,7 @@ export interface ProductSummary extends Product {
   height?: number;
   width?: number;
   length?: number;
-  nearestWarehouseName: string;
+  nearestWarehouseName?: string;
 }
 
 // use to display in product detail page

@@ -201,7 +201,7 @@ const ProductFormComponent: FC<ProductFormProps> = ({ props }) => {
               <h2 className="mb-6 text-xl font-semibold">Product Images</h2>
               <div className="space-y-4">
                 <label className="block font-medium text-gray-700">
-                  Upload up to 5 images
+                  Upload up to 5 images with maximum size of 1 MB each
                 </label>
                 <ProductImageUpload
                   existingImage={props?.images}

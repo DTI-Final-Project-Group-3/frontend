@@ -12,7 +12,7 @@ interface ProductCardProps {
   price: number;
   thumbnail: string;
   totalStock: number;
-  nearestWarehouseName: string;
+  nearestWarehouseName?: string;
   onAddToCart?: () => void;
 }
 
@@ -69,7 +69,9 @@ const ProductCard: FC<ProductCardProps> = ({
           ) : (
             <p className="text-xl font-bold text-red-500">Out of Stock</p>
           )}
-          <div className="text-sm text-gray-600">{nearestWarehouseName}</div>
+          {nearestWarehouseName && (
+            <div className="text-sm text-gray-600">{nearestWarehouseName}</div>
+          )}
         </div>
       </Link>
     </div>

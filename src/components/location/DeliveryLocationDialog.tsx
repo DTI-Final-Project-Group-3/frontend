@@ -132,8 +132,8 @@ const DeliveryLocationDialog: FC = () => {
           <ChevronDown size={15} className="text-gray-400" />
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader className="mb-5">
+      <DialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
+        <DialogHeader>
           <DialogTitle>Select Delivery Address</DialogTitle>
           <DialogDescription>
             Product showcase will be based on this selection
