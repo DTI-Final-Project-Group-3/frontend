@@ -171,10 +171,18 @@ export const getProductMutationReportDailySummary = async ({
 export const getDetailProductMutationById = async (
   id: number,
 ): Promise<ProductMutationDetailsResponse> => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
   try {
     const response = await axios.get<
       ApiResponse<ProductMutationDetailsResponse>
-    >(`${productMutationUrl}/${id}`);
+    >(`${productMutationUrl}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return response.data.data;
   } catch {
     toast({
