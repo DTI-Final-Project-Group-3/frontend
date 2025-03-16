@@ -154,11 +154,13 @@ export default function Home() {
               </div>
 
               {products && (
-                <PaginationComponent
-                  page={productPage}
-                  totalPages={products?.totalPages}
-                  setPage={setProductPage}
-                />
+                <div className={"pt-5"}>
+                  <PaginationComponent
+                    page={productPage}
+                    totalPages={products?.totalPages}
+                    setPage={setProductPage}
+                  />
+                </div>
               )}
             </div>
           </div>
