@@ -51,7 +51,7 @@ const ProductMutationDetailDialog: FC<ProductMutationDetailDialogProps> = ({
           <DialogDescription>
             {data?.productMutationCode && (
               <span>
-                Reference Code: {data?.productMutationCode || "Loading..."}
+                Mutation Code: {data?.productMutationCode || "Loading..."}
               </span>
             )}
             {data?.invoiceCode && (
