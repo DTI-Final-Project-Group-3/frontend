@@ -224,11 +224,11 @@ const Sidebar: FC = () => {
 
       {/* Mobile menu - completely separate from desktop sidebar */}
       <div
-        className={`fixed left-0 top-0 z-[95] flex h-screen w-64 flex-col bg-white px-5 pb-5 pt-20 shadow-xl transition-transform duration-300 md:hidden ${
+        className={`fixed left-0 top-0 z-[95] flex h-screen w-64 flex-col bg-white px-5 pb-[200px] pt-20 shadow-xl transition-transform duration-300 md:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex w-full flex-col gap-5">
+        <div className="flex w-full flex-col gap-3">
           {menuItems.map((link) => {
             const isSelected =
               (link.route !== "/admin" &&
@@ -244,7 +244,7 @@ const Sidebar: FC = () => {
               >
                 <div
                   className={cn(
-                    "flex w-full flex-row items-center gap-4 rounded-lg px-5 py-3",
+                    "flex w-full flex-row items-center gap-2 rounded-lg px-5 py-3",
                     isSelected && "bg-[#62AA62] shadow-sm",
                   )}
                 >

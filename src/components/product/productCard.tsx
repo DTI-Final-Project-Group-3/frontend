@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { Button } from "../ui/button";
 import ImageComponent from "@/components/common/ImageComponent";
+import { Card, CardContent } from "../ui/card";
 
 interface ProductCardProps {
   id: string | number;
@@ -27,7 +28,7 @@ const ProductCard: FC<ProductCardProps> = ({
 }) => {
   const session = useSession();
 
-  return (
+  const renderDesktop = () => (
     <div className="flex flex-col gap-5 rounded-lg bg-white p-4 transition-shadow duration-300 hover:shadow-lg">
       <div className="group relative h-[300px] w-full overflow-hidden rounded-md">
         <ImageComponent
@@ -74,6 +75,68 @@ const ProductCard: FC<ProductCardProps> = ({
           )}
         </div>
       </Link>
+    </div>
+  );
+
+  const renderMobile = () => (
+    <Card>
+      <CardContent className="relative p-4">
+        <div className="flex items-center gap-3">
+          <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+            <ImageComponent
+              src={thumbnail}
+              className="object-cover"
+              alt={`${name} thumbnail`}
+              fill={true}
+              sizes="50px, 50px"
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <Link href={`/product/${id}`}>
+              <h3 className="truncate font-medium text-gray-800">{name}</h3>
+            </Link>
+          </div>
+        </div>
+
+        {totalStock <= 5 && totalStock > 0 && (
+          <div className="absolute right-0 top-0 rounded-l-lg bg-yellow-500 px-1 py-1 text-xs text-white">
+            Only {totalStock} left!
+          </div>
+        )}
+
+        <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-2">
+          {totalStock !== 0 ? (
+            <span className="font-medium text-gray-800">
+              {formatPrice(String(price))}
+            </span>
+          ) : (
+            <span className="font-medium text-red-500">Out of Stock</span>
+          )}
+          {totalStock > 0 && (
+            <div className="flex space-x-2">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (session.status !== "authenticated") {
+                    redirect("/login");
+                  }
+                  onAddToCart?.();
+                }}
+                className="h-8 w-full rounded-md text-sm text-white"
+              >
+                Add to Cart
+              </Button>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div>
+      <div className={"hidden md:block"}>{renderDesktop()}</div>
+      <div className={"block md:hidden"}>{renderMobile()}</div>
     </div>
   );
 };
