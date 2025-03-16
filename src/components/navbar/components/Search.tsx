@@ -1,10 +1,10 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { SearchIcon } from "lucide-react";
-import React, { FC, useEffect, useState } from "react";
-import { useProductUser } from "@/store/productUserStore";
 import { useDebounce } from "@/hooks/useDebounce";
+import { cn } from "@/lib/utils";
+import { useProductUser } from "@/store/productUserStore";
+import { SearchIcon } from "lucide-react";
+import { FC, useEffect, useState } from "react";
 
 const Search: FC = () => {
   const [isFocused, setIsFocused] = useState(false);
@@ -21,7 +21,7 @@ const Search: FC = () => {
     <label
       htmlFor="search-input"
       className={cn(
-        "mr-3 hidden w-full flex-1 cursor-pointer rounded-full border-[1px] px-2 py-2 shadow-sm transition hover:shadow-md md:mr-3 md:block md:max-w-lg",
+        "mr-3 w-full flex-1 cursor-pointer rounded-full border-[1px] px-2 py-2 shadow-sm transition hover:shadow-md md:mr-3 md:block md:max-w-lg",
         isFocused ? "border-neutral-300 shadow-md" : "",
       )}
     >
@@ -46,7 +46,7 @@ const Search: FC = () => {
         >
           <div className="flex items-center gap-2">
             <SearchIcon size={20} />
-            {isFocused && <span className="text-sm font-semibold">Search</span>}
+            {isFocused && <span className="text-sm font-semibold hidden md:inline">Search</span>}
           </div>
         </div>
       </div>
