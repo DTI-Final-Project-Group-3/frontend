@@ -12,7 +12,7 @@ import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import { useSession } from "next-auth/react";
 import { getNearbyProduct } from "../api/product/getProducts";
 import { toast } from "@/hooks/use-toast";
-import ProductCard from "@/components/product/ProductCard";
+import ProductCard from "@/components/product/productCard";
 import DeliveryLocationDialog from "@/components/location/DeliveryLocationDialog";
 import { useProductUser } from "@/store/productUserStore";
 import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
