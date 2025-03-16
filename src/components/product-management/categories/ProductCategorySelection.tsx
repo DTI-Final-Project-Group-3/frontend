@@ -15,6 +15,7 @@ interface ProductCategorySelectionProps {
   productCategoryId: number | undefined;
   setProductCategoryId: (id: number | undefined) => void;
   setPage?: (page: number) => void;
+  showIcon?: boolean;
 }
 
 const ProductCategorySelection: FC<ProductCategorySelectionProps> = ({
@@ -22,6 +23,7 @@ const ProductCategorySelection: FC<ProductCategorySelectionProps> = ({
   productCategoryId,
   setProductCategoryId,
   setPage,
+  showIcon = true,
 }) => {
   const {
     data: productCategories,
@@ -47,9 +49,9 @@ const ProductCategorySelection: FC<ProductCategorySelectionProps> = ({
           }
         }}
       >
-        <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-500 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
+        <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white text-gray-600 shadow-sm transition-all hover:border-green-500 focus:ring-2 focus:ring-green-500">
           <div className="flex gap-2">
-            <Grid2X2 className="h-5 w-5 text-gray-400" />
+            {showIcon && <Grid2X2 className="h-5 w-5 text-gray-400" />}
             <SelectValue placeholder="Select Warehouse" />
           </div>
         </SelectTrigger>

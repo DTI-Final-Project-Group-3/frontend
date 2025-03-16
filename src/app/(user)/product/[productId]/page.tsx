@@ -229,7 +229,7 @@ const InventoryPage: FC = () => {
                 <p>{productDetail.category.name}</p>
                 {productDetail.nearestWarehouse && (
                   <>
-                    <p className="text-gray-600">Send from</p>
+                    <p className="text-gray-600">Nearest available warehouse</p>
                     <p>{productDetail.nearestWarehouse.name}</p>
                   </>
                 )}

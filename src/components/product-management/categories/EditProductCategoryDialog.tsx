@@ -59,7 +59,7 @@ const EditProductCategoryDialog: FC<ProductCategory> = ({ id, name }) => {
       <DialogTrigger asChild>
         <EditIcon onClick={handleDialog} />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
         <DialogHeader className="mb-5">
           <DialogTitle>Product Category</DialogTitle>
           <DialogDescription>

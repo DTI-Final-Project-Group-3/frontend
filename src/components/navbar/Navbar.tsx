@@ -11,15 +11,15 @@ const Navbar: FC = () => {
   const { data: session } = useSession();
 
   return (
-    <header className="h-[70px] w-full sticky top-0 bg-white border-b-[1px] border-gray-100 z-[20]">
-      <nav className="flex justify-between items-center h-full md:max-w-4xl lg:max-w-[1388px] mx-auto w-full px-6 ">
+    <header className="sticky top-0 z-[20] h-[70px] w-full border-b-[1px] border-gray-100 bg-white">
+      <nav className="mx-auto flex h-full w-full items-center justify-between px-6 md:max-w-4xl lg:max-w-[1388px]">
         <Logo />
         <Search />
         {!session ? (
-          <div className="w-full flex-1 items-center flex justify-end">
+          <div className="flex w-full flex-1 items-center justify-end">
             <Link
               href={"/login"}
-              className="font-semibold bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-all"
+              className="rounded-lg bg-warehub-green px-6 py-2 font-semibold text-white transition-all hover:bg-warehub-green-light"
             >
               Sign in
             </Link>

@@ -1,10 +1,11 @@
-import { FC, useState } from "react";
-import Image from "next/image";
+import { FC } from "react";
 import Link from "next/link";
 import { formatPrice } from "@/utils/formatter";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { Button } from "../ui/button";
+import ImageComponent from "@/components/common/ImageComponent";
+import { Card, CardContent } from "../ui/card";
 
 interface ProductCardProps {
   id: string | number;
@@ -12,6 +13,7 @@ interface ProductCardProps {
   price: number;
   thumbnail: string;
   totalStock: number;
+  nearestWarehouseName?: string;
   onAddToCart?: () => void;
 }
 
@@ -21,32 +23,22 @@ const ProductCard: FC<ProductCardProps> = ({
   price,
   thumbnail,
   totalStock,
+  nearestWarehouseName,
   onAddToCart,
 }) => {
-  const [imgSrc, setImgSrc] = useState<string>(
-    thumbnail && thumbnail.trim() !== ""
-      ? thumbnail
-      : "/images/no-image-icon.jpg",
-  );
   const session = useSession();
 
-  const handleImageError = () => {
-    setImgSrc("/images/no-image-icon.jpg");
-  };
-
-  return (
+  const renderDesktop = () => (
     <div className="flex flex-col gap-5 rounded-lg bg-white p-4 transition-shadow duration-300 hover:shadow-lg">
       <div className="group relative h-[300px] w-full overflow-hidden rounded-md">
-        <Image
-          src={imgSrc}
+        <ImageComponent
+          src={thumbnail}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
           alt={name}
-          onError={handleImageError}
           className="object-contain transition-all"
         />
 
-        {/* Stock indicator */}
         {totalStock <= 5 && totalStock > 0 && (
           <div className="absolute right-0 top-0 m-2 rounded-full bg-yellow-500 px-2 py-1 text-xs font-bold text-white">
             Only {totalStock} left!
@@ -54,7 +46,7 @@ const ProductCard: FC<ProductCardProps> = ({
         )}
 
         {totalStock > 0 && (
-          <div className="absolute inset-0 flex items-end justify-center pb-4 transition-opacity duration-300 active:opacity-100 md:opacity-0 md:active:opacity-0 md:group-hover:opacity-100">
+          <div className="absolute inset-0 flex items-end justify-center pb-8 transition-opacity duration-300 active:opacity-100 md:opacity-0 md:active:opacity-0 md:group-hover:opacity-100">
             <Button
               onClick={(e) => {
                 e.preventDefault();
@@ -78,9 +70,73 @@ const ProductCard: FC<ProductCardProps> = ({
           ) : (
             <p className="text-xl font-bold text-red-500">Out of Stock</p>
           )}
-          <div className="mt-2 flex flex-col gap-1 text-gray-600"></div>
+          {nearestWarehouseName && (
+            <div className="text-sm text-gray-600">{nearestWarehouseName}</div>
+          )}
         </div>
       </Link>
+    </div>
+  );
+
+  const renderMobile = () => (
+    <Card>
+      <CardContent className="relative p-4">
+        <div className="flex items-center gap-3">
+          <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+            <ImageComponent
+              src={thumbnail}
+              className="object-cover"
+              alt={`${name} thumbnail`}
+              fill={true}
+              sizes="50px, 50px"
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <Link href={`/product/${id}`}>
+              <h3 className="truncate font-medium text-gray-800">{name}</h3>
+            </Link>
+          </div>
+        </div>
+
+        {totalStock <= 5 && totalStock > 0 && (
+          <div className="absolute right-0 top-0 rounded-l-lg bg-yellow-500 px-1 py-1 text-xs text-white">
+            Only {totalStock} left!
+          </div>
+        )}
+
+        <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-2">
+          {totalStock !== 0 ? (
+            <span className="font-medium text-gray-800">
+              {formatPrice(String(price))}
+            </span>
+          ) : (
+            <span className="font-medium text-red-500">Out of Stock</span>
+          )}
+          {totalStock > 0 && (
+            <div className="flex space-x-2">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (session.status !== "authenticated") {
+                    redirect("/login");
+                  }
+                  onAddToCart?.();
+                }}
+                className="h-8 w-full rounded-md text-sm text-white"
+              >
+                Add to Cart
+              </Button>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div>
+      <div className={"hidden md:block"}>{renderDesktop()}</div>
+      <div className={"block md:hidden"}>{renderMobile()}</div>
     </div>
   );
 };

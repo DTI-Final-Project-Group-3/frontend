@@ -113,3 +113,28 @@ export interface ProductMutationReportResponse {
   productMutationType: ProductMutationType;
   productMutationStatus: ProductMutationStatus;
 }
+
+export interface ProductMutationDetailsResponse {
+  productMutationId: number;
+  productId: number;
+  productName: string;
+  productCategoryName: string;
+  quantity: number;
+  requesterId: number;
+  requesterName: string;
+  requesterNotes: string;
+  reviewerId: number | null;
+  reviewerName: string | null;
+  reviewerNotes: string | null;
+  originWarehouseId: number;
+  originWarehouseName: string;
+  destinationWarehouseId: number;
+  destinationWarehouseName: string;
+  productMutationTypeId: number;
+  productMutationTypeName: string;
+  productMutationStatusId: number;
+  productMutationStatusName: string;
+  reviewedAt: string | null;
+  invoiceCode: string;
+  productMutationCode: string;
+}
