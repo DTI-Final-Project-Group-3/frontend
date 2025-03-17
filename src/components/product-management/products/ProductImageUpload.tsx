@@ -26,7 +26,7 @@ const ProductImageUpload: FC<TestProductImageUploadProps> = ({
       });
       setSelectedImages(newMap);
     }
-  }, []);
+  }, [existingImage]);
 
   const handleFileChange = (
     position: number,

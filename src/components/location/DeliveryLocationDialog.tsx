@@ -125,15 +125,15 @@ const DeliveryLocationDialog: FC = () => {
   return (
     <Dialog open={dialogOpen} onOpenChange={(val) => handleOpenChange(val)}>
       <DialogTrigger asChild>
-        <button className="flex w-full justify-between rounded-lg border-2 border-gray-200 p-2">
-          <span>
+        <button className="flex w-full items-center justify-between rounded-lg border-2 border-gray-200 p-2">
+          <span className="text-sm text-gray-600">
             {userAddress ? userAddress?.name : "Select Delivery Address"}
           </span>
-          <ChevronDown className="text-gray-600" />
+          <ChevronDown size={15} className="text-gray-400" />
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader className="mb-5">
+      <DialogContent className="w-full max-w-[95vw] rounded-lg p-4 sm:max-w-[500px] sm:p-6">
+        <DialogHeader className={"pt-5 md:pt-0"}>
           <DialogTitle>Select Delivery Address</DialogTitle>
           <DialogDescription>
             Product showcase will be based on this selection

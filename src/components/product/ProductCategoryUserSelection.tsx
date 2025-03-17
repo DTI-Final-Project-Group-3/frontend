@@ -4,7 +4,8 @@ import { getProductCategory } from "@/app/api/product/getProducts";
 import { useProductUser } from "@/store/productUserStore";
 
 const ProductCategoryUserSelection: FC = () => {
-  const { productCategoryId, setProductCategoryId } = useProductUser();
+  const { productCategoryId, setProductCategoryId, setProductPage } =
+    useProductUser();
 
   const {
     data: categoriesResponse,
@@ -19,8 +20,6 @@ const ProductCategoryUserSelection: FC = () => {
   return (
     <div>
       <div className="h-[320px] overflow-y-auto">
-        <h1 className="mb-4 text-xl font-bold">Categories</h1>
-
         {isLoading ? (
           <div className="flex animate-pulse flex-col gap-5 p-3">
             {Array.from({ length: 10 }).map((_, index) => (
@@ -39,7 +38,10 @@ const ProductCategoryUserSelection: FC = () => {
                   ? "font-medium text-black"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
-              onClick={() => setProductCategoryId(undefined)}
+              onClick={() => {
+                setProductCategoryId(undefined);
+                setProductPage(0);
+              }}
             >
               All Categories
             </button>
@@ -51,7 +53,10 @@ const ProductCategoryUserSelection: FC = () => {
                     ? "font-medium text-black"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
-                onClick={() => setProductCategoryId(category.id)}
+                onClick={() => {
+                  setProductCategoryId(category.id);
+                  setProductPage(0);
+                }}
               >
                 {category.name}
               </button>

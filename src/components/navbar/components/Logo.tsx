@@ -7,7 +7,7 @@ const Logo: FC = () => {
     <Link
       href="/"
       rel="preload"
-      className="flex items-start justify-start flex-1 w-full"
+      className="hidden sm:flex items-start justify-start flex-1 w-full"
     >
       <Image
         alt="logo"

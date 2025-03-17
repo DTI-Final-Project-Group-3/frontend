@@ -11,7 +11,6 @@ import {
   User,
   Package,
   Clock,
-  MessageSquare,
   Tag,
   RefreshCcw,
   Trash2,
@@ -21,6 +20,7 @@ import {
   Edit3,
 } from "lucide-react";
 import { ProductMutationConstant } from "@/constant/productMutationConstant";
+import ProductMutationDetailDialog from "@/components/product-mutation/ProductMutationDetailDialog";
 
 interface ProductMutationCardProps {
   productMutation: ProductMutationDetailResponse;
@@ -32,7 +32,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
   isInbound,
 }) => {
   return (
-    <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-200 bg-white px-3 py-4 transition-all duration-300 hover:border-blue-200 hover:shadow-lg sm:px-4 sm:py-6">
+    <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-200 bg-white px-3 py-4 transition-all duration-300 hover:border-blue-200 hover:shadow-lg sm:py-6 md:px-10">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
           {(productMutation.productMutationTypeId ===
@@ -40,7 +40,9 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
             productMutation.productMutationTypeId ===
               ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION ||
             productMutation.productMutationTypeId ===
-              ProductMutationConstant.TYPE_INBOUND_AUTO_MUTATION) && (
+              ProductMutationConstant.TYPE_INBOUND_AUTO_MUTATION ||
+            productMutation.productMutationTypeId ===
+              ProductMutationConstant.TYPE_OUTBOUND_AUTO_MUTATION) && (
             <div className="flex items-center gap-1 text-sm sm:text-base">
               {isInbound
                 ? productMutation?.originWarehouseName && (
@@ -79,7 +81,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
 
       <div className="flex w-full flex-col gap-4 sm:flex-row">
         <div className="w-full sm:w-2/3 sm:border-r sm:border-slate-200 sm:pr-4">
-          <div className="flex items-start gap-3">
+          <div className="flex items-center gap-3">
             <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-50 p-1 shadow-sm sm:h-20 sm:w-20 md:h-24 md:w-24">
               <ImageComponent
                 src={productMutation.productThumbnail}
@@ -90,7 +92,7 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               />
             </div>
 
-            <div className="flex flex-col gap-1 sm:gap-2">
+            <div className="flex flex-col justify-center gap-1 sm:gap-2">
               <strong className="flex items-center gap-1 text-sm text-gray-600 sm:text-base">
                 <Package size={14} className="flex-shrink-0 text-slate-600" />
                 <span className="line-clamp-2">
@@ -105,16 +107,6 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
                 </span>
                 <span className="text-slate-600">units</span>
               </div>
-
-              {productMutation?.requesterNotes && (
-                <p className="mt-1 line-clamp-2 flex items-start gap-1 rounded-md border-l-2 border-amber-300 bg-amber-50 p-2 text-xs text-slate-600 sm:text-sm">
-                  <MessageSquare
-                    size={12}
-                    className="mt-0.5 flex-shrink-0 text-amber-500"
-                  />
-                  <span>{productMutation.requesterNotes}</span>
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -150,60 +142,47 @@ const ProductMutationCard: FC<ProductMutationCardProps> = ({
               {productMutation?.productMutationTypeName}
             </span>
           </span>
-
-          <div className="mt-1 flex items-start gap-1 text-xs text-slate-500">
-            <Clock size={12} className="mt-0.5 flex-shrink-0" />
-            <div className="flex flex-col">
-              <span>
-                Created: {formatDateString(productMutation?.createdAt)}
-              </span>
-              {productMutation?.reviewedAt && (
-                <span className="mt-0.5">
-                  Reviewed: {formatDateString(productMutation?.reviewedAt)}
-                </span>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
       <div className="mt-2 flex w-full flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:justify-between">
-        <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+        <div className="flex flex-col gap-1 sm:flex-row sm:gap-3">
           <span className="flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1 text-xs text-slate-500">
-            <User size={10} className="flex-shrink-0 text-slate-400" />
-            Requested by:
+            <User size={12} className="flex-shrink-0 text-slate-400" />
             <span className="ml-1 line-clamp-1 font-medium text-slate-700">
               {productMutation?.requesterName}
             </span>
           </span>
 
-          {productMutation?.reviewerName && (
-            <span className="flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1 text-xs text-slate-500">
-              <User size={10} className="flex-shrink-0 text-green-500" />
-              Reviewed by:
-              <span className="ml-1 line-clamp-1 font-medium text-slate-700">
-                {productMutation?.reviewerName}
-              </span>
-            </span>
-          )}
+          <div className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500">
+            <Clock size={12} className="mt-0.5 flex-shrink-0" />
+            <div className="flex flex-col">
+              <span>{formatDateString(productMutation?.createdAt)}</span>
+            </div>
+          </div>
         </div>
 
-        {!isInbound &&
-          productMutation.productMutationTypeId ===
-            ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION &&
-          productMutation.productMutationStatusId ===
-            ProductMutationConstant.STATUS_PENDING && (
-            <div className="mt-2 flex justify-end gap-2 sm:mt-0">
-              <ProductMutationReviewDialog
-                isApprove={false}
-                productMutationId={productMutation.productMutationId}
-              />
-              <ProductMutationReviewDialog
-                isApprove={true}
-                productMutationId={productMutation.productMutationId}
-              />
-            </div>
-          )}
+        <div className="grid grid-cols-2">
+          <ProductMutationDetailDialog id={productMutation.productMutationId} />
+          <div>
+            {!isInbound &&
+              productMutation.productMutationTypeId ===
+                ProductMutationConstant.TYPE_OUTBOUND_MANUAL_MUTATION &&
+              productMutation.productMutationStatusId ===
+                ProductMutationConstant.STATUS_PENDING && (
+                <div className="order-first mt-2 flex justify-end gap-2 sm:mt-0 md:order-first">
+                  <ProductMutationReviewDialog
+                    isApprove={false}
+                    productMutationId={productMutation.productMutationId}
+                  />
+                  <ProductMutationReviewDialog
+                    isApprove={true}
+                    productMutationId={productMutation.productMutationId}
+                  />
+                </div>
+              )}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -7,9 +7,11 @@ import {
   ProductMutationHistoryParams,
   ProductMutationReportResponse,
   ProductMutationReportTotalResponse,
+  ProductMutationDetailsResponse,
 } from "@/types/models/productMutation";
 import axios from "axios";
 import { getSession } from "next-auth/react";
+import { toast } from "@/hooks/use-toast";
 
 const productMutationUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEXT_PUBLIC_PRODUCT_MUTATIONS}`;
 
@@ -164,4 +166,31 @@ export const getProductMutationReportDailySummary = async ({
   });
 
   return response.data.data;
+};
+
+export const getDetailProductMutationById = async (
+  id: number,
+): Promise<ProductMutationDetailsResponse> => {
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) throw new Error("No access token");
+
+  try {
+    const response = await axios.get<
+      ApiResponse<ProductMutationDetailsResponse>
+    >(`${productMutationUrl}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.data;
+  } catch {
+    toast({
+      title: "Error",
+      description: "Error fetching detail",
+      duration: 5000,
+      variant: "destructive",
+    });
+    throw new Error("Error fetching detail ");
+  }
 };

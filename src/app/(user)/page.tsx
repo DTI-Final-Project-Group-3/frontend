@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
-import ProductCardLoading from "@/components/product/ProductCardLoading";
 
 import { CartItem, useCartStore } from "@/store/cartStore";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +16,8 @@ import { useProductUser } from "@/store/productUserStore";
 import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
 import ProductCategoryUserSelection from "@/components/product/ProductCategoryUserSelection";
 import LandingPage from "@/components/landing-page/LandingPage";
+import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
+import ProductCardLoading from "@/components/product/ProductCardLoading";
 import ProductCard from "@/components/product/productCard";
 
 export default function Home() {
@@ -24,8 +25,13 @@ export default function Home() {
   const addToCart = useCartStore((state) => state.addToCart);
   const { setCartItems } = useCartStore();
   const { userAddress } = useUserAddressStore();
-  const { productPage, searchQuery, productCategoryId, setProductPage } =
-    useProductUser();
+  const {
+    productPage,
+    searchQuery,
+    productCategoryId,
+    setProductPage,
+    setProductCategoryId,
+  } = useProductUser();
 
   useEffect(() => {
     useCartStore.getState().isUserVerified =
@@ -61,7 +67,7 @@ export default function Home() {
         latitude: userAddress?.latitude,
         radius: LOCATION_RADIUS,
         productCategoryId: productCategoryId || undefined,
-        searchQuery: searchQuery,
+        searchQuery: searchQuery !== "" ? searchQuery : undefined,
       }),
     staleTime: 120000,
   });
@@ -94,18 +100,36 @@ export default function Home() {
     }
   }, [products, setCartItems]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 590, behavior: "smooth" });
+  }, [productsFetching]);
+
   return (
     <>
-      <LandingPage></LandingPage>
+      <LandingPage />
       <div className="mb-12 mt-6 min-h-[calc(100vh-70px)] w-full">
-        <main className="mx-auto mt-16 w-full max-w-[1340px] px-4 md:px-6">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-            <div className="col-span-1 flex h-fit flex-col gap-8 md:sticky md:top-24">
-              <ProductCategoryUserSelection />
-              <div className="w-full">
+        <main className="mx-auto mt-16 flex w-full max-w-[1340px] items-center justify-center md:px-6">
+          <div className="grid w-full grid-cols-1 gap-8 px-8 md:grid-cols-4">
+            <div className="flex h-fit flex-col gap-4 md:sticky md:top-24 md:col-span-1 md:gap-8">
+              <div className="flex flex-col gap-2">
+                <h1 className="mb-1 text-xl font-bold">Categories</h1>
+                <div className="hidden w-full md:block">
+                  <ProductCategoryUserSelection />
+                </div>
+                <div className="w-full flex-col md:hidden">
+                  <ProductCategorySelection
+                    productCategoryId={productCategoryId}
+                    setProductCategoryId={setProductCategoryId}
+                    showIcon={false}
+                    setPage={setProductPage}
+                  />
+                </div>
+              </div>
+
+              <div className="w-full space-y-2">
                 <label
                   htmlFor="address-select"
-                  className="mb-2 block text-lg font-semibold"
+                  className="mb-1 block text-lg font-semibold"
                 >
                   Delivery Address
                 </label>
@@ -113,8 +137,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="col-span-3">
-              <div className="grid min-h-[calc(100vh-150px)] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+            <div className="md:col-span-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:min-h-[calc(100vh-150px)] lg:grid-cols-3">
                 {productsLoading || productsFetching
                   ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
                       <ProductCardLoading key={index} />
@@ -127,6 +151,7 @@ export default function Home() {
                           price={product.price}
                           thumbnail={product.thumbnail ?? "/no-image-icon.jpg"}
                           totalStock={product.totalStock}
+                          nearestWarehouseName={product.nearestWarehouseName}
                           onAddToCart={() => handleAddToCart(product)}
                         />
                       </div>
@@ -134,11 +159,14 @@ export default function Home() {
               </div>
 
               {products && (
-                <PaginationComponent
-                  page={productPage}
-                  totalPages={products?.totalPages}
-                  setPage={setProductPage}
-                />
+                <div className={"pt-5"}>
+                  <PaginationComponent
+                    page={productPage}
+                    totalPages={products?.totalPages}
+                    setPage={setProductPage}
+                    backToTop={false}
+                  />
+                </div>
               )}
             </div>
           </div>
