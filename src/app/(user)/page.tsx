@@ -11,13 +11,14 @@ import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import { useSession } from "next-auth/react";
 import { getNearbyProduct } from "../api/product/getProducts";
 import { toast } from "@/hooks/use-toast";
-import ProductCard from "@/components/product/productCard";
 import DeliveryLocationDialog from "@/components/location/DeliveryLocationDialog";
 import { useProductUser } from "@/store/productUserStore";
 import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
 import ProductCategoryUserSelection from "@/components/product/ProductCategoryUserSelection";
 import LandingPage from "@/components/landing-page/LandingPage";
 import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
+import ProductCardLoading from "@/components/product/ProductCardLoading";
+import ProductCard from "@/components/product/ProductCard";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -99,6 +100,10 @@ export default function Home() {
     }
   }, [products, setCartItems]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 590, behavior: "smooth" });
+  }, [productsFetching]);
+
   return (
     <>
       <LandingPage />
@@ -133,25 +138,25 @@ export default function Home() {
             </div>
 
             <div className="md:col-span-3">
-              {/*  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:min-h-[calc(100vh-150px)] lg:grid-cols-3">*/}
-              {/*    {productsLoading || productsFetching*/}
-              {/*      ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (*/}
-              {/*          <ProductCardLoading key={index} />*/}
-              {/*        ))*/}
-              {/*      : products?.content.map((product) => (*/}
-              {/*          <div key={product.id}>*/}
-              {/*            <ProductCard*/}
-              {/*              id={product.id}*/}
-              {/*              name={product.name}*/}
-              {/*              price={product.price}*/}
-              {/*              thumbnail={product.thumbnail ?? "/no-image-icon.jpg"}*/}
-              {/*              totalStock={product.totalStock}*/}
-              {/*              nearestWarehouseName={product.nearestWarehouseName}*/}
-              {/*              onAddToCart={() => handleAddToCart(product)}*/}
-              {/*            />*/}
-              {/*          </div>*/}
-              {/*        ))}*/}
-              {/*  </div>*/}
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:min-h-[calc(100vh-150px)] lg:grid-cols-3">
+                {productsLoading || productsFetching
+                  ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
+                      <ProductCardLoading key={index} />
+                    ))
+                  : products?.content.map((product) => (
+                      <div key={product.id}>
+                        <ProductCard
+                          id={product.id}
+                          name={product.name}
+                          price={product.price}
+                          thumbnail={product.thumbnail ?? "/no-image-icon.jpg"}
+                          totalStock={product.totalStock}
+                          nearestWarehouseName={product.nearestWarehouseName}
+                          onAddToCart={() => handleAddToCart(product)}
+                        />
+                      </div>
+                    ))}
+              </div>
 
               {products && (
                 <div className={"pt-5"}>
@@ -159,8 +164,7 @@ export default function Home() {
                     page={productPage}
                     totalPages={products?.totalPages}
                     setPage={setProductPage}
-                    backToTop={true}
-                    topValue={590}
+                    backToTop={false}
                   />
                 </div>
               )}

@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 import { Button } from "../ui/button";
 import ImageComponent from "@/components/common/ImageComponent";
 import { Card, CardContent } from "../ui/card";
-import { Warehouse } from "lucide-react";
 
 interface ProductCardProps {
   id: string | number;
