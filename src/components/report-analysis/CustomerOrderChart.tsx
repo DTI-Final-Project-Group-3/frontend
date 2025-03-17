@@ -9,14 +9,14 @@ import { formatDateHyphen, formatPrice } from "@/utils/formatter";
 import { useSession } from "next-auth/react";
 
 const quantityChartConfig = {
-  quantity: {
+  totalQuantity: {
     label: "Quantity",
     color: "#4CAF50",
   },
 } satisfies ChartConfig;
 
 const valueChartConfig = {
-  value: {
+  totalValue: {
     label: "Value",
     color: "#2196F3",
   },

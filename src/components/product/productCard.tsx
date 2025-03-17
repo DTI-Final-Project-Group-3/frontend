@@ -81,7 +81,15 @@ const ProductCard: FC<ProductCardProps> = ({
   const renderMobile = () => (
     <Card>
       <CardContent className="relative p-4">
-        <div className="flex items-center gap-3">
+        <span
+          className={
+            "border-b-2 border-slate-50 pb-4 pt-2 text-xs text-gray-600"
+          }
+        >
+          {nearestWarehouseName}
+        </span>
+
+        <div className="flex items-center gap-3 pt-3">
           <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
             <ImageComponent
               src={thumbnail}

@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
-import ProductCardLoading from "@/components/product/ProductCardLoading";
 
 import { CartItem, useCartStore } from "@/store/cartStore";
 import { useQuery } from "@tanstack/react-query";
@@ -12,13 +11,14 @@ import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import { useSession } from "next-auth/react";
 import { getNearbyProduct } from "../api/product/getProducts";
 import { toast } from "@/hooks/use-toast";
-import ProductCard from "@/components/product/productCard";
 import DeliveryLocationDialog from "@/components/location/DeliveryLocationDialog";
 import { useProductUser } from "@/store/productUserStore";
 import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
 import ProductCategoryUserSelection from "@/components/product/ProductCategoryUserSelection";
 import LandingPage from "@/components/landing-page/LandingPage";
 import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
+import ProductCardLoading from "@/components/product/ProductCardLoading";
+import ProductCard from "@/components/product/ProductCard";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -67,7 +67,7 @@ export default function Home() {
         latitude: userAddress?.latitude,
         radius: LOCATION_RADIUS,
         productCategoryId: productCategoryId || undefined,
-        searchQuery: searchQuery,
+        searchQuery: searchQuery !== "" ? searchQuery : undefined,
       }),
     staleTime: 120000,
   });
@@ -100,6 +100,10 @@ export default function Home() {
     }
   }, [products, setCartItems]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 590, behavior: "smooth" });
+  }, [productsFetching]);
+
   return (
     <>
       <LandingPage />
@@ -117,6 +121,7 @@ export default function Home() {
                     productCategoryId={productCategoryId}
                     setProductCategoryId={setProductCategoryId}
                     showIcon={false}
+                    setPage={setProductPage}
                   />
                 </div>
               </div>
@@ -133,7 +138,7 @@ export default function Home() {
             </div>
 
             <div className="md:col-span-3">
-              <div className="grid min-h-[calc(100vh-150px)] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:min-h-[calc(100vh-150px)] lg:grid-cols-3">
                 {productsLoading || productsFetching
                   ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
                       <ProductCardLoading key={index} />
@@ -159,6 +164,7 @@ export default function Home() {
                     page={productPage}
                     totalPages={products?.totalPages}
                     setPage={setProductPage}
+                    backToTop={false}
                   />
                 </div>
               )}

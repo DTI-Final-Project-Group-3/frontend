@@ -15,6 +15,7 @@ type PaginationProps = {
   totalPages: number;
   setPage: (page: number) => void;
   backToTop?: boolean;
+  topValue?: number;
   className?: string;
 };
 
@@ -23,12 +24,13 @@ const PaginationComponent: FC<PaginationProps> = ({
   setPage,
   totalPages,
   backToTop = true,
+  topValue = 0,
   className,
 }) => {
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
     if (backToTop) {
-      window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top smoothly
+      window.scrollTo({ top: topValue, behavior: "smooth" }); // Scroll to top smoothly
     }
   };
 
