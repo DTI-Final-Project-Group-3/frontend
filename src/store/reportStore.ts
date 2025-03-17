@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { DateRange } from "react-day-picker";
-import { ProductMutationConstant } from "@/constant/productMutationConstant";
 
 type ReportStoreProps = {
   productId?: number;
@@ -28,7 +27,7 @@ export const useReport = create<ReportStoreProps>((set) => ({
     to: new Date(),
   },
   productMutationTypeId: undefined,
-  productMutationStatusId: ProductMutationConstant.STATUS_COMPLETED,
+  productMutationStatusId: undefined,
 
   customerOrderStatusId: 5,
 
