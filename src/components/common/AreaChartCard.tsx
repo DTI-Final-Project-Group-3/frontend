@@ -64,7 +64,7 @@ const AreaChartCard = <T,>({
         >
           <AreaChart
             data={data}
-            margin={{ left: 10, right: 10, top: 10, bottom: 5 }}
+            margin={{ left: 10, right: 10, top: 10, bottom: 30 }}
           >
             <defs>
               <linearGradient id={`fill${dataKey}`} x1="0" y1="0" x2="0" y2="1">
@@ -112,7 +112,10 @@ const AreaChartCard = <T,>({
                     });
                   }}
                   formatter={(value) => {
-                    const formattedValue = formatPrice(value.toString());
+                    const formattedValue =
+                      dataKey === "totalValue"
+                        ? formatPrice(value.toString())
+                        : value;
                     const label =
                       dataKey === "totalValue"
                         ? "Total value"
@@ -131,7 +134,12 @@ const AreaChartCard = <T,>({
               stroke={Object.values(config)[0].color}
             />
 
-            <ChartLegend content={<ChartLegendContent />} />
+            <ChartLegend
+              content={<ChartLegendContent />}
+              verticalAlign="bottom"
+              align="center"
+              wrapperStyle={{ bottom: 0, paddingTop: "10px" }}
+            />
           </AreaChart>
         </ChartContainer>
       </CardContent>

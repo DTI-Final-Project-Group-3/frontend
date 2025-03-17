@@ -4,7 +4,8 @@ import { getProductCategory } from "@/app/api/product/getProducts";
 import { useProductUser } from "@/store/productUserStore";
 
 const ProductCategoryUserSelection: FC = () => {
-  const { productCategoryId, setProductCategoryId } = useProductUser();
+  const { productCategoryId, setProductCategoryId, setProductPage } =
+    useProductUser();
 
   const {
     data: categoriesResponse,
@@ -37,7 +38,10 @@ const ProductCategoryUserSelection: FC = () => {
                   ? "font-medium text-black"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
-              onClick={() => setProductCategoryId(undefined)}
+              onClick={() => {
+                setProductCategoryId(undefined);
+                setProductPage(0);
+              }}
             >
               All Categories
             </button>
@@ -49,7 +53,10 @@ const ProductCategoryUserSelection: FC = () => {
                     ? "font-medium text-black"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
-                onClick={() => setProductCategoryId(category.id)}
+                onClick={() => {
+                  setProductCategoryId(category.id);
+                  setProductPage(0);
+                }}
               >
                 {category.name}
               </button>

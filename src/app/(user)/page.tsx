@@ -67,7 +67,7 @@ export default function Home() {
         latitude: userAddress?.latitude,
         radius: LOCATION_RADIUS,
         productCategoryId: productCategoryId || undefined,
-        searchQuery: searchQuery,
+        searchQuery: searchQuery !== "" ? searchQuery : undefined,
       }),
     staleTime: 120000,
   });
@@ -117,6 +117,7 @@ export default function Home() {
                     productCategoryId={productCategoryId}
                     setProductCategoryId={setProductCategoryId}
                     showIcon={false}
+                    setPage={setProductPage}
                   />
                 </div>
               </div>
@@ -133,7 +134,7 @@ export default function Home() {
             </div>
 
             <div className="md:col-span-3">
-              <div className="grid min-h-[calc(100vh-150px)] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:min-h-[calc(100vh-150px)] lg:grid-cols-3">
                 {productsLoading || productsFetching
                   ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
                       <ProductCardLoading key={index} />
@@ -159,6 +160,8 @@ export default function Home() {
                     page={productPage}
                     totalPages={products?.totalPages}
                     setPage={setProductPage}
+                    backToTop={true}
+                    topValue={590}
                   />
                 </div>
               )}
