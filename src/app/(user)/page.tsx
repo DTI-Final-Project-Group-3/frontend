@@ -18,7 +18,7 @@ import ProductCategoryUserSelection from "@/components/product/ProductCategoryUs
 import LandingPage from "@/components/landing-page/LandingPage";
 import ProductCategorySelection from "@/components/product-management/categories/ProductCategorySelection";
 import ProductCardLoading from "@/components/product/ProductCardLoading";
-import ProductCard from "@/components/product/ProductCard";
+import ProductCard from "@/components/product/productCard";
 
 export default function Home() {
   const { data: session } = useSession();

@@ -13,7 +13,7 @@ const Navbar: FC = () => {
   return (
     <header className="sticky top-0 z-[20] h-[120px] w-full border-b-[1px] border-gray-100 bg-white md:h-[70px]">
       <nav className="mx-auto flex h-full w-full flex-col items-center justify-between px-6 md:max-w-4xl md:flex-row lg:max-w-[1388px]">
-        <div className="flex items-center justify-between md:w-[70%]">
+        <div className="flex items-center justify-between w-full md:w-[70%]">
           <Logo />
           <Search />
         </div>
