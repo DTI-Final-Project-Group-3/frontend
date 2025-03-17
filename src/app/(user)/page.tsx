@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { INVENTORY_PER_PAGE } from "@/constant/warehouseInventoryConstant";
-import ProductCardLoading from "@/components/product/ProductCardLoading";
 
 import { CartItem, useCartStore } from "@/store/cartStore";
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +11,6 @@ import { LOCATION_RADIUS } from "@/constant/locationConstant";
 import { useSession } from "next-auth/react";
 import { getNearbyProduct } from "../api/product/getProducts";
 import { toast } from "@/hooks/use-toast";
-import ProductCard from "@/components/product/ProductCard";
 import DeliveryLocationDialog from "@/components/location/DeliveryLocationDialog";
 import { useProductUser } from "@/store/productUserStore";
 import PaginationComponent from "@/components/lists/order-list/PaginationComponent";
@@ -134,25 +132,25 @@ export default function Home() {
             </div>
 
             <div className="md:col-span-3">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:min-h-[calc(100vh-150px)] lg:grid-cols-3">
-                {productsLoading || productsFetching
-                  ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (
-                      <ProductCardLoading key={index} />
-                    ))
-                  : products?.content.map((product) => (
-                      <div key={product.id}>
-                        <ProductCard
-                          id={product.id}
-                          name={product.name}
-                          price={product.price}
-                          thumbnail={product.thumbnail ?? "/no-image-icon.jpg"}
-                          totalStock={product.totalStock}
-                          nearestWarehouseName={product.nearestWarehouseName}
-                          onAddToCart={() => handleAddToCart(product)}
-                        />
-                      </div>
-                    ))}
-              </div>
+              {/*  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:min-h-[calc(100vh-150px)] lg:grid-cols-3">*/}
+              {/*    {productsLoading || productsFetching*/}
+              {/*      ? [...Array(INVENTORY_PER_PAGE)].map((_, index) => (*/}
+              {/*          <ProductCardLoading key={index} />*/}
+              {/*        ))*/}
+              {/*      : products?.content.map((product) => (*/}
+              {/*          <div key={product.id}>*/}
+              {/*            <ProductCard*/}
+              {/*              id={product.id}*/}
+              {/*              name={product.name}*/}
+              {/*              price={product.price}*/}
+              {/*              thumbnail={product.thumbnail ?? "/no-image-icon.jpg"}*/}
+              {/*              totalStock={product.totalStock}*/}
+              {/*              nearestWarehouseName={product.nearestWarehouseName}*/}
+              {/*              onAddToCart={() => handleAddToCart(product)}*/}
+              {/*            />*/}
+              {/*          </div>*/}
+              {/*        ))}*/}
+              {/*  </div>*/}
 
               {products && (
                 <div className={"pt-5"}>
