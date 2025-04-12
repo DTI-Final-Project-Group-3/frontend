@@ -5,6 +5,7 @@ import EmailVerificationButton from "@/components/user/EmailVerificationButton";
 import ProfileImage from "@/components/user/ProfileImage";
 import { toast } from "@/hooks/use-toast";
 import { useCartStore } from "@/store/cartStore";
+import { useUserDetailStore } from "@/store/userDetailStore";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -14,17 +15,32 @@ const reset_password_request_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v
 
 export default function ProfileLayout({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
+  const userDetail = useUserDetailStore((state) => state.userDetail);
   const router = useRouter();
   const pathname = usePathname();
   const resetCart = useCartStore((state) => state.resetCart);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
+  const [fullname, setFullname] = useState<string | null>("");
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [router, status]);
+
+  useEffect(() => {
+     if (userDetail && userDetail.fullname) {
+        setFullname(userDetail.fullname);
+     }
+     else if (session && session.userDetail) {
+        if (session.userDetail.fullname) {
+          setFullname(session.userDetail.fullname);
+        } else if (session.userDetail.email) {
+          setFullname(session.userDetail.email);
+        }
+     }
+  },[userDetail, session])
 
   if (status === "loading") {
     return (
@@ -67,7 +83,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
     <div className="py-[40px] px-6 min-h-[calc(100vh-70px)] bg-slate-100 w-full">
       <div className="md:max-w-4xl lg:max-w-[1340px] mx-auto w-full">
         <h1 className="text-2xl font-semibold">Welcome back,
-          <span className="text-[#04B4FC]">{" " + session?.userDetail?.fullname}
+          <span className="text-[#04B4FC]">{" " + fullname}
             </span>
         </h1>
 

@@ -1,5 +1,5 @@
 import { toast } from "@/hooks/use-toast";
-import { UserDetail } from "@/types/models/userDetail";
+import { useUserDetailStore } from "@/store/userDetailStore";
 import { useSession } from "next-auth/react";
 import NextImage from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -14,7 +14,8 @@ export default function ProfileImage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [userData, setUserData] = useState<UserDetail | null | undefined>(null);
+    const userDetail = useUserDetailStore((state) => state.userDetail);
+    const setUserDetail = useUserDetailStore((state) => state.setUserDetail);
     const [isUploading, setIsUploading] = useState(false);
 
     const refresh = useCallback(async () => {
@@ -27,7 +28,7 @@ export default function ProfileImage() {
             });
             const data = await res.json();
             if (data.success) {
-              setUserData(data.data);
+                setUserDetail(data.data);
             } else {
               toast({title: "Failed", description: "Failed to fetch user details", duration: 2000,});
             }
@@ -36,7 +37,7 @@ export default function ProfileImage() {
             toast({title: "Error", description: "Error fetching user details", duration: 2000,});
           }
         }
-      },[session, status])
+      },[session, status, setUserDetail])
 
     useEffect(() => {
         refresh();
@@ -157,7 +158,7 @@ export default function ProfileImage() {
         <>
             <button onClick={() => {setSelectedFile(null) ; setIsDialogOpen(true)}} className="p-0 bg-transparent w-48 h-48">
                 <NextImage
-                    src={userData?.profileImageUrl || "/images/no-image-icon.jpg"}
+                    src={userDetail?.profileImageUrl || "/images/no-image-icon.jpg"}
                     height={150}
                     width={150}
                     alt="Profile"
