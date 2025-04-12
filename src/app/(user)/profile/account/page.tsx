@@ -2,7 +2,7 @@
 
 import Account from "@/components/user/Account";
 import { toast } from "@/hooks/use-toast";
-import { UserDetail } from "@/types/models/userDetail";
+import { useUserDetailStore } from "@/store/userDetailStore";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -10,7 +10,8 @@ const user_detail_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${process.env.NEX
 
 export default function AccountPage() {
   const { data: session, status } = useSession();
-  const [userData, setUserData] = useState<UserDetail | null>(null);
+  const userDetail = useUserDetailStore((state) => state.userDetail);
+  const setUserDetail = useUserDetailStore((state) => state.setUserDetail);
   const [editableData, setEditableData] = useState({
     fullname: "",
     gender: "",
@@ -28,7 +29,7 @@ export default function AccountPage() {
           });
           const data = await res.json();
           if (data.success) {
-            setUserData(data.data);
+            setUserDetail(data.data);
             setEditableData({
               fullname: data.data.fullname || "",
               gender: data.data.gender || "",
@@ -46,7 +47,7 @@ export default function AccountPage() {
     };
 
     fetchUserDetails();
-  }, [session, status]);
+  }, [session, status, setUserDetail]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setEditableData({ ...editableData, [e.target.name]: e.target.value });
@@ -68,6 +69,7 @@ export default function AccountPage() {
 
       const data = await res.json();
       if (data.success) {
+        setUserDetail(data.data);
         toast({title: "Success", description: "User details updated successfully", duration: 2000,});
         setIsModified(false);
       } else {
@@ -80,12 +82,12 @@ export default function AccountPage() {
   };
 
   const handleDiscard = () => {
-    if (userData)
+    if (userDetail)
       setEditableData({
-        fullname: userData.fullname || "",
-        gender: userData.gender || "",
-        birthdate: userData.birthdate || "",
-        phoneNumber: userData.phoneNumber || "",
+        fullname: userDetail.fullname || "",
+        gender: userDetail.gender || "",
+        birthdate: userDetail.birthdate || "",
+        phoneNumber: userDetail.phoneNumber || "",
       });
     else {
       setEditableData({
@@ -100,7 +102,7 @@ export default function AccountPage() {
 
   return (
     <Account
-      userData={userData}
+      userData={userDetail}
       editableData={editableData}
       handleInputChange={handleInputChange}
       handleSave={handleSave}
